@@ -9,7 +9,9 @@ import lombok.Setter;
 public class BundledAppTableDto {
 
     private Long uid;
+    private Long sourceAppTableId;
     private String sourceAppTableName;
+    private Long targetAppTableId;
     private String targetAppTableName;
     private Long relationalOrderingNumber;
     private String extractCustomQuery;

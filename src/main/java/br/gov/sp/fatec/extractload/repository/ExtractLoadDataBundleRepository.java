@@ -9,5 +9,4 @@ public interface ExtractLoadDataBundleRepository extends JpaRepository<ExtractLo
 
     Optional<ExtractLoadDataBundle> findByUid(Long uid);
 
-    Optional<ExtractLoadDataBundle> findByDataBundleName(String name);
 }

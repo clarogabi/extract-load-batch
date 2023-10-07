@@ -8,9 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -47,7 +45,7 @@ public class ExtractLoadDataBundle {
     @Column(name = "UPDATE_DATE_TIME", nullable = false)
     private Timestamp updateDateTime;
 
-    @OneToMany(mappedBy = "uid", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "dataBundleUid", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ExtractLoadBundledAppTable> bundledAppTables = new ArrayList<>();
 
 }

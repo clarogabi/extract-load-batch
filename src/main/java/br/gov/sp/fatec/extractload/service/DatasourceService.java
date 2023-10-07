@@ -5,8 +5,8 @@ import br.gov.sp.fatec.extractload.domain.mapper.DatasourceMapper;
 import br.gov.sp.fatec.extractload.entity.ExtractLoadDatasourceConfiguration;
 import br.gov.sp.fatec.extractload.exception.NotFoundProblem;
 import br.gov.sp.fatec.extractload.repository.ExtractLoadDatasourceConfigurationRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +17,13 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional(value = "extractLoadDataSourceTransactionManager", propagation = Propagation.REQUIRES_NEW)
 public class DatasourceService {
 
-    @Autowired
-    private ExtractLoadDatasourceConfigurationRepository datasourceConfigurationRepository;
+    private final ExtractLoadDatasourceConfigurationRepository datasourceConfigurationRepository;
 
-    @Autowired
-    private DatasourceMapper datasourceMapper;
+    private final DatasourceMapper datasourceMapper;
 
     private ExtractLoadDatasourceConfiguration findDatasourceById(Long datasourceId) {
         Optional<ExtractLoadDatasourceConfiguration> datasource = datasourceConfigurationRepository.findById(datasourceId);
@@ -57,6 +56,7 @@ public class DatasourceService {
         entity.setDatabaseDialect(datasourceDto.getDatabaseDialect());
         entity.setDatabaseSchema(datasourceDto.getDatabaseSchema());
         entity.setUpdateDateTime(Timestamp.valueOf(LocalDateTime.now()));
+        datasourceConfigurationRepository.save(entity);
     }
 
 }

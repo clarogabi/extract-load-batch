@@ -5,8 +5,8 @@ import br.gov.sp.fatec.extractload.domain.mapper.AppTableMapper;
 import br.gov.sp.fatec.extractload.entity.ExtractLoadAppTable;
 import br.gov.sp.fatec.extractload.exception.NotFoundProblem;
 import br.gov.sp.fatec.extractload.repository.ExtractLoadAppTableRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +17,13 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Transactional(value = "extractLoadDataSourceTransactionManager", propagation = Propagation.REQUIRES_NEW)
 public class AppTableService {
 
-    @Autowired
-    private ExtractLoadAppTableRepository extractLoadAppTableRepository;
+    private final ExtractLoadAppTableRepository extractLoadAppTableRepository;
 
-    @Autowired
-    private AppTableMapper appTableMapper;
+    private final AppTableMapper appTableMapper;
 
     private ExtractLoadAppTable findAppTableById(Long tableId) {
         Optional<ExtractLoadAppTable> appTable = extractLoadAppTableRepository.findById(tableId);
@@ -49,6 +48,7 @@ public class AppTableService {
         ExtractLoadAppTable entity = findAppTableById(appTableDto.getUid());
         entity.setAppTablePhysicalName(appTableDto.getAppTablePhysicalName());
         entity.setUpdateDateTime(Timestamp.valueOf(LocalDateTime.now()));
+        extractLoadAppTableRepository.save(entity);
     }
 
 }

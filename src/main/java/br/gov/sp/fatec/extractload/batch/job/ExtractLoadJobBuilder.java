@@ -104,7 +104,8 @@ public class ExtractLoadJobBuilder {
                 .get(JOB_NAME.concat(bundleName).toUpperCase())
                 .validator(jobParametersValidator)
                 .incrementer(new RunIdIncrementer())
-                .start(getStepsFlow(bundleName, dataBundleId, ExtractionTypeEnum.fromValue(jobParams.getExtractionType().getValue())))
+                .start(getStepsFlow(bundleName, dataBundleId,
+                        ExtractionTypeEnum.fromValue(jobParams.getExtractionType().getValue())))
                 .end()
                 .build();
     }

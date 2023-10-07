@@ -4,6 +4,7 @@ import br.gov.sp.fatec.extractload.api.model.CreatedObjectResponse;
 import br.gov.sp.fatec.extractload.batch.job.ExtractLoadJobBuilder;
 import br.gov.sp.fatec.extractload.domain.dto.JobParametersDto;
 import br.gov.sp.fatec.extractload.exception.UnprocessableEntityException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.explore.JobExplorer;
@@ -19,17 +20,15 @@ import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 @Import(ExtractLoadJobBuilder.class)
 public class BatchExecutionService {
 
-    @Autowired
-    private JobLauncher jobLauncher;
+    private final JobLauncher jobLauncher;
 
-    @Autowired
-    private JobExplorer jobExplorer;
+    private final JobExplorer jobExplorer;
 
-    @Autowired
-    private ExtractLoadJobBuilder jobBuilder;
+    private final ExtractLoadJobBuilder jobBuilder;
 
     public CreatedObjectResponse startJob(JobParametersDto jobParams) {
         String uuid = UUID.randomUUID().toString();
@@ -57,10 +56,10 @@ public class BatchExecutionService {
     }
 
     public JobExecution findJobExecutionByJobName(String jobName) {
-        return jobExplorer.getLastJobExecution(findLastJobInstanteByJobName(jobName));
+        return jobExplorer.getLastJobExecution(findLastJobInstanceByJobName(jobName));
     }
 
-    public JobInstance findLastJobInstanteByJobName(String jobName) {
+    public JobInstance findLastJobInstanceByJobName(String jobName) {
         JobInstance jobInstance = jobExplorer.getLastJobInstance(jobName);
         if (isNull(jobInstance)) {
             throw new UnprocessableEntityException("");
