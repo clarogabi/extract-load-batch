@@ -1,0 +1,1794 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Swagger Extract And Load Data Batch",
+    "description": "The Extract and Load Data Batch Swagger UI offers the ability to perform API requests such as GET, POST, PUT and DELETE to different endpoints in the backend service like data sources, data bundles, batch execution, etc.",
+    "contact": {
+      "email": "gabriela.claro@fatec.sp.gov.br"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "security": [
+    {
+      "Authorization": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Datasource",
+      "description": "Datasource Configuration Properties"
+    },
+    {
+      "name": "Tables",
+      "description": "Tables Properties Definitions"
+    },
+    {
+      "name": "Bundles",
+      "description": "Tables Bundles Definitions"
+    },
+    {
+      "name": "BundledTables",
+      "description": "Bundled Tables Definitions"
+    },
+    {
+      "name": "Batch",
+      "description": "Batch Job Execution"
+    }
+  ],
+  "paths": {
+    "/v1/datasource": {
+      "post": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Post datasource configuration",
+        "description": "Inserts new datasource configuration properties",
+        "operationId": "postDatasourceProperties",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatasourcePropertiesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedObjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/datasource/{datasourceId}": {
+      "get": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Get datasource configuration",
+        "description": "Retrieve datasource configuration data by Id",
+        "operationId": "getDatasourceProperties",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "datasourceId",
+            "description": "Datasource Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasourcePropertiesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Update datasource configuration",
+        "description": "Updates datasource configuration properties",
+        "operationId": "putDatasourceProperties",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "datasourceId",
+            "description": "Datasource Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatasourcePropertiesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Datasource"
+        ],
+        "summary": "Delete datasource configuration",
+        "description": "Deletes datasource configuration properties by Id",
+        "operationId": "deleteDatasourceProperties",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "datasourceId",
+            "description": "Datasource Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/data/tables": {
+      "post": {
+        "tags": [
+          "Tables"
+        ],
+        "summary": "Post table definitions",
+        "description": "Inserts new table to be bundled",
+        "operationId": "postTable",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataTableRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedObjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/data/tables/{tableId}": {
+      "get": {
+        "tags": [
+          "Tables"
+        ],
+        "summary": "Get table definitions",
+        "description": "Retrieve table definitions data by Id",
+        "operationId": "getTable",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tableId",
+            "description": "Table Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataTableResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Tables"
+        ],
+        "summary": "Put table definitions",
+        "description": "Updates table definitions by Id",
+        "operationId": "putTable",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tableId",
+            "description": "Table Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataTableRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Tables"
+        ],
+        "summary": "Delete table definitions",
+        "description": "Deletes table definitions by Id",
+        "operationId": "deleteTable",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tableId",
+            "description": "Table Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/data/bundles": {
+      "post": {
+        "tags": [
+          "Bundles"
+        ],
+        "summary": "Post definitions of extract and load data bundle",
+        "description": "Inserts new data bundle definitions",
+        "operationId": "postBundle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataBundleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedObjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/data/bundles/{bundleId}": {
+      "get": {
+        "tags": [
+          "Bundles"
+        ],
+        "summary": "Get data bundle definitions",
+        "description": "Retrieve data bundle definitions by Id",
+        "operationId": "getBundle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundleId",
+            "description": "Bundle Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataBundleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Bundles"
+        ],
+        "summary": "Put data bundle definitions",
+        "description": "Updates data bundle definitions",
+        "operationId": "putBundle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundleId",
+            "description": "Bundle Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BundleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Bundles"
+        ],
+        "summary": "Delete data bundle definitions",
+        "description": "Deletes data bundle definitions by Id",
+        "operationId": "deleteBundle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundleId",
+            "description": "Bundle Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/data/bundles/{bundleId}/tables": {
+      "post": {
+        "tags": [
+          "BundledTables"
+        ],
+        "summary": "Post bundled table",
+        "description": "Insert new data bundle definition adding new target and source tables.",
+        "operationId": "postBundledTables",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundleId",
+            "description": "Bundle Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BundledTableRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedObjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/data/bundles/{bundleId}/tables/{bundledTableId}": {
+      "get": {
+        "tags": [
+          "BundledTables"
+        ],
+        "summary": "Get bundled table",
+        "description": "Retrieve bundled table by Id.",
+        "operationId": "getBundledTable",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundleId",
+            "description": "Bundle Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bundledTableId",
+            "description": "Bundled Table Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BundledTableResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "BundledTables"
+        ],
+        "summary": "Put bundled table",
+        "description": "Updates bundled table by Id.",
+        "operationId": "putBundledTable",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundleId",
+            "description": "Bundle Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bundledTableId",
+            "description": "Bundled Table Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BundledTableRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "BundledTables"
+        ],
+        "summary": "Delete bundled table",
+        "description": "Deletes bundled tables by Id",
+        "operationId": "deleteBundledTable",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundleId",
+            "description": "Bundle Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          },
+          {
+            "in": "path",
+            "name": "bundledTableId",
+            "description": "Bundled Table Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(.|\\s)*\\S(.|\\s)*",
+              "example": "12"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/batch/job": {
+      "post": {
+        "tags": [
+          "Batch"
+        ],
+        "summary": "Post batch job execution",
+        "description": "Start batch job execution using job parameters request",
+        "operationId": "postBatchJobExecution",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobParametersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedObjectResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/v1/batch/job/{jobExecutionId}": {
+      "get": {
+        "tags": [
+          "Batch"
+        ],
+        "summary": "Get batch job execution status and metadata",
+        "description": "Retrieve batch job execution status and metadata by Id.",
+        "operationId": "getBatchJobExecution",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "jobExecutionId",
+            "description": "Job Execution Id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 122
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobExecutionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/badRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/notFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/unprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/serverError"
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "badRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemResponse"
+            },
+            "examples": {
+              "badRequest": {
+                "$ref": "#/components/examples/badRequest"
+              }
+            }
+          }
+        }
+      },
+      "unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemResponse"
+            },
+            "examples": {
+              "unauthorized": {
+                "$ref": "#/components/examples/unauthorized"
+              }
+            }
+          }
+        }
+      },
+      "notFound": {
+        "description": "Not Found",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemResponse"
+            },
+            "examples": {
+              "notFound": {
+                "$ref": "#/components/examples/notFound"
+              }
+            }
+          }
+        }
+      },
+      "unprocessableEntity": {
+        "description": "Unprocessable Entity",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemResponse"
+            },
+            "examples": {
+              "unprocessableEntity": {
+                "$ref": "#/components/examples/unprocessableEntity"
+              }
+            }
+          }
+        }
+      },
+      "serverError": {
+        "description": "Server Error",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemResponse"
+            },
+            "examples": {
+              "serverError": {
+                "$ref": "#/components/examples/serverError"
+              }
+            }
+          }
+        }
+      }
+    },
+    "examples": {
+      "badRequest": {
+        "value": {
+          "type": "https://zalando.github.io/problem/constraint-violation",
+          "title": "Bad Request",
+          "status": 400,
+          "detail": "Invalid attribute"
+        },
+        "summary": "Bad request response"
+      },
+      "unauthorized": {
+        "value": {
+          "type": "https://zalando.github.io/problem/constraint-violation",
+          "title": "Unauthorized",
+          "status": 401,
+          "detail": "Unauthorized request"
+        },
+        "summary": "Unauthorized response"
+      },
+      "notFound": {
+        "value": {
+          "type": "https://zalando.github.io/problem/constraint-violation",
+          "title": "Not Found",
+          "status": 404,
+          "detail": "Resource not found"
+        },
+        "summary": "Not Found response"
+      },
+      "unprocessableEntity": {
+        "value": {
+          "type": "https://zalando.github.io/problem/constraint-violation",
+          "title": "Unprocessable Entity",
+          "status": 422,
+          "detail": "Unprocessable Entity"
+        },
+        "summary": "Unprocessable Entity response."
+      },
+      "serverError": {
+        "value": {
+          "type": "https://zalando.github.io/problem/constraint-violation",
+          "title": "Server Error",
+          "status": 500,
+          "detail": "Server Error"
+        },
+        "summary": "Server Error response"
+      }
+    },
+    "schemas": {
+      "CreatedObjectResponse": {
+        "type": "object",
+        "title": "CreatedObjectResponse",
+        "description": "Body for retrieve unique identifier from created object.",
+        "properties": {
+          "uid": {
+            "type": "string",
+            "example": 1,
+            "description": "Object unique identifier"
+          }
+        },
+        "required": [
+          "uid"
+        ]
+      },
+      "BundleRequest": {
+        "type": "object",
+        "title": "BundleRequest",
+        "description": "Body for update bundle definitions",
+        "properties": {
+          "bundleName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "DUMMY_BUNDLE",
+            "description": "Bundle name"
+          },
+          "sourceDatasourceId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 10,
+            "description": "Unique identifier from source Datasource."
+          },
+          "targetDatasourceId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 12,
+            "description": "Unique identifier from target data migration datasource"
+          }
+        },
+        "required": [
+          "bundleName",
+          "sourceDatasourceId",
+          "targetDatasourceId"
+        ]
+      },
+      "DataBundleRequest": {
+        "type": "object",
+        "title": "DataBundleRequest",
+        "description": "Body for create bundled and bundled tables",
+        "properties": {
+          "bundleName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "DUMMY_BUNDLE",
+            "description": "Bundle name"
+          },
+          "sourceDatasourceId": {
+            "type": "integer",
+            "example": 10,
+            "description": "Unique identifier from source data migration datasource"
+          },
+          "targetDatasourceId": {
+            "type": "integer",
+            "example": 12,
+            "description": "Unique identifier from target data migration datasource"
+          },
+          "bundledTables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BundledTableRequest"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "bundleName",
+          "sourceDatasourceId",
+          "targetDatasourceId",
+          "bundledTables"
+        ]
+      },
+      "DataTableRequest": {
+        "type": "object",
+        "title": "DataTableRequest",
+        "description": "Body for create new table definition",
+        "properties": {
+          "tablePhysicalName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "DUMMY_TABLE_NAME",
+            "description": "Table physical name"
+          },
+          "tableDescription": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "Dummy Table Description",
+            "description": "Table additional information"
+          }
+        },
+        "required": [
+          "tablePhysicalName"
+        ]
+      },
+      "DataTableResponse": {
+        "type": "object",
+        "title": "DataTableResponse",
+        "description": "Body for retrieve unique identifier from created table definition",
+        "properties": {
+          "tableId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1,
+            "description": "Table unique identifier"
+          },
+          "tablePhysicalName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "DUMMY_TABLE_NAME",
+            "description": "Table physical name"
+          },
+          "tableDescription": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "Dummy Table Description",
+            "description": "Table additional information"
+          },
+          "createDateTime": {
+            "type": "string",
+            "example": "2020-07-10 15:00:00.000",
+            "description": "ISO format date time from register creation."
+          },
+          "updateDateTime": {
+            "type": "string",
+            "example": "2020-07-10 15:00:00.000",
+            "description": "ISO format date time from last update."
+          }
+        }
+      },
+      "DataBundleResponse": {
+        "type": "object",
+        "title": "DataBundleResponse",
+        "description": "Bundle definitions response",
+        "properties": {
+          "bundleId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 12,
+            "description": "Bundle unique identifier"
+          },
+          "bundleName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "DUMMY_BUNDLE",
+            "description": "Bundle name"
+          },
+          "sourceDatasourceId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 10,
+            "description": "Unique identifier from source datasource."
+          },
+          "targetDatasourceId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 12,
+            "description": "Unique identifier from target datasource."
+          },
+          "bundledTables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BundledTableResponse"
+            }
+          }
+        },
+        "required": [
+          "clusterName",
+          "sourceDatasourceId",
+          "targetDatasourceId",
+          "tables"
+        ]
+      },
+      "DatasourcePropertiesRequest": {
+        "type": "object",
+        "title": "DatasourcePropertiesRequest",
+        "description": "Body for datasource properties request",
+        "properties": {
+          "databaseName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "H2_DUMMY_DB",
+            "description": "Database name"
+          },
+          "databaseProvider": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "Oracle",
+            "description": "Database provider"
+          },
+          "databasePlatform": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "org.hibernate.dialect.H2Dialect",
+            "description": "Full qualified library name from database platform"
+          },
+          "userName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "h2sa",
+            "description": "Database user name"
+          },
+          "password": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "admin",
+            "description": "Database Password"
+          },
+          "jdbcConnectionUrl": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "jdbc:h2:mem:testdb",
+            "description": "Jdbc connection url"
+          },
+          "driverClassName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "org.h2.Driver",
+            "description": "Full qualified library driver name"
+          },
+          "databaseDialect": {
+            "type": "string",
+            "example": "Oracle",
+            "description": "Database SQL dialect"
+          },
+          "databaseSchema": {
+            "type": "string",
+            "example": "DUMMY_SCHEMA",
+            "description": "Database schema name"
+          }
+        },
+        "required": [
+          "databaseName",
+          "databaseProvider",
+          "databasePlatform",
+          "userName",
+          "password",
+          "jdbcConnectionUrl",
+          "driverClassName",
+          "databaseDialect"
+        ]
+      },
+      "DatasourcePropertiesResponse": {
+        "type": "object",
+        "title": "DatasourcePropertiesResponse",
+        "description": "Datasource properties response",
+        "properties": {
+          "databaseId": {
+            "type": "integer",
+            "example": 12,
+            "description": "Database unique identifier"
+          },
+          "databaseName": {
+            "type": "string",
+            "example": "H2_DUMMY_DB",
+            "description": "Database name"
+          },
+          "databaseProvider": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "Oracle",
+            "description": "Database provider"
+          },
+          "databasePlatform": {
+            "type": "string",
+            "example": "org.hibernate.dialect.H2Dialect",
+            "description": "Full qualified library name from database platform"
+          },
+          "userName": {
+            "type": "string",
+            "example": "h2sa",
+            "description": "Database user name"
+          },
+          "password": {
+            "type": "string",
+            "example": "admin",
+            "description": "Database Password"
+          },
+          "jdbcConnectionUrl": {
+            "type": "string",
+            "example": "jdbc:h2:mem:testdb",
+            "description": "Jdbc connection url"
+          },
+          "driverClassName": {
+            "type": "string",
+            "example": "org.h2.Driver",
+            "description": "Full qualified library driver name"
+          },
+          "databaseDialect": {
+            "type": "string",
+            "example": "Oracle",
+            "description": "Database SQL dialect"
+          },
+          "databaseSchema": {
+            "type": "string",
+            "example": "DUMMY_SCHEMA",
+            "description": "Database schema name"
+          },
+          "createDateTime": {
+            "type": "string",
+            "example": "2020-07-10 15:00:00.000",
+            "description": "ISO format date time from register creation."
+          },
+          "updateDateTime": {
+            "type": "string",
+            "example": "2020-07-10 15:00:00.000",
+            "description": "ISO format date time from last update."
+          }
+        }
+      },
+      "JobExecutionResponse": {
+        "type": "object",
+        "title": "JobExecutionResponse",
+        "description": "Response from batch job execution metadata.",
+        "properties": {
+          "batchStatus": {
+            "$ref": "#/components/schemas/BatchStatusEnum"
+          },
+          "jobExecutionId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 12,
+            "description": "Job execution unique identifier"
+          },
+          "jobName": {
+            "type": "string",
+            "example": "DUMMY-JOB-NAME",
+            "description": "Job name."
+          },
+          "jobStartTime": {
+            "type": "string",
+            "example": "2020-07-10 15:00:00.000",
+            "description": "ISO format job execution start date time."
+          },
+          "jobEndTime": {
+            "type": "string",
+            "example": "2020-07-10 15:00:00.000",
+            "description": "ISO format job execution end date time."
+          },
+          "jobElapsedTime": {
+            "type": "string",
+            "example": "15:00:00",
+            "description": "Job execution elapsed time."
+          },
+          "exitStatus": {
+            "$ref": "#/components/schemas/ExitStatusEnum"
+          },
+          "exitMessage": {
+            "type": "string",
+            "example": "Dummy exit message.",
+            "description": "Job execution exit message."
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StepMetadataResponse"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "StepMetadataResponse": {
+        "type": "object",
+        "title": "StepMetadataResponse",
+        "description": "Response from batch step execution metadata.",
+        "properties": {
+          "batchStatus": {
+            "$ref": "#/components/schemas/BatchStatusEnum"
+          },
+          "stepName": {
+            "type": "string",
+            "example": "DUMMY-STEP-NAME",
+            "description": "Step name."
+          },
+          "stepStartTime": {
+            "type": "string",
+            "example": "2020-07-10 15:00:00.000",
+            "description": "ISO format job execution start date time."
+          },
+          "stepEndTime": {
+            "type": "string",
+            "example": "2020-07-10 15:00:00.000",
+            "description": "ISO format job execution end date time."
+          },
+          "stepElapsedTime": {
+            "type": "string",
+            "example": "15:00:00",
+            "description": "Step execution elapsed time."
+          },
+          "commitCount": {
+            "type": "integer",
+            "format": "int64",
+            "example": "5500",
+            "description": "The number of times in which the step has committed a transaction during this execution."
+          },
+          "readCount": {
+            "type": "integer",
+            "format": "int64",
+            "example": "5500",
+            "description": "The number of items read during this execution."
+          },
+          "writeCount": {
+            "type": "integer",
+            "format": "int64",
+            "example": "5500",
+            "description": "The number of items written and committed during this execution."
+          },
+          "writeSkipCount": {
+            "type": "integer",
+            "format": "int64",
+            "example": "5500",
+            "description": "The number of items skipped on write during this execution."
+          },
+          "exitStatus": {
+            "$ref": "#/components/schemas/ExitStatusEnum"
+          },
+          "exitMessage": {
+            "type": "string",
+            "example": "Dummy exit message.",
+            "description": "Job execution exit message."
+          }
+        }
+      },
+      "JobParametersRequest": {
+        "type": "object",
+        "title": "JobParametersRequest",
+        "description": "Body for start batch job execution with parameters",
+        "properties": {
+          "dataBundleId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 12,
+            "description": "Data Bundle unique identifier"
+          },
+          "extractionType": {
+            "$ref": "#/components/schemas/ExtractionTypeEnum"
+          }
+        },
+        "required": [
+          "dataBundleId",
+          "extractionType"
+        ]
+      },
+      "ProblemResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "title"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri",
+            "description": "An absolute URI that identifies the problem type.  When dereferenced,\nit SHOULD provide human-readable documentation for the problem type\n(e.g., using HTML).\n",
+            "default": "about:blank",
+            "example": "https://zalando.github.io/problem/constraint-violation"
+          },
+          "title": {
+            "type": "string",
+            "description": "A short, summary of the problem type. Written in english and readable\nfor engineers (usually not suited for non technical stakeholders and\nnot localized); example: Service Unavailable\n"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The HTTP status code generated by the origin server for this occurrence\nof the problem.\n",
+            "minimum": 100,
+            "maximum": 600,
+            "exclusiveMaximum": true,
+            "example": 503
+          },
+          "detail": {
+            "type": "string",
+            "description": "A human readable explanation specific to this occurrence of the\nproblem.\n",
+            "example": "Connection to database timed out"
+          }
+        }
+      },
+      "BundledTableRequest": {
+        "type": "object",
+        "title": "BundledTableRequest",
+        "description": "Body for bundled table definitions request",
+        "properties": {
+          "sourceTableId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1,
+            "description": "Indicates table definitions unique identifier from source Datasource."
+          },
+          "targetTableId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1,
+            "description": "Indicates table definitions unique identifier from target  Datasource."
+          },
+          "relationalOrdering": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1,
+            "description": "Indicates the table relational ordering from parents tables to child tables."
+          },
+          "querySelect": {
+            "type": "string",
+            "example": "SELECT * FROM DUMMY_TABLE WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID",
+            "description": "Indicates a query to be used by Batch Item Reader. If it's not informed, the sistem will use default query."
+          },
+          "queryInsert": {
+            "type": "string",
+            "example": "INSERT INTO*** pegar exemplo",
+            "description": "Indicates an insert query to be used by Batch Item Writer. If it's not informed, the sistem will use default query."
+          },
+          "queryUpdate": {
+            "type": "string",
+            "example": "UPDATE *** pegar exemplo",
+            "description": "Indicates an update query to be used by Batch Item Writer. If it's not informed, the sistem will use default query."
+          }
+        },
+        "required": [
+          "sourceTableId",
+          "targetTableId",
+          "relationalOrdering"
+        ]
+      },
+      "BundledTableResponse": {
+        "type": "object",
+        "title": "BundledTableResponse",
+        "description": "Body for table definitions response",
+        "properties": {
+          "bundledTableId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 12,
+            "description": "Indicates bundled tables unique identifier."
+          },
+          "sourceTableId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 12,
+            "description": "Indicates table definitions unique identifier from source Datasource."
+          },
+          "targetTableId": {
+            "type": "integer",
+            "format": "int32",
+            "example": 12,
+            "description": "Indicates table definitions unique identifier from target Datasource."
+          },
+          "tablePhysicalName": {
+            "type": "string",
+            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "example": "DUMMY_TABLE_NAME",
+            "description": "Table physical name"
+          },
+          "relationalOrdering": {
+            "type": "integer",
+            "format": "int32",
+            "example": 1,
+            "description": "Indicates the table relational ordering from parents tables to child tables."
+          },
+          "querySelect": {
+            "type": "string",
+            "example": "SELECT * FROM DUMMY_TABLE WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID",
+            "description": "Indicates a query to be used by Batch Item Reader. If it's not informed, the sistem will use default query."
+          },
+          "queryInsert": {
+            "type": "string",
+            "example": "INSERT INTO*** pegar exemplo",
+            "description": "Indicates an insert query to be used by Batch Item Writer. If it's not informed, the sistem will use default query."
+          },
+          "queryUpdate": {
+            "type": "string",
+            "example": "UPDATE *** pegar exemplo",
+            "description": "Indicates an update query to be used by Batch Item Writer. If it's not informed, the sistem will use default query."
+          }
+        }
+      },
+      "ExitStatusEnum": {
+        "type": "string",
+        "description": "Job or Step execution exit status.",
+        "example": "FAILED",
+        "enum": [
+          "UNKNOWN",
+          "EXECUTING",
+          "COMPLETED",
+          "NOOP",
+          "FAILED",
+          "STOPPED"
+        ]
+      },
+      "BatchStatusEnum": {
+        "type": "string",
+        "description": "Batch execution status.",
+        "example": "COMPLETED",
+        "enum": [
+          "COMPLETED",
+          "STARTING",
+          "STARTED",
+          "STOPPING",
+          "STOPPED",
+          "FAILED",
+          "ABANDONED",
+          "UNKNOWN"
+        ]
+      },
+      "ExtractionTypeEnum": {
+        "type": "string",
+        "description": "Indicates data extraction type.",
+        "example": "DEFAULT",
+        "enum": [
+          "DEFAULT",
+          "CUSTOM"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "type": "http",
+        "description": "Auth Valid JWT Token",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -1,0 +1,115 @@
+@startuml
+left to right direction
+skinparam roundcorner 5
+skinparam linetype ortho
+skinparam shadowing false
+skinparam handwritten false
+skinparam class {
+    BackgroundColor white
+    ArrowColor #2688d4
+    BorderColor #2688d4
+}
+skinparam legendBackgroundColor white
+
+!define primary_key(name) <b><color:#b8861b><&key></color> name</b>
+!define foreign_key(name) <color:#aaaaaa><&key></color> name
+!define column(name) <color:#efefef><&media-record></color> name
+!define table(logical, physical) entity "logical" as physical << (T, white) >>
+
+'diagram title'
+title Extract Load Batch Application - Physical Model
+
+table( EL_APP_CONFIGURATION_TYPE, EL_APP_CONFIGURATION_TYPE ) {
+  primary_key( configuration_type_uid ) : NUMBER(20,0) NOT NULL
+  --
+  column( configuration_type_name ) : VARCHAR2(100) NOT NULL
+  column( configuration_type_description ) : VARCHAR2(255)
+  column( create_date_time ) : TIMESTAMP NOT NULL
+  column( update_date_time ) : TIMESTAMP NOT NULL
+}
+
+table( EL_APP_PROPERTY, EL_APP_PROPERTY ) {
+  primary_key( property_uid ) : NUMBER(20,0) NOT NULL
+  --
+  column( property_key_name ) : VARCHAR2(255) NOT NULL
+  column( property_description ) : VARCHAR2(255)
+  column( create_date_time ) : TIMESTAMP NOT NULL
+  column( update_date_time ) : TIMESTAMP NOT NULL
+}
+
+table( EL_APP_CONFIGURATION, EL_APP_CONFIGURATION ) {
+  primary_key( configuration_uid ) : NUMBER(20,0) NOT NULL
+  --
+  foreign_key( configuration_type_uid ) : NUMBER(20,0) NOT NULL
+  --
+  column( configuration_name ) : VARCHAR2(100) NOT NULL
+  column( configuration_description ) : VARCHAR2(255)
+  column( create_date_time ) : TIMESTAMP NOT NULL
+  column( update_date_time ) : TIMESTAMP NOT NULL
+}
+
+table( EL_APP_CONFIGURATION_PROPERTIES, EL_APP_CONFIGURATION_PROPERTIES ) {
+  primary_key( configuration_properties_uid ) : NUMBER(20,0) NOT NULL
+  --
+  foreign_key( configuration_uid ) : NUMBER(20,0) NOT NULL
+  foreign_key( property_uid ) : NUMBER(20,0) NOT NULL
+  --
+  column( property_value ) : VARCHAR2(255) NOT NULL
+  column( create_date_time ) : TIMESTAMP NOT NULL
+  column( update_date_time ) : TIMESTAMP NOT NULL
+}
+
+table( EL_DATA_BUNDLE, EL_DATA_BUNDLE ) {
+  primary_key( bundle_uid ) : NUMBER(20,0) NOT NULL
+  --
+  foreign_key( source_configuration_uid ) : NUMBER(20,0) NOT NULL
+  foreign_key( target_configuration_uid ) : NUMBER(20,0) NOT NULL
+  --
+  column( bundle_name ) : VARCHAR2(50) NOT NULL
+  column( create_date_time ) : TIMESTAMP NOT NULL
+  column( update_date_time ) : TIMESTAMP NOT NULL
+}
+
+table( EL_TABLE, EL_TABLE ) {
+  primary_key( table_uid ) : NUMBER(20,0) NOT NULL
+  --
+  column( table_physical_name ) : VARCHAR2(255) NOT NULL
+  column( create_date_time ) : TIMESTAMP NOT NULL
+  column( update_date_time ) : TIMESTAMP NOT NULL
+}
+
+table( EL_BUNDLED_TABLES, EL_BUNDLED_TABLES ) {
+  primary_key( bundled_table_uid ) : NUMBER(20,0) NOT NULL
+  --
+  foreign_key( bundle_uid ) : NUMBER(20,0) NOT NULL
+  foreign_key( source_table_uid ) : NUMBER(20,0) NOT NULL
+  foreign_key( target_table_uid ) : NUMBER(20,0) NOT NULL
+  --
+  column( relational_ordering ) : NUMBER(20,0) NOT NULL
+  column( query_select ) : VARCHAR2(4000)
+  column( query_insert ) : VARCHAR2(4000)
+  column( query_update ) : VARCHAR2(4000)
+  column( create_date_time ) : TIMESTAMP NOT NULL
+  column( update_date_time ) : TIMESTAMP NOT NULL
+}
+
+
+EL_APP_CONFIGURATION_TYPE ||--|{ EL_APP_CONFIGURATION
+EL_APP_CONFIGURATION_PROPERTIES }|--|| EL_APP_CONFIGURATION
+EL_APP_CONFIGURATION_PROPERTIES }|--|| EL_APP_PROPERTY
+
+EL_DATA_BUNDLE }|--|| EL_APP_CONFIGURATION
+EL_DATA_BUNDLE }|--|| EL_APP_CONFIGURATION
+EL_BUNDLED_TABLES }|--|| EL_DATA_BUNDLE
+EL_BUNDLED_TABLES }|--|| EL_TABLE
+EL_BUNDLED_TABLES }|--|| EL_TABLE
+
+legend left
+    |= |= Type |
+    | <b>T</b> | Table |
+    | <color:#b8861b><&key></color> | Primary Key |
+    | <color:#aaaaaa><&key></color> | Foreign Key |
+    | <color:#efefef><&media-record></color> | Attribute |
+endlegend
+
+@enduml

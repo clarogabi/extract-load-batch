@@ -1,0 +1,78 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 05 - POST Bundled Tables Definitions
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+actor "System Admin" as sysadmin
+end box
+
+box "Batch Application Environment" #HoneyDew
+participant "extract-load-data-batch" as app
+database "oracle-extract-load" as el_db
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Bundled Tables Definitions API
+end legend
+
+hnote across #pink
+   **REQUIREMENTS**
+
+   1) Datasource for Extract Data previously registered using **POST /v1/datasource**
+   2) Datasource for Load Data previously registered using **POST /v1/datasource**
+   3) Extract and Load Data Tables previously registered using **POST /v1/data/tables**
+   4) Extract and Load Data Bundles previously registered using **POST /v1/data/bundles**
+
+end note
+
+sysadmin -> app: **HTTP POST /v1/data/bundles/{bundleId}/tables**
+note right of sysadmin
+  **Request body (application/json)**
+     {
+        "sourceTableId": 1,
+        "targetTableId": 1,
+        "relationalOrdering": 1,
+        "querySelect": "DUMMY SELECT STATEMENT",
+        "queryInsert": "DUMMY INSERT STATEMENT",
+        "queryUpdate": "DUMMY UPDATE STATEMENT"
+     }
+end note
+activate app
+     app -> app: validateInputData()
+     alt
+        app -> el_db: findDatasource()
+        activate el_db
+        el_db --> app: <<entity>>
+        app -> el_db: findTables()
+        el_db --> app: <<entity>>
+        app -> el_db: findDataBundle()
+        el_db --> app: <<entity>>
+        alt
+        app -> el_db: saveBundledTables()
+        el_db --> app: <<ok>>
+        app --> sysadmin: **HTTP Status Code 201**\n**Created**
+        note right of sysadmin
+        **Response body (application/json)**
+
+           {
+              "uid": 009
+           }
+        end note
+        else register not found error
+           el_db --> app: <<register not found>>
+           deactivate el_db
+           app --> sysadmin: **HTTP Status Code 404**\n**Not Found**
+        end alt
+    else validation error
+        app --> sysadmin: **HTTP Status Code 400**\n**Bad Request**
+        deactivate app
+    end alt
+@enduml

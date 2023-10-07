@@ -1,0 +1,35 @@
+@startuml
+title State Diagram - Extract And Load Application
+
+  state "New Datasource" as newDatasource : created
+  state "New Data\nTable" as newDataTable : created
+  state "New Data\nBundle" as newDataBundle : created
+  state "New Bundled\nTable" as newBundledTable : table bundled
+  state "Batch Job Build" as batchJobBuild : built
+  state "Batch Job\nExecution" as batchJobExecution : started
+  state "Batch Job Status" as batchJobStatus : returned
+  state addPollChoice <<choice>>
+  state addBundledTableChoice <<choice>>
+  state jobStatusChoice <<choice>>
+
+  [*] -> newDatasource : createDatasource()
+  newDatasource --> addPollChoice : addConnectionPool()
+  addPollChoice --> [*]: [failed]
+  addPollChoice -> newDataTable: createNewTable()
+  newDataTable -> newDataBundle: createNewBundle()
+  newDataBundle --> newBundledTable: newBundledTable()
+  newBundledTable -> addBundledTableChoice : isBundleTable\nNeeded()
+  addBundledTableChoice -> newBundledTable : [yes]\nnewBundledTable()
+  addBundledTableChoice --> batchJobBuild : [no]\n buildJobFromDataBundle()
+  batchJobBuild --> [*]: [failed]
+  batchJobBuild --> batchJobExecution: startJob()
+  batchJobExecution --> batchJobStatus : getJobExecutionStatus()
+  batchJobExecution --> [*]: [failed]
+  batchJobStatus --> jobStatusChoice : isJobExecution\nFinished()
+  jobStatusChoice --> batchJobStatus : [no]\n getJobExecution\nStatus()
+  jobStatusChoice --> [*]: [yes]
+
+
+
+
+@enduml

@@ -1,0 +1,92 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 11 - GET /v1/batch/job/{jobExecutionId}
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+participant "Scheduler" as scheduler
+end box
+
+box "extract-load-data-batch" #HoneyDew
+participant "controller" as controller
+participant "service" as service
+participant "spring-batch" as batch
+participant "batch-job-repository" as job_repository
+end box
+
+box "Extract And Load Database" #pink
+database "oracle-extract-load" as el_db
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Batch Job Execution API
+end legend
+
+scheduler -> controller: **HTTP GET /v1/batch/job/{jobExecutionId}**
+activate controller
+controller -> service: <<jobExecutionId>>
+activate service
+    service -> service: validateInputData()
+    alt
+        service -> batch: findJobExecutionId()
+        alt
+           activate batch
+           batch -> job_repository: findJobExecutionId()
+           activate job_repository
+           job_repository -> el_db: <<sql statement>>
+           activate el_db
+           el_db --> job_repository: <<sql result>>
+           deactivate el_db
+           job_repository --> batch: <<entity>>
+           deactivate job_repository
+           batch --> service: <<jobExecutionMetadata>>
+           deactivate batch
+           service --> controller: <<response>>
+           controller --> scheduler: **HTTP Status Code 200**\n**OK**
+        note right of scheduler
+           **Response body (application/json)**
+
+              {
+                 "batchStatus": "COMPLETED",
+                 "jobExecutionId": 12,
+                 "jobName": "DUMMY-JOB-NAME",
+                 "jobStartTime": "2020-07-10 15:00:00.000",
+                 "jobEndTime": "2020-07-10 15:00:00.000",
+                 "jobElapsedTime": "15:00:00",
+                 "exitStatus": "FAILED",
+                 "exitMessage": "Dummy exit message.",
+                 "steps": [
+                    {
+                       "batchStatus": "COMPLETED",
+                       "stepName": "DUMMY-STEP-NAME",
+                       "stepStartTime": "2020-07-10 15:00:00.000",
+                       "stepEndTime": "2020-07-10 15:00:00.000",
+                       "stepElapsedTime": "15:00:00",
+                       "commitCount": 5500,
+                       "readCount": 5500,
+                       "writeCount": 5500,
+                       "writeSkipCount": 5500,
+                       "exitStatus": "FAILED",
+                       "exitMessage": "Dummy exit message."
+                    }
+                 ]
+              }
+        end note
+        else error
+           service --> controller: <<response error>>
+           controller --> scheduler: **HTTP Status Code 404**\n**Not Found**
+        end alt
+    else error
+        service --> controller: <<response error>>
+        deactivate service
+        controller --> scheduler: **HTTP Status Code 400**\n**Bad Request**
+        deactivate controller
+    end alt
+@enduml
