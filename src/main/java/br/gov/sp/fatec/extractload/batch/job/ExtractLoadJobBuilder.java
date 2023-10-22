@@ -10,12 +10,12 @@ import br.gov.sp.fatec.extractload.batch.writer.UpdateJdbcItemWriter;
 import br.gov.sp.fatec.extractload.domain.dto.BundledAppTableDto;
 import br.gov.sp.fatec.extractload.domain.dto.JobParametersDto;
 import br.gov.sp.fatec.extractload.domain.dto.RowMappedDto;
+import br.gov.sp.fatec.extractload.exception.UnprocessableEntityProblem;
 import br.gov.sp.fatec.extractload.service.BundledAppTableService;
 import br.gov.sp.fatec.extractload.service.DataBundleService;
 import br.gov.sp.fatec.extractload.utils.JdbcUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -39,7 +39,9 @@ import java.util.stream.Collectors;
 
 import static br.gov.sp.fatec.extractload.utils.Constants.JOB_NAME;
 import static java.util.Objects.isNull;
-import static org.springframework.batch.core.ExitStatus.*;
+import static org.springframework.batch.core.ExitStatus.COMPLETED;
+import static org.springframework.batch.core.ExitStatus.FAILED;
+import static org.springframework.batch.core.ExitStatus.NOOP;
 
 @Slf4j
 @Component
@@ -88,7 +90,7 @@ public class ExtractLoadJobBuilder {
 
     @Autowired
     @Qualifier("targetNamedParameterJdbcTemplate")
-    private NamedParameterJdbcTemplate targetjdbcTemplate;
+    private NamedParameterJdbcTemplate targetJdbcTemplate;
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -97,21 +99,20 @@ public class ExtractLoadJobBuilder {
     private ExtractLoadJobParametersValidator jobParametersValidator;
 
     public Job job(JobParametersDto jobParams) {
-        Long dataBundleId = jobParams.getDataBundleId();
-        String bundleName = dataBundleService.findDataBundleNameById(dataBundleId);
+        var dataBundleId = jobParams.getDataBundleId();
+        var bundleName = dataBundleService.findDataBundleNameById(dataBundleId);
 
         return jobBuilderFactory
                 .get(JOB_NAME.concat(bundleName).toUpperCase())
                 .validator(jobParametersValidator)
                 .incrementer(new RunIdIncrementer())
-                .start(getStepsFlow(bundleName, dataBundleId,
-                        ExtractionTypeEnum.fromValue(jobParams.getExtractionType().getValue())))
+                .start(getStepsFlow(bundleName, dataBundleId, ExtractionTypeEnum.fromValue(jobParams.getExtractionType().getValue())))
                 .end()
                 .build();
     }
 
     public Flow getStepsFlow(String bundleName, Long dataBundleId, ExtractionTypeEnum extractionType) {
-        String flowName = JOB_NAME.concat(bundleName).toUpperCase();
+        var flowName = JOB_NAME.concat(bundleName).toUpperCase();
         log.info("Building Job Flow [{}]", flowName);
         List<Step> steps = buildSteps(getTables(dataBundleId), extractionType);
 
@@ -138,9 +139,12 @@ public class ExtractLoadJobBuilder {
 
     public List<Step> buildSteps(List<BundledAppTableDto> tables, ExtractionTypeEnum extractionType) {
 
-        if (isNull(tables) || (0 == tables.size())) {
-            throw new RuntimeException("At least one table must be defined.");
+        if (isNull(tables) || 0 == tables.size()) {
+            throw new UnprocessableEntityProblem("Pacote de extração e carregamento de dados deve conter ao menos uma tabela!");
         }
+
+        //TODO: check if table exists in source datasource from jdbc metadata
+        //TODO: check if table exists in target datasource from jdbc metadata
 
         return tables.stream()
                 .map(table -> step(table, extractionType))
@@ -155,7 +159,7 @@ public class ExtractLoadJobBuilder {
         log.info("Building Step: [{}]", stepName);
 
         ExtractJdbcPagingItemReader reader = context.getBean(ExtractJdbcPagingItemReader.class,
-                sourceDataSource, targetJdbcUtils, targetjdbcTemplate, fetchSize, bundledAppTableDto, extractionType);
+                sourceDataSource, sourceJdbcUtils, targetJdbcTemplate, fetchSize, bundledAppTableDto, extractionType);
 
         InsertJdbcItemWriter insertWriter = context.getBean(InsertJdbcItemWriter.class, targetDataSource, targetJdbcUtils,
                 bundledAppTableDto.getTargetAppTableName());
@@ -174,8 +178,6 @@ public class ExtractLoadJobBuilder {
                 .faultTolerant()
                 .retryLimit(retryLimit)
                 .retry(DeadlockLoserDataAccessException.class)
-//                    .skipPolicy(dataMigrationWriterSkipPolicy)
-//                    .listener(stepListener)
                 .taskExecutor(stepTaskExecutor())
                 .build();
     }

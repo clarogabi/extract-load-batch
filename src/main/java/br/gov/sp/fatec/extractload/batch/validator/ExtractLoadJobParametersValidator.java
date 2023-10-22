@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -35,7 +36,7 @@ public class ExtractLoadJobParametersValidator implements JobParametersValidator
         if (DataExtractionTypeEnum.CUSTOM.equals(extractionType)) {
             bundledAppTables.forEach(table -> {
                 String extractCustomQuery = table.getExtractCustomQuery();
-                if (Objects.isNull(extractCustomQuery) || extractCustomQuery.isBlank()) {
+                if (isNull(extractCustomQuery) || extractCustomQuery.isBlank()) {
                     errorTables.add(table.getSourceAppTableName());
                 } else if (!extractCustomQuery.toUpperCase().contains("SELECT")
                         && !extractCustomQuery.toUpperCase().contains("FROM")) {

@@ -3,17 +3,30 @@ package br.gov.sp.fatec.extractload.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 @Getter
 @Setter
 @Entity
-@Table(name = "EL_DATA_BUNDLE", schema = "EXTRACTLOADBATCH")
+@Table(name = "EL_DATA_BUNDLE", schema = "EXTRACT_LOAD_BATCH")
 public class ExtractLoadDataBundle {
 
     @Id
@@ -45,7 +58,14 @@ public class ExtractLoadDataBundle {
     @Column(name = "UPDATE_DATE_TIME", nullable = false)
     private Timestamp updateDateTime;
 
-    @OneToMany(mappedBy = "dataBundleUid", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "extractLoadDataBundle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ExtractLoadBundledAppTable> bundledAppTables = new ArrayList<>();
+
+    public void setBundledAppTables(final List<ExtractLoadBundledAppTable> bundledAppTables) {
+        if (nonNull(bundledAppTables)) {
+            this.bundledAppTables = new ArrayList<>(bundledAppTables);
+            bundledAppTables.forEach(it -> it.setExtractLoadDataBundle(this));
+        }
+    }
 
 }

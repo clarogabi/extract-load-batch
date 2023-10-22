@@ -21,7 +21,6 @@ public class SourceDataSourceConfiguration {
         return new HikariConfig();
     }
 
-
     @Bean("sourceDataSource")
     public HikariDataSource dataSource() {
         return new HikariDataSource(hikariConfig());

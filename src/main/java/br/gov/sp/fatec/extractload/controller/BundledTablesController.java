@@ -28,7 +28,7 @@ public class BundledTablesController implements BundledTablesApi {
     @Override
     public ResponseEntity<BundledTableResponse> getBundledTable(String bundleId, String bundledTableId) {
         return new ResponseEntity<>(bundledAppTableMapper.mapToResponse(bundledAppTableService
-                .findBundledAppTableByBundleIdAndBundledTableId(Long.valueOf(bundleId), Long.valueOf(bundledTableId))),
+                .findBundledAppTableByBundledTableIdAndBundleId(Long.valueOf(bundleId), Long.valueOf(bundledTableId))),
                 HttpStatus.OK);
     }
 

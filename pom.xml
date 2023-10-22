@@ -15,7 +15,6 @@
     <description>extract-load-batch</description>
     <properties>
         <java.version>11</java.version>
-<!--        <jackson.version>2.14.2</jackson.version>-->
         <mapstruct.version>1.5.2.Final</mapstruct.version>
         <projectlombok.version>1.18.20</projectlombok.version>
         <swagger-parser.version>2.1.1</swagger-parser.version>
@@ -31,12 +30,6 @@
             <artifactId>problem-spring-web</artifactId>
             <version>0.27.0</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--            <artifactId>jackson-databind</artifactId>-->
-<!--            <version>${jackson.version}</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -107,6 +100,12 @@
         <!-- SWAGGER / OpenAPI -->
 
         <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
@@ -159,10 +158,6 @@
                                 <useTags>true</useTags>
                                 <implicitHeaders>true</implicitHeaders>
                                 <interfaceOnly>true</interfaceOnly>
-<!--                                <artifactId>${project.artifactId}</artifactId>-->
-<!--                                <artifactVersion>${project.version}</artifactVersion>-->
-<!--                                <artifactUrl>http://localhost:8080</artifactUrl>-->
-<!--                                <developerEmail>gabriela.claro@fatec.sp.gov.br</developerEmail>-->
                             </configOptions>
                         </configuration>
                     </execution>

@@ -14,7 +14,11 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static br.gov.sp.fatec.extractload.utils.Constants.ITEM_READER_NAME;
@@ -31,22 +35,23 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
     public ExtractJdbcPagingItemReader(DataSource dataSource, JdbcUtils jdbcUtils, NamedParameterJdbcTemplate jdbcTemplate,
                                        Integer fetchSize, BundledAppTableDto bundledAppTableDto, ExtractionTypeEnum extractionType) throws Exception {
 
-        String sourceTableName = bundledAppTableDto.getSourceAppTableName();
+        var sourceTableName = bundledAppTableDto.getSourceAppTableName();
         this.primaryKeys = jdbcUtils.getPrimaryKeys(getTableName(sourceTableName));
 
         log.info("Preparing paging reader of table [{}] with fetch size [{}] and page size [{}]", sourceTableName, fetchSize, fetchSize);
-
+        var queryProvider = getQueryProvider(extractionType, dataSource, sourceTableName, bundledAppTableDto.getExtractCustomQuery());
         setName(ITEM_READER_NAME.concat(sourceTableName.toUpperCase()));
         setDataSource(dataSource);
         setPageSize(fetchSize);
         setFetchSize(fetchSize);
-        setQueryProvider(getQueryProvider(extractionType, dataSource, sourceTableName, bundledAppTableDto.getExtractCustomQuery().toUpperCase()));
+        setQueryProvider(queryProvider);
         setRowMapper(new ResultSetRowMapper(jdbcUtils.getPrimaryKeys(getTableName(sourceTableName))));
         setPageProcessor(new ExtractPageProcessor(sourceTableName, getPrimaryKey(primaryKeys), jdbcTemplate));
-
+        log.info("Reader SQL Query [{}]", queryProvider.generateFirstPageQuery(fetchSize));
     }
 
-    protected PagingQueryProvider getQueryProvider(ExtractionTypeEnum extractionType, DataSource dataSource, String tableName, String customQuery) throws Exception {
+    protected PagingQueryProvider getQueryProvider(ExtractionTypeEnum extractionType, DataSource dataSource, String tableName, String customQuery)
+        throws Exception {
 
         Map<String, Order> sortKeys = new LinkedHashMap<>();
         SqlPagingQueryProviderFactoryBean factory = new SqlPagingQueryProviderFactoryBean();
@@ -57,19 +62,19 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
             factory.setSelectClause("*");
             factory.setFromClause(tableName);
             primaryKeys.forEach(p -> sortKeys.put(p, Order.ASCENDING));
-
         } else {
-            factory.setSelectClause((String) customQuery.subSequence(customQuery.indexOf("SELECT"), customQuery.indexOf("FROM")));
+            var query = customQuery.toUpperCase();
+            factory.setSelectClause((String) query.subSequence(query.indexOf("SELECT"), query.indexOf("FROM")));
             String fromClause;
-            if (customQuery.contains("WHERE")) {
-                fromClause = (String) customQuery.subSequence(customQuery.indexOf("FROM"), customQuery.indexOf("WHERE"));
-                String whereClause = (String) customQuery.subSequence(customQuery.toUpperCase().indexOf("WHERE"), customQuery.toUpperCase().indexOf("ORDER BY"));
+            if (query.contains("WHERE")) {
+                fromClause = (String) query.subSequence(query.indexOf("FROM"), query.indexOf("WHERE"));
+                String whereClause = (String) query.subSequence(query.toUpperCase().indexOf("WHERE"), query.toUpperCase().indexOf("ORDER BY"));
                 factory.setWhereClause(whereClause);
             } else {
-                fromClause = (String) customQuery.subSequence(customQuery.indexOf("FROM"), customQuery.indexOf("ORDER BY"));
+                fromClause = (String) query.subSequence(query.indexOf("FROM"), query.indexOf("ORDER BY"));
             }
             factory.setFromClause(fromClause);
-            String orderByClause = (String) customQuery.subSequence(customQuery.toUpperCase().indexOf("ORDER BY") + 8, customQuery.toUpperCase().indexOf(";"));
+            String orderByClause = (String) query.subSequence(query.toUpperCase().indexOf("ORDER BY") + 8, query.toUpperCase().indexOf(";"));
             List<String> orderKeys;
 
             if (orderByClause.contains("ASC")) {
@@ -77,7 +82,7 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
                         .map(String::trim)
                         .collect(Collectors.toList());
                 orderKeys.forEach(k -> sortKeys.put(k, Order.ASCENDING));
-            } else if (customQuery.contains("DESC")) {
+            } else if (query.contains("DESC")) {
                 orderKeys = Arrays.stream(orderByClause.subSequence(0, orderByClause.length() - 4).toString().split(","))
                         .map(String::trim)
                         .collect(Collectors.toList());

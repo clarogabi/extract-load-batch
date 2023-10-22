@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "EL_DATASOURCE_CONFIGURATION", schema = "EXTRACTLOADBATCH")
+@Table(name = "EL_DATASOURCE_CONFIGURATION", schema = "EXTRACT_LOAD_BATCH")
 public class ExtractLoadDatasourceConfiguration {
 
     @Id

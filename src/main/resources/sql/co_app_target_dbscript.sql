@@ -1,20 +1,20 @@
---
---ALTER USER CO_APP_TARGET QUOTA 524M ON SYSTEM;
---GRANT UNLIMITED TABLESPACE TO CO_APP_TARGET;
---
---alter user CO_APP_TARGET default tablespace USERS
---              quota unlimited on USERS;
---
---alter user CO_APP_TARGET temporary tablespace TEMP;
---
---grant create session,
---create table,
---create sequence,
---create view,
---create procedure
---    to CO_APP_TARGET
---  identified by "CO_APP_TARGET";
+CREATE USER CO_APP_TARGET IDENTIFIED BY CO_APP;
 
+ALTER USER CO_APP_TARGET QUOTA 524M ON SYSTEM;
+GRANT UNLIMITED TABLESPACE TO CO_APP_TARGET;
+
+alter user CO_APP_TARGET default tablespace USERS
+             quota unlimited on USERS;
+
+alter user CO_APP_TARGET temporary tablespace TEMP;
+
+grant create session,
+create table,
+create sequence,
+create view,
+create procedure
+   to CO_APP_TARGET
+ identified by "CO_APP_TARGET";
 
 create sequence CO_APP_TARGET.customers_seq
     minvalue 1

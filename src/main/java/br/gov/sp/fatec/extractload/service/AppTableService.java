@@ -4,7 +4,9 @@ import br.gov.sp.fatec.extractload.domain.dto.AppTableDto;
 import br.gov.sp.fatec.extractload.domain.mapper.AppTableMapper;
 import br.gov.sp.fatec.extractload.entity.ExtractLoadAppTable;
 import br.gov.sp.fatec.extractload.exception.NotFoundProblem;
+import br.gov.sp.fatec.extractload.exception.UnprocessableEntityProblem;
 import br.gov.sp.fatec.extractload.repository.ExtractLoadAppTableRepository;
+import br.gov.sp.fatec.extractload.repository.ExtractLoadBundledAppTableRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,13 @@ public class AppTableService {
 
     private final ExtractLoadAppTableRepository extractLoadAppTableRepository;
 
+    private final ExtractLoadBundledAppTableRepository extractLoadBundledAppTableRepository;
+
     private final AppTableMapper appTableMapper;
 
-    private ExtractLoadAppTable findAppTableById(Long tableId) {
+    public ExtractLoadAppTable findAppTableById(Long tableId) {
         Optional<ExtractLoadAppTable> appTable = extractLoadAppTableRepository.findById(tableId);
-        return appTable.orElseThrow(() -> new NotFoundProblem("App table not found."));
+        return appTable.orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
     }
 
     public AppTableDto getAppTableById(Long tableId) {
@@ -40,12 +44,17 @@ public class AppTableService {
 
     public void deleteAppTable(Long tableId) {
         if (extractLoadAppTableRepository.existsById(tableId)) {
+            if (extractLoadBundledAppTableRepository.existsByTargetAppTableUid(tableId)
+                || extractLoadBundledAppTableRepository.existsBySourceAppTableUid(tableId)) {
+                throw new UnprocessableEntityProblem(String
+                    .format("Registro [%s] está atribuído a um ou mais pacotes de extração e carregamento, não foi possível excluir!", tableId));
+            }
             extractLoadAppTableRepository.deleteById(tableId);
         }
     }
 
     public void updateAppTable(AppTableDto appTableDto) {
-        ExtractLoadAppTable entity = findAppTableById(appTableDto.getUid());
+        var entity = findAppTableById(appTableDto.getUid());
         entity.setAppTablePhysicalName(appTableDto.getAppTablePhysicalName());
         entity.setUpdateDateTime(Timestamp.valueOf(LocalDateTime.now()));
         extractLoadAppTableRepository.save(entity);

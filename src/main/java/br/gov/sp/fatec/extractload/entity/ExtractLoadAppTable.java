@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
-@Table(name = "EL_APP_TABLE", schema = "EXTRACTLOADBATCH")
+@Table(name = "EL_APP_TABLE", schema = "EXTRACT_LOAD_BATCH")
 public class ExtractLoadAppTable {
 
     @Id

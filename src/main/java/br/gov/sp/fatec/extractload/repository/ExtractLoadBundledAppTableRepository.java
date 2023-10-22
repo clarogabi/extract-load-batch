@@ -8,11 +8,16 @@ import java.util.Optional;
 
 public interface ExtractLoadBundledAppTableRepository extends JpaRepository<ExtractLoadBundledAppTable, Long> {
 
-    List<ExtractLoadBundledAppTable> findAllByDataBundleUidOrderByRelationalOrderingNumberAsc(Long dataBundleUid);
+    List<ExtractLoadBundledAppTable> findAllByExtractLoadDataBundleUidOrderByRelationalOrderingNumberAsc(Long dataBundleUid);
 
-    Optional<ExtractLoadBundledAppTable> findFirstByDataBundleUidAndUid(Long dataBundleUid, Long uid);
+    Optional<ExtractLoadBundledAppTable> findByUidAndExtractLoadDataBundleUid(Long uid, Long dataBundleUid);
 
-    boolean existsByDataBundleUidAndUid(Long dataBundleUid, Long uid);
+    boolean existsByUidAndExtractLoadDataBundleUid(Long uid, Long dataBundleUid);
 
-    void deleteByDataBundleUidAndUid(Long dataBundleUid, Long uid);
+    void deleteByUid(Long uid);
+
+    boolean existsBySourceAppTableUid(Long tableUid);
+
+    boolean existsByTargetAppTableUid(Long tableUid);
+
 }

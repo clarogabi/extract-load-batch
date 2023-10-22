@@ -4,6 +4,8 @@ import br.gov.sp.fatec.extractload.domain.dto.DatasourceDto;
 import br.gov.sp.fatec.extractload.domain.mapper.DatasourceMapper;
 import br.gov.sp.fatec.extractload.entity.ExtractLoadDatasourceConfiguration;
 import br.gov.sp.fatec.extractload.exception.NotFoundProblem;
+import br.gov.sp.fatec.extractload.exception.UnprocessableEntityProblem;
+import br.gov.sp.fatec.extractload.repository.ExtractLoadDataBundleRepository;
 import br.gov.sp.fatec.extractload.repository.ExtractLoadDatasourceConfigurationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +24,12 @@ import java.util.Optional;
 public class DatasourceService {
 
     private final ExtractLoadDatasourceConfigurationRepository datasourceConfigurationRepository;
-
+    private final ExtractLoadDataBundleRepository extractLoadDataBundleRepository;
     private final DatasourceMapper datasourceMapper;
 
     private ExtractLoadDatasourceConfiguration findDatasourceById(Long datasourceId) {
         Optional<ExtractLoadDatasourceConfiguration> datasource = datasourceConfigurationRepository.findById(datasourceId);
-        return datasource.orElseThrow(() -> new NotFoundProblem("Datasource not found."));
+        return datasource.orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
     }
 
     public DatasourceDto getDatasourceProperties(Long datasourceId) {
@@ -40,12 +42,21 @@ public class DatasourceService {
 
     public void deleteDatasource(Long datasourceId) {
         if (datasourceConfigurationRepository.existsById(datasourceId)) {
+            if (existsDataBundleByDatasourceId(datasourceId)) {
+                throw new UnprocessableEntityProblem(String
+                    .format("Registro [%s] está atribuído a um ou mais pacotes de extração e carregamento, não foi possível excluir!", datasourceId));
+            }
             datasourceConfigurationRepository.deleteById(datasourceId);
         }
     }
 
+    private boolean existsDataBundleByDatasourceId(Long datasourceId) {
+        return extractLoadDataBundleRepository.existsBySourceDatasourceConfigUid(datasourceId)
+            || extractLoadDataBundleRepository.existsByTargetDatasourceConfigUid(datasourceId);
+    }
+
     public void updateDatasource(DatasourceDto datasourceDto) {
-        ExtractLoadDatasourceConfiguration entity = findDatasourceById(datasourceDto.getUid());
+        var entity = findDatasourceById(datasourceDto.getUid());
         entity.setDatabaseName(datasourceDto.getDatabaseName());
         entity.setDatabaseProvider(datasourceDto.getDatabaseProvider());
         entity.setDatabasePlatform(datasourceDto.getDatabasePlatform());

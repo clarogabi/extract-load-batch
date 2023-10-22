@@ -18,17 +18,15 @@ public class InsertJdbcItemWriter extends JdbcBatchItemWriter<RowMappedDto> {
 
     private String sqlInsert;
     private String tableName;
-    private JdbcUtils jdbcUtils;
 
     public InsertJdbcItemWriter(DataSource dataSource, JdbcUtils jdbcUtils, String tableName) {
-
         this.tableName = tableName;
-        this.jdbcUtils = jdbcUtils;
 
         log.info("Preparing insert item writer of table [{}]", tableName);
         setDataSource(dataSource);
         setItemSqlParameterSourceProvider(new RowMapItemSqlParameterSourceProvider());
         sqlInsert = jdbcUtils.generateInsert(tableName);
+        log.info("Writer SQL Insert Query [{}]", sqlInsert);
         setSql(sqlInsert);
     }
 
@@ -37,7 +35,6 @@ public class InsertJdbcItemWriter extends JdbcBatchItemWriter<RowMappedDto> {
         try {
             super.write(items);
         } catch (Exception e) {
-//            throw new DataMigrationWriterException(tableName, e);
             throw new RuntimeException(tableName, e);
         }
     }

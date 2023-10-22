@@ -5,7 +5,7 @@ import br.gov.sp.fatec.extractload.domain.enums.LoadModeEnum;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.classify.Classifier;
 
-import java.util.Objects;
+import static java.util.Objects.nonNull;
 
 public class LoadItemWriterClassifier implements Classifier<RowMappedDto, ItemWriter<? super RowMappedDto>> {
 
@@ -20,7 +20,7 @@ public class LoadItemWriterClassifier implements Classifier<RowMappedDto, ItemWr
     @Override
     public ItemWriter<RowMappedDto> classify(RowMappedDto row) {
 
-        if (Objects.nonNull(row) && LoadModeEnum.INSERT.equals(row.getLoadMode())) {
+        if (nonNull(row) && LoadModeEnum.INSERT.equals(row.getLoadMode())) {
             return insertWriter;
         } else {
             return updateWriter;

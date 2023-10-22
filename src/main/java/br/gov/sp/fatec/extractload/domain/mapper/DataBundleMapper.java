@@ -26,6 +26,8 @@ public interface DataBundleMapper {
 
     @Mapping(target = "createDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
     @Mapping(target = "updateDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
+    @Mapping(target = "sourceDatasourceConfig.uid", source = "sourceDatasourceId")
+    @Mapping(target = "targetDatasourceConfig.uid", source = "targetDatasourceId")
     ExtractLoadDataBundle dtoToEntity(DataBundleDto dataBundleDto);
 
     @Mapping(target = "uid", ignore = true)

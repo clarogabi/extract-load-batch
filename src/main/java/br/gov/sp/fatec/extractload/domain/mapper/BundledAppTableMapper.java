@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper(componentModel="spring", imports = { LocalDateTime.class, Timestamp.class })
+@Mapper(componentModel="spring", uses = { AppTableMapper.class }, imports = { LocalDateTime.class, Timestamp.class })
 public interface BundledAppTableMapper {
 
     @Mapping(target = "sourceAppTableId", source = "sourceAppTable.uid")
@@ -45,19 +45,19 @@ public interface BundledAppTableMapper {
 
     List<BundledAppTableDto> requestToDtoList(List<BundledTableRequest> bundledTableRequestList);
 
-    @Mapping(target = "dataBundleUid", ignore = true)
+    @Mapping(target = "extractLoadDataBundle", ignore = true)
     @Mapping(target = "sourceAppTable.uid", source = "sourceAppTableId")
     @Mapping(target = "targetAppTable.uid", source = "targetAppTableId")
     @Mapping(target = "createDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
     @Mapping(target = "updateDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
     ExtractLoadBundledAppTable mapToEntity(BundledAppTableDto bundledAppTableDto);
 
-    @Mapping(target = "dataBundleUid", source = "dataBundleUid")
+    @Mapping(target = "extractLoadDataBundle.uid", source = "dataBundleUid")
     @Mapping(target = "sourceAppTable.uid", source = "dto.sourceAppTableId")
     @Mapping(target = "targetAppTable.uid", source = "dto.targetAppTableId")
     @Mapping(target = "createDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
     @Mapping(target = "updateDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
-    ExtractLoadBundledAppTable mapToEntity(BundledAppTableDto dto, Long dataBundleUid);
+    ExtractLoadBundledAppTable mapToEntityForAddition(BundledAppTableDto dto, Long dataBundleUid);
 
     List<ExtractLoadBundledAppTable> mapToEntityList(List<BundledAppTableDto> BundledAppTableDto);
 

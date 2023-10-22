@@ -29,7 +29,7 @@ public class DataBundleService {
 
     private ExtractLoadDataBundle findExtractLoadDataBundleById(Long dataBundleId) {
         return dataBundleRepository.findByUid(dataBundleId)
-                .orElseThrow(() -> new NotFoundProblem("Data bundle not found."));
+            .orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
     }
 
     public DataBundleDto findDataBundleById(Long dataBundleId) {
@@ -45,7 +45,7 @@ public class DataBundleService {
     }
 
     public void updateDataBundle(DataBundleDto dataBundleDto) {
-        ExtractLoadDataBundle entity = findExtractLoadDataBundleById(dataBundleDto.getUid());
+        var entity = findExtractLoadDataBundleById(dataBundleDto.getUid());
         entity.setDataBundleName(dataBundleDto.getDataBundleName());
         entity.setUpdateDateTime(Timestamp.valueOf(LocalDateTime.now()));
 

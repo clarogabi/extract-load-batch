@@ -2,7 +2,6 @@ package br.gov.sp.fatec.extractload.service;
 
 import br.gov.sp.fatec.extractload.domain.dto.BundledAppTableDto;
 import br.gov.sp.fatec.extractload.domain.mapper.BundledAppTableMapper;
-import br.gov.sp.fatec.extractload.entity.ExtractLoadAppTable;
 import br.gov.sp.fatec.extractload.entity.ExtractLoadBundledAppTable;
 import br.gov.sp.fatec.extractload.exception.NotFoundProblem;
 import br.gov.sp.fatec.extractload.repository.ExtractLoadBundledAppTableRepository;
@@ -32,44 +31,38 @@ public class BundledAppTableService {
 
     public List<BundledAppTableDto> findBundledAppTablesByDataBundleId(Long dataBundleId) {
         return bundledAppTableMapper.mapToDtoList(bundledAppTableRepository
-                .findAllByDataBundleUidOrderByRelationalOrderingNumberAsc(dataBundleId));
+                .findAllByExtractLoadDataBundleUidOrderByRelationalOrderingNumberAsc(dataBundleId));
     }
 
-    private ExtractLoadBundledAppTable findExtractLoadBundledAppByBundleUidAndUid(Long bundleId, Long bundledTableId) {
-        return bundledAppTableRepository.findFirstByDataBundleUidAndUid(bundleId, bundledTableId)
-                .orElseThrow(() -> new NotFoundProblem("Bundled table not found."));
+    private ExtractLoadBundledAppTable findExtractLoadBundledAppByUidAndBundleUid(Long bundledTableId, Long bundleId) {
+        return bundledAppTableRepository.findByUidAndExtractLoadDataBundleUid(bundledTableId, bundleId)
+                .orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
     }
 
-    public BundledAppTableDto findBundledAppTableByBundleIdAndBundledTableId(Long bundleId, Long bundledTableId) {
-        return bundledAppTableMapper.mapToDto(findExtractLoadBundledAppByBundleUidAndUid(bundleId, bundledTableId));
+    public BundledAppTableDto findBundledAppTableByBundledTableIdAndBundleId(Long bundleId, Long bundledTableId) {
+        return bundledAppTableMapper.mapToDto(findExtractLoadBundledAppByUidAndBundleUid(bundledTableId, bundleId));
     }
 
     public void deleteBundledTable(Long bundleId, Long bundledTableId) {
-        if (bundledAppTableRepository.existsByDataBundleUidAndUid(bundleId, bundledTableId)) {
-            bundledAppTableRepository.deleteByDataBundleUidAndUid(bundleId, bundledTableId);
+        if (bundledAppTableRepository.existsByUidAndExtractLoadDataBundleUid(bundledTableId, bundleId)) {
+            bundledAppTableRepository.deleteByUid(bundledTableId);
         }
     }
 
     public Long addBundledTable(Long bundleId, BundledAppTableDto bundledAppTableDto) {
         if (dataBundleService.existsDataBundleById(bundleId)) {
-            return bundledAppTableRepository.save(bundledAppTableMapper.mapToEntity(bundledAppTableDto, bundleId))
+            return bundledAppTableRepository.save(bundledAppTableMapper.mapToEntityForAddition(bundledAppTableDto, bundleId))
                     .getUid();
         } else {
-            throw new NotFoundProblem("Data bundle not found.");
+            throw new NotFoundProblem("Registro não encontrado.");
         }
     }
 
     public void updateBundledTable(Long bundleId, Long bundledTableId, BundledAppTableDto bundledAppTableDto) {
-        ExtractLoadBundledAppTable entity = findExtractLoadBundledAppByBundleUidAndUid(bundleId, bundledTableId);
+        var entity = findExtractLoadBundledAppByUidAndBundleUid(bundledTableId, bundleId);
 
-        ExtractLoadAppTable sourceAppTable = new ExtractLoadAppTable();
-        sourceAppTable.setUid(appTableService.getAppTableById(bundledAppTableDto.getSourceAppTableId()).getUid());
-        entity.setSourceAppTable(sourceAppTable);
-
-        ExtractLoadAppTable targetAppTable = new ExtractLoadAppTable();
-        sourceAppTable.setUid(appTableService.getAppTableById(bundledAppTableDto.getTargetAppTableId()).getUid());
-        entity.setSourceAppTable(targetAppTable);
-
+        entity.setSourceAppTable(appTableService.findAppTableById(bundledAppTableDto.getSourceAppTableId()));
+        entity.setSourceAppTable(appTableService.findAppTableById(bundledAppTableDto.getTargetAppTableId()));
         entity.setRelationalOrderingNumber(bundledAppTableDto.getRelationalOrderingNumber());
         entity.setExtractCustomQuery(bundledAppTableDto.getExtractCustomQuery());
         entity.setLoadCustomInsertQuery(bundledAppTableDto.getLoadCustomInsertQuery());

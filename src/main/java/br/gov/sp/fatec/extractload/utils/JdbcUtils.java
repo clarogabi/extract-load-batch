@@ -1,6 +1,5 @@
 package br.gov.sp.fatec.extractload.utils;
 
-import br.gov.sp.fatec.extractload.domain.dto.BundledAppTableDto;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -26,7 +25,6 @@ public class JdbcUtils {
         DatabaseMetaData databaseMetaData = connection.getMetaData();
 
         ResultSet pk = databaseMetaData.getPrimaryKeys(null, null, tableName);
-
         while (pk.next()) {
             primaryKeys.add(pk.getString("COLUMN_NAME"));
         }

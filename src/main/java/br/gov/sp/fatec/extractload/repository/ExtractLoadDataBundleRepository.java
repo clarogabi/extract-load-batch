@@ -9,4 +9,8 @@ public interface ExtractLoadDataBundleRepository extends JpaRepository<ExtractLo
 
     Optional<ExtractLoadDataBundle> findByUid(Long uid);
 
+    boolean existsBySourceDatasourceConfigUid(Long datasourceUid);
+
+    boolean existsByTargetDatasourceConfigUid(Long datasourceUid);
+
 }
