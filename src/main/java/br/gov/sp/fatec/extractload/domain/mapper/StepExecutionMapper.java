@@ -11,13 +11,13 @@ import java.util.List;
 
 @Mapper(componentModel="spring",
     imports = { ExtractLoadUtils.class },
-    uses = { BatchStatusMapper.class, ExitStatusMapper.class, ThrowableListJoiner.class })
+    uses = { BatchStatusMapper.class, ExitStatusMapper.class })
 public interface StepExecutionMapper {
 
     @Mapping(target = "batchStatus", source = "status")
     @Mapping(target = "stepStartTime", source = "startTime")
     @Mapping(target = "stepEndTime", source = "endTime")
-    @Mapping(target = "exitMessage", source = "failureExceptions")
+    @Mapping(target = "exitMessage", source = "exitStatus.exitDescription")
     @Mapping(target = "stepElapsedTime", expression = "java(ExtractLoadUtils.findElapsedTime(stepExecution.getStartTime(), stepExecution.getEndTime()))")
     StepMetadataResponse map(StepExecution stepExecution);
 
