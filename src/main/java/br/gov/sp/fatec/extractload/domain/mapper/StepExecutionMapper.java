@@ -18,7 +18,7 @@ public interface StepExecutionMapper {
     @Mapping(target = "stepStartTime", source = "startTime")
     @Mapping(target = "stepEndTime", source = "endTime")
     @Mapping(target = "exitMessage", source = "failureExceptions")
-    @Mapping(target = "stepElapsedTime", expression = "java( ExtractLoadUtils.findElapsedTime(stepExecution.getStartTime(), stepExecution.getEndTime()) )")
+    @Mapping(target = "stepElapsedTime", expression = "java(ExtractLoadUtils.findElapsedTime(stepExecution.getStartTime(), stepExecution.getEndTime()))")
     StepMetadataResponse map(StepExecution stepExecution);
 
     List<StepMetadataResponse> mapList(Collection<StepExecution> stepExecutions);

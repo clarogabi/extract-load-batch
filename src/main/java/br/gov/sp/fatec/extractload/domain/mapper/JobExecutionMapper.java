@@ -18,7 +18,7 @@ public abstract class JobExecutionMapper {
     @Mapping(target = "jobEndTime", source = "endTime")
     @Mapping(target = "exitMessage", source = "failureExceptions")
     @Mapping(target = "steps", source = "stepExecutions")
-    @Mapping(target = "jobElapsedTime", expression = "java( ExtractLoadUtils.findElapsedTime(jobExecution.getStartTime(), jobExecution.getEndTime()) )")
+    @Mapping(target = "jobElapsedTime", expression = "java(ExtractLoadUtils.findElapsedTime(jobExecution.getStartTime(), jobExecution.getEndTime()))")
     public abstract JobExecutionResponse map(JobExecution jobExecution);
 
 }

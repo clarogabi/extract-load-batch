@@ -20,26 +20,24 @@ public class DatasourceController implements DatasourceApi {
     private final DatasourceMapper datasourceMapper;
 
     @Override
-    public ResponseEntity<Void> deleteDatasourceProperties(String datasourceId) {
-        datasourceService.deleteDatasource(Long.valueOf(datasourceId));
+    public ResponseEntity<Void> deleteDatasourceProperties(Long datasourceId) {
+        datasourceService.deleteDatasource(datasourceId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<DatasourcePropertiesResponse> getDatasourceProperties(String datasourceId) {
-        return new ResponseEntity<>(datasourceMapper.dtoToResponse(datasourceService
-                .getDatasourceProperties(Long.valueOf(datasourceId))), HttpStatus.OK);
+    public ResponseEntity<DatasourcePropertiesResponse> getDatasourceProperties(Long datasourceId) {
+        return new ResponseEntity<>(datasourceMapper.dtoToResponse(datasourceService.getDatasourceProperties(datasourceId)), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<CreatedObjectResponse> postDatasourceProperties(DatasourcePropertiesRequest datasourcePropertiesRequest) {
         return new ResponseEntity<>(new CreatedObjectResponse()
-                .uid(String.valueOf(datasourceService.createDatasource(datasourceMapper.requestToDto(datasourcePropertiesRequest)))),
-                HttpStatus.CREATED);
+            .uid(datasourceService.createDatasource(datasourceMapper.requestToDto(datasourcePropertiesRequest))), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Void> putDatasourceProperties(String datasourceId, DatasourcePropertiesRequest datasourcePropertiesRequest) {
+    public ResponseEntity<Void> putDatasourceProperties(Long datasourceId, DatasourcePropertiesRequest datasourcePropertiesRequest) {
         datasourceService.updateDatasource(datasourceMapper.requestToDto(datasourceId, datasourcePropertiesRequest));
         return new ResponseEntity<>(HttpStatus.OK);
     }

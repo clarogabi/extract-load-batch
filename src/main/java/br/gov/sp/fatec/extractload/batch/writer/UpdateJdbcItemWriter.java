@@ -16,8 +16,7 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UpdateJdbcItemWriter extends JdbcBatchItemWriter<RowMappedDto> {
 
-    private String sqlUpdate;
-    private String tableName;
+    private final String tableName;
 
     public UpdateJdbcItemWriter(DataSource dataSource, JdbcUtils jdbcUtils, String tableName) {
         this.tableName = tableName;
@@ -25,9 +24,9 @@ public class UpdateJdbcItemWriter extends JdbcBatchItemWriter<RowMappedDto> {
         log.info("Preparing update item writer of table [{}]", tableName);
         setDataSource(dataSource);
         setItemSqlParameterSourceProvider(new RowMapItemSqlParameterSourceProvider());
-        sqlUpdate = jdbcUtils.generateUpdate(tableName);
-        log.info("Writer SQL Update Query [{}]", sqlUpdate);
+        var sqlUpdate = jdbcUtils.generateUpdate(tableName);
         setSql(sqlUpdate);
+        log.info("Writer SQL Update Query [{}]", sqlUpdate);
     }
 
     @Override

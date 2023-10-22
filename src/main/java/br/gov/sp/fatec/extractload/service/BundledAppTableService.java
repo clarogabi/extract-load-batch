@@ -31,12 +31,12 @@ public class BundledAppTableService {
 
     public List<BundledAppTableDto> findBundledAppTablesByDataBundleId(Long dataBundleId) {
         return bundledAppTableMapper.mapToDtoList(bundledAppTableRepository
-                .findAllByExtractLoadDataBundleUidOrderByRelationalOrderingNumberAsc(dataBundleId));
+            .findAllByExtractLoadDataBundleUidOrderByRelationalOrderingNumberAsc(dataBundleId));
     }
 
     private ExtractLoadBundledAppTable findExtractLoadBundledAppByUidAndBundleUid(Long bundledTableId, Long bundleId) {
         return bundledAppTableRepository.findByUidAndExtractLoadDataBundleUid(bundledTableId, bundleId)
-                .orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
+            .orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
     }
 
     public BundledAppTableDto findBundledAppTableByBundledTableIdAndBundleId(Long bundleId, Long bundledTableId) {
@@ -51,8 +51,7 @@ public class BundledAppTableService {
 
     public Long addBundledTable(Long bundleId, BundledAppTableDto bundledAppTableDto) {
         if (dataBundleService.existsDataBundleById(bundleId)) {
-            return bundledAppTableRepository.save(bundledAppTableMapper.mapToEntityForAddition(bundledAppTableDto, bundleId))
-                    .getUid();
+            return bundledAppTableRepository.save(bundledAppTableMapper.mapToEntityForAddition(bundledAppTableDto, bundleId)).getUid();
         } else {
             throw new NotFoundProblem("Registro não encontrado.");
         }

@@ -25,8 +25,7 @@ public class BatchExecutionController implements BatchApi {
 
     @Override
     public ResponseEntity<JobExecutionResponse> getBatchJobExecution(Long jobExecutionId) {
-        return new ResponseEntity<>(jobExecutionMapper.map(batchExecutionService.findJobExecutionById(jobExecutionId)),
-                HttpStatus.OK);
+        return new ResponseEntity<>(jobExecutionMapper.map(batchExecutionService.findJobExecutionById(jobExecutionId)), HttpStatus.OK);
     }
 
     @Override

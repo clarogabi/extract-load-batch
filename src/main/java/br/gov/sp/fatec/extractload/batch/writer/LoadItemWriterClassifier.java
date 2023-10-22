@@ -9,8 +9,8 @@ import static java.util.Objects.nonNull;
 
 public class LoadItemWriterClassifier implements Classifier<RowMappedDto, ItemWriter<? super RowMappedDto>> {
 
-    private ItemWriter<RowMappedDto> insertWriter;
-    private ItemWriter<RowMappedDto> updateWriter;
+    private final ItemWriter<RowMappedDto> insertWriter;
+    private final ItemWriter<RowMappedDto> updateWriter;
 
     public LoadItemWriterClassifier(ItemWriter<RowMappedDto> insertWriter, ItemWriter<RowMappedDto> updateWriter) {
         this.insertWriter = insertWriter;

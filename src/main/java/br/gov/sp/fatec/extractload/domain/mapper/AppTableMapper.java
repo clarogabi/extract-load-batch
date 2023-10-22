@@ -17,7 +17,6 @@ public interface AppTableMapper {
 
     @Mapping(target = "tableId", source = "uid")
     @Mapping(target = "tablePhysicalName", source = "appTablePhysicalName")
-    @Mapping(target = "tableDescription", ignore = true)
     DataTableResponse dtoToResponse(AppTableDto dto);
 
     @Mapping(target = "uid", ignore = true)
@@ -29,7 +28,7 @@ public interface AppTableMapper {
     @Mapping(target = "createDateTime", ignore = true)
     @Mapping(target = "updateDateTime", ignore = true)
     @Mapping(target = "appTablePhysicalName", source = "request.tablePhysicalName")
-    AppTableDto requestToDto(String uid, DataTableRequest request);
+    AppTableDto requestToDto(Long uid, DataTableRequest request);
 
     @Mapping(target = "createDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
     @Mapping(target = "updateDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")

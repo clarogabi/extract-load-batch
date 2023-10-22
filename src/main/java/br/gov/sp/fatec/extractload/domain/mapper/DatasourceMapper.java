@@ -30,7 +30,7 @@ public interface DatasourceMapper {
     @Mapping(target = "databaseUserName", source = "request.userName")
     @Mapping(target = "databasePassword", source = "request.password")
     @Mapping(target = "databaseConnectionUrl", source = "request.jdbcConnectionUrl")
-    DatasourceDto requestToDto(String uid, DatasourcePropertiesRequest request);
+    DatasourceDto requestToDto(Long uid, DatasourcePropertiesRequest request);
 
     @Mapping(target = "createDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
     @Mapping(target = "updateDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")

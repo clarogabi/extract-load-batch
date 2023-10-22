@@ -8,7 +8,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 
 import static br.gov.sp.fatec.extractload.utils.Constants.DOT_REGEX;
@@ -52,14 +51,11 @@ public class ExtractLoadUtils {
     }
 
     public static String getPrimaryKey(Set<String> primaryKeys) {
-        String id = null;
         if (!primaryKeys.isEmpty()) {
-            Optional<String> pk = primaryKeys.stream().findFirst();
-            if (pk.isPresent()) {
-                id = pk.get();
-            }
+            return primaryKeys.stream().findFirst()
+                .orElse(null);
         }
-        return id;
+        return null;
     }
 
     public static LocalDateTime dateToLocalDateTime(Date date) {
@@ -71,13 +67,13 @@ public class ExtractLoadUtils {
 
         long hours = duration.toHours();
         duration = duration.minusHours(hours);
-        long mins = duration.toMinutes();
-        duration = duration.minusMinutes(mins);
-        long secs = duration.getSeconds();
-        duration = duration.minusSeconds(secs);
+        long minutes = duration.toMinutes();
+        duration = duration.minusMinutes(minutes);
+        long seconds = duration.getSeconds();
+        duration = duration.minusSeconds(seconds);
         long millis = duration.toMillis();
 
-        return String.format("%s:%s:%s:%s", pad(hours, 2), pad(mins, 2), pad(secs, 2), pad(millis, 3));
+        return String.format("%s:%s:%s:%s", pad(hours, 2), pad(minutes, 2), pad(seconds, 2), pad(millis, 3));
     }
 
     public static String pad(long value, long length) {

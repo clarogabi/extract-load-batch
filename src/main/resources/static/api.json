@@ -50,8 +50,8 @@
         "tags": [
           "Datasource"
         ],
-        "summary": "Post datasource configuration",
-        "description": "Inserts new datasource configuration properties",
+        "summary": "Post datasource configuration and add connection",
+        "description": "Inserts new datasource configuration properties and add connection",
         "operationId": "postDatasourceProperties",
         "requestBody": {
           "content": {
@@ -112,9 +112,9 @@
             "description": "Datasource Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -165,9 +165,9 @@
             "description": "Datasource Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -221,9 +221,9 @@
             "description": "Datasource Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -321,9 +321,9 @@
             "description": "Table Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -374,9 +374,9 @@
             "description": "Table Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -430,9 +430,9 @@
             "description": "Table Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -530,9 +530,9 @@
             "description": "Bundle Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -583,9 +583,9 @@
             "description": "Bundle Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -639,9 +639,9 @@
             "description": "Bundle Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -687,9 +687,9 @@
             "description": "Bundle Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -752,9 +752,9 @@
             "description": "Bundle Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           },
           {
@@ -763,9 +763,9 @@
             "description": "Bundled Table Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -816,9 +816,9 @@
             "description": "Bundle Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           },
           {
@@ -827,9 +827,9 @@
             "description": "Bundled Table Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -883,9 +883,9 @@
             "description": "Bundle Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           },
           {
@@ -894,9 +894,9 @@
             "description": "Bundled Table Id",
             "required": true,
             "schema": {
-              "type": "string",
-              "pattern": "(.|\\s)*\\S(.|\\s)*",
-              "example": "12"
+              "type": "integer",
+              "format": "int64",
+              "example": 122
             }
           }
         ],
@@ -932,8 +932,8 @@
         "tags": [
           "Batch"
         ],
-        "summary": "Post batch job execution",
-        "description": "Start batch job execution using job parameters request",
+        "summary": "Post extract-load data batch job execution",
+        "description": "Start batch job execution using job parameters request for extract-load data",
         "operationId": "postBatchJobExecution",
         "requestBody": {
           "content": {
@@ -1116,7 +1116,7 @@
     "examples": {
       "badRequest": {
         "value": {
-          "type": "https://zalando.github.io/problem/constraint-violation",
+          "type": "https://http.cat/400",
           "title": "Bad Request",
           "status": 400,
           "detail": "Invalid attribute"
@@ -1125,7 +1125,7 @@
       },
       "unauthorized": {
         "value": {
-          "type": "https://zalando.github.io/problem/constraint-violation",
+          "type": "https://http.cat/401",
           "title": "Unauthorized",
           "status": 401,
           "detail": "Unauthorized request"
@@ -1134,7 +1134,7 @@
       },
       "notFound": {
         "value": {
-          "type": "https://zalando.github.io/problem/constraint-violation",
+          "type": "https://http.cat/404",
           "title": "Not Found",
           "status": 404,
           "detail": "Resource not found"
@@ -1143,7 +1143,7 @@
       },
       "unprocessableEntity": {
         "value": {
-          "type": "https://zalando.github.io/problem/constraint-violation",
+          "type": "https://http.cat/422",
           "title": "Unprocessable Entity",
           "status": 422,
           "detail": "Unprocessable Entity"
@@ -1152,7 +1152,7 @@
       },
       "serverError": {
         "value": {
-          "type": "https://zalando.github.io/problem/constraint-violation",
+          "type": "https://http.cat/500",
           "title": "Server Error",
           "status": 500,
           "detail": "Server Error"
@@ -1167,7 +1167,8 @@
         "description": "Body for retrieve unique identifier from created object.",
         "properties": {
           "uid": {
-            "type": "string",
+            "type": "integer",
+            "format": "int64",
             "example": 1,
             "description": "Object unique identifier"
           }
@@ -1249,15 +1250,9 @@
         "properties": {
           "tablePhysicalName": {
             "type": "string",
-            "pattern": "(.|\\s)*\\S(.|\\s)*",
+            "pattern": "^[a-zA-Z0-9_-]+$",
             "example": "DUMMY_TABLE_NAME",
             "description": "Table physical name"
-          },
-          "tableDescription": {
-            "type": "string",
-            "pattern": "(.|\\s)*\\S(.|\\s)*",
-            "example": "Dummy Table Description",
-            "description": "Table additional information"
           }
         },
         "required": [
@@ -1277,15 +1272,8 @@
           },
           "tablePhysicalName": {
             "type": "string",
-            "pattern": "(.|\\s)*\\S(.|\\s)*",
             "example": "DUMMY_TABLE_NAME",
             "description": "Table physical name"
-          },
-          "tableDescription": {
-            "type": "string",
-            "pattern": "(.|\\s)*\\S(.|\\s)*",
-            "example": "Dummy Table Description",
-            "description": "Table additional information"
           },
           "createDateTime": {
             "type": "string",
@@ -1312,7 +1300,6 @@
           },
           "bundleName": {
             "type": "string",
-            "pattern": "(.|\\s)*\\S(.|\\s)*",
             "example": "DUMMY_BUNDLE",
             "description": "Bundle name"
           },
@@ -1428,7 +1415,6 @@
           },
           "databaseProvider": {
             "type": "string",
-            "pattern": "(.|\\s)*\\S(.|\\s)*",
             "example": "Oracle",
             "description": "Database provider"
           },
@@ -1658,7 +1644,7 @@
             "type": "integer",
             "format": "int64",
             "example": 1,
-            "description": "Indicates table definitions unique identifier from target  Datasource."
+            "description": "Indicates table definitions unique identifier from target Datasource."
           },
           "relationalOrdering": {
             "type": "integer",
@@ -1668,18 +1654,21 @@
           },
           "querySelect": {
             "type": "string",
+            "pattern": "^SELECT(?:[^;'\\n]|(?:'[^'\\n]+'))+FROM(?:[^;'\\n]|(?:'[^'\\n]+'))+?\\s.*",
             "example": "SELECT * FROM DUMMY_TABLE WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID",
-            "description": "Indicates a query to be used by Batch Item Reader. If it's not informed, the sistem will use default query."
+            "description": "Indicates extract data sql query (select). If it's not informed, the system will use default query."
           },
           "queryInsert": {
             "type": "string",
-            "example": "INSERT INTO*** pegar exemplo",
-            "description": "Indicates an insert query to be used by Batch Item Writer. If it's not informed, the sistem will use default query."
+            "pattern": "^INSERT INTO(?:[^;'\\n]|(?:'[^'\\n]+'))+VALUES(?:[^;'\\n]|(?:'[^'\\n]+'))+?\\s.*",
+            "example": "INSERT INTO DUMMY_TABLE (DUMMY_TABLE_ID, DUMMY_TABLE_DESC) VALUES (:DUMMY_TABLE_ID, :DUMMY_TABLE_DESC)",
+            "description": "Indicates load data sql query (insert). If it's not informed, the system will use default query."
           },
           "queryUpdate": {
             "type": "string",
-            "example": "UPDATE *** pegar exemplo",
-            "description": "Indicates an update query to be used by Batch Item Writer. If it's not informed, the sistem will use default query."
+            "pattern": "^UPDATE(?:[^;'\\n]|(?:'[^'\\n]+'))+SET(?:[^;'\\n]|(?:'[^'\\n]+'))+?\\s.*",
+            "example": "UPDATE DUMMY_TABLE SET DUMMY_TABLE_DESC=:DUMMY_TABLE_DESC WHERE DUMMY_TABLE_ID=:DUMMY_TABLE_ID",
+            "description": "Indicates load data sql query (update). If it's not informed, the system will use default query."
           }
         },
         "required": [
@@ -1713,7 +1702,6 @@
           },
           "tablePhysicalName": {
             "type": "string",
-            "pattern": "(.|\\s)*\\S(.|\\s)*",
             "example": "DUMMY_TABLE_NAME",
             "description": "Table physical name"
           },
@@ -1726,17 +1714,17 @@
           "querySelect": {
             "type": "string",
             "example": "SELECT * FROM DUMMY_TABLE WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID",
-            "description": "Indicates a query to be used by Batch Item Reader. If it's not informed, the sistem will use default query."
+            "description": "Indicates extract data sql query (select). If it's not informed, the system will use default query."
           },
           "queryInsert": {
             "type": "string",
-            "example": "INSERT INTO*** pegar exemplo",
-            "description": "Indicates an insert query to be used by Batch Item Writer. If it's not informed, the sistem will use default query."
+            "example": "INSERT INTO DUMMY_TABLE (DUMMY_TABLE_ID, DUMMY_TABLE_DESC) values (:DUMMY_TABLE_ID, :DUMMY_TABLE_DESC)",
+            "description": "Indicates load data sql query (insert). If it's not informed, the system will use default query."
           },
           "queryUpdate": {
             "type": "string",
-            "example": "UPDATE *** pegar exemplo",
-            "description": "Indicates an update query to be used by Batch Item Writer. If it's not informed, the sistem will use default query."
+            "example": "UPDATE DUMMY_TABLE SET DUMMY_TABLE_DESC=:DUMMY_TABLE_DESC WHERE DUMMY_TABLE_ID=:DUMMY_TABLE_ID",
+            "description": "Indicates load data sql query (update). If it's not informed, the system will use default query."
           }
         }
       },

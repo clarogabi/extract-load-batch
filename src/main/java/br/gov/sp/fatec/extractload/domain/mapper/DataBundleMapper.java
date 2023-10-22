@@ -36,6 +36,6 @@ public interface DataBundleMapper {
     DataBundleDto requestToDto(DataBundleRequest dataBundleRequest);
 
     @Mapping(target = "dataBundleName", source = "bundleRequest.bundleName")
-    DataBundleDto requestToDto(String uid, BundleRequest bundleRequest);
+    DataBundleDto requestToDto(Long uid, BundleRequest bundleRequest);
 
 }

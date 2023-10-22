@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static br.gov.sp.fatec.extractload.utils.Constants.JOB_NAME;
+import static br.gov.sp.fatec.extractload.utils.Constants.STEP_NAME;
 import static java.util.Objects.isNull;
 import static org.springframework.batch.core.ExitStatus.COMPLETED;
 import static org.springframework.batch.core.ExitStatus.FAILED;
@@ -145,10 +146,7 @@ public class ExtractLoadJobBuilder {
     }
 
     public Step step(BundledAppTableDto bundledAppTableDto) {
-        StringBuilder stepName = new StringBuilder();
-        stepName.append("EXTRACT_LOAD_DATA_STEP-");
-        stepName.append(bundledAppTableDto.getSourceAppTableName().trim().toUpperCase());
-
+        var stepName = STEP_NAME.concat(bundledAppTableDto.getSourceAppTableName().trim()).toUpperCase();
         log.info("Building Step: [{}]", stepName);
 
         ExtractJdbcPagingItemReader reader = context.getBean(ExtractJdbcPagingItemReader.class,
@@ -164,7 +162,7 @@ public class ExtractLoadJobBuilder {
                 new LoadItemWriterClassifier(insertWriter, updateWriter));
 
         return stepBuilderFactory
-                .get(stepName.toString())
+                .get(stepName)
                 .<RowMappedDto, RowMappedDto>chunk(chunkSize)
                 .reader(reader)
                 .writer(writerClassifier)
@@ -178,7 +176,7 @@ public class ExtractLoadJobBuilder {
     public TaskExecutor stepTaskExecutor() {
         SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
         simpleAsyncTaskExecutor.setConcurrencyLimit(concurrencyLimit);
-        simpleAsyncTaskExecutor.setThreadNamePrefix("Step-Exec-");
+        simpleAsyncTaskExecutor.setThreadNamePrefix("Task-Exec-");
         return simpleAsyncTaskExecutor;
     }
 

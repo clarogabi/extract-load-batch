@@ -18,9 +18,9 @@ import static br.gov.sp.fatec.extractload.utils.ExtractLoadUtils.generateSelectI
 
 public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
 
-    private NamedParameterJdbcTemplate jdbcTemplate;
-    private String tableName;
-    private String primaryKeyName;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final String tableName;
+    private final String primaryKeyName;
 
     public ExtractPageProcessor(String tableName, String primaryKeyName, NamedParameterJdbcTemplate jdbcTemplate) {
         this.tableName = tableName;
@@ -59,7 +59,7 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
     }
 
     private class RowExtractor implements ResultSetExtractor<Void> {
-        private List<String> ids;
+        private final List<String> ids;
         public RowExtractor(List<String> ids) {
             this.ids = ids;
         }

@@ -36,20 +36,19 @@ public class BatchExecutionService {
 
     public CreatedObjectResponse startJob(JobParametersDto jobParams) {
         var jobParameters = new JobParametersBuilder()
-                .addString("uuid", UUID.randomUUID().toString())
-                .addLong("dataBundleId", jobParams.getDataBundleId())
-                .addString("executionDateTime", LocalDateTime.now().toString())
-                .toJobParameters();
+            .addString("uuid", UUID.randomUUID().toString())
+            .addLong("dataBundleId", jobParams.getDataBundleId())
+            .addString("executionDateTime", LocalDateTime.now().toString())
+            .toJobParameters();
 
         var job = jobBuilder.job(jobParams);
         try {
             var jobExecution = jobLauncher.run(job, jobParameters);
-            return new CreatedObjectResponse().uid(jobExecution.getId().toString());
+            return new CreatedObjectResponse().uid(jobExecution.getId());
         } catch (JobExecutionAlreadyRunningException | JobParametersInvalidException | JobInstanceAlreadyCompleteException | JobRestartException e) {
             log.error("Job batch execution error {}", e.getMessage(), e);
             throw new UnprocessableEntityProblem(format("Não foi possível executar o Job devido ao erro [%s].", e.getMessage()));
         }
-
     }
 
     public JobExecution findJobExecutionById(Long jobExecutionId) {

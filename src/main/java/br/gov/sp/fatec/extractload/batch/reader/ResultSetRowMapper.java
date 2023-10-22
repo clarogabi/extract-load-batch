@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class ResultSetRowMapper implements RowMapper<RowMappedDto> {
 	
-	private Set<String> primaryKeys;
+	private final Set<String> primaryKeys;
 	
 	public ResultSetRowMapper(Set<String> primaryKeys) {
 		this.primaryKeys = primaryKeys;

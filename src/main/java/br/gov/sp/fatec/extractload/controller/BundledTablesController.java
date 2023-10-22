@@ -20,29 +20,26 @@ public class BundledTablesController implements BundledTablesApi {
     private final BundledAppTableMapper bundledAppTableMapper;
 
     @Override
-    public ResponseEntity<Void> deleteBundledTable(String bundleId, String bundledTableId) {
-        bundledAppTableService.deleteBundledTable(Long.valueOf(bundleId), Long.valueOf(bundledTableId));
+    public ResponseEntity<Void> deleteBundledTable(Long bundleId, Long bundledTableId) {
+        bundledAppTableService.deleteBundledTable(bundleId, bundledTableId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<BundledTableResponse> getBundledTable(String bundleId, String bundledTableId) {
+    public ResponseEntity<BundledTableResponse> getBundledTable(Long bundleId, Long bundledTableId) {
         return new ResponseEntity<>(bundledAppTableMapper.mapToResponse(bundledAppTableService
-                .findBundledAppTableByBundledTableIdAndBundleId(Long.valueOf(bundleId), Long.valueOf(bundledTableId))),
-                HttpStatus.OK);
+            .findBundledAppTableByBundledTableIdAndBundleId(bundleId, bundledTableId)), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<CreatedObjectResponse> postBundledTables(String bundleId, BundledTableRequest bundledTableRequest) {
-        return new ResponseEntity<>(new CreatedObjectResponse().uid(String.valueOf(bundledAppTableService
-                .addBundledTable(Long.valueOf(bundleId), bundledAppTableMapper.requestToDto(bundledTableRequest)))),
-                HttpStatus.CREATED);
+    public ResponseEntity<CreatedObjectResponse> postBundledTables(Long bundleId, BundledTableRequest bundledTableRequest) {
+        return new ResponseEntity<>(new CreatedObjectResponse().uid(bundledAppTableService
+            .addBundledTable(bundleId, bundledAppTableMapper.requestToDto(bundledTableRequest))), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Void> putBundledTable(String bundleId, String bundledTableId, BundledTableRequest bundledTableRequest) {
-        bundledAppTableService.updateBundledTable(Long.valueOf(bundleId), Long.valueOf(bundledTableId),
-                bundledAppTableMapper.requestToDto(bundledTableRequest));
+    public ResponseEntity<Void> putBundledTable(Long bundleId, Long bundledTableId, BundledTableRequest bundledTableRequest) {
+        bundledAppTableService.updateBundledTable(bundleId, bundledTableId, bundledAppTableMapper.requestToDto(bundledTableRequest));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -4,6 +4,7 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.util.Assert;
 
 public class CompositeJdbcPagingItemReader<T> extends JdbcPagingItemReader<T> {
+
     private PageProcessor<T> pageProcessor;
 
     public void setPageProcessor(PageProcessor<T> pageProcessor) {
@@ -19,6 +20,7 @@ public class CompositeJdbcPagingItemReader<T> extends JdbcPagingItemReader<T> {
     @Override
     protected void doReadPage() {
         super.doReadPage();
+
         if (!results.isEmpty()) {
             pageProcessor.process(results);
         }

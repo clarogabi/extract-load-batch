@@ -16,8 +16,7 @@ import java.util.List;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class InsertJdbcItemWriter extends JdbcBatchItemWriter<RowMappedDto> {
 
-    private String sqlInsert;
-    private String tableName;
+    private final String tableName;
 
     public InsertJdbcItemWriter(DataSource dataSource, JdbcUtils jdbcUtils, String tableName) {
         this.tableName = tableName;
@@ -25,9 +24,9 @@ public class InsertJdbcItemWriter extends JdbcBatchItemWriter<RowMappedDto> {
         log.info("Preparing insert item writer of table [{}]", tableName);
         setDataSource(dataSource);
         setItemSqlParameterSourceProvider(new RowMapItemSqlParameterSourceProvider());
-        sqlInsert = jdbcUtils.generateInsert(tableName);
-        log.info("Writer SQL Insert Query [{}]", sqlInsert);
+        var sqlInsert = jdbcUtils.generateInsert(tableName);
         setSql(sqlInsert);
+        log.info("Writer SQL Insert Query [{}]", sqlInsert);
     }
 
     @Override
