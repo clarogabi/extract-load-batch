@@ -38,7 +38,6 @@ public class BatchExecutionService {
         var jobParameters = new JobParametersBuilder()
                 .addString("uuid", UUID.randomUUID().toString())
                 .addLong("dataBundleId", jobParams.getDataBundleId())
-                .addString("extractionType", jobParams.getExtractionType().getValue())
                 .addString("executionDateTime", LocalDateTime.now().toString())
                 .toJobParameters();
 

@@ -1602,14 +1602,10 @@
             "format": "int64",
             "example": 12,
             "description": "Data Bundle unique identifier"
-          },
-          "extractionType": {
-            "$ref": "#/components/schemas/ExtractionTypeEnum"
           }
         },
         "required": [
-          "dataBundleId",
-          "extractionType"
+          "dataBundleId"
         ]
       },
       "ProblemResponse": {
@@ -1623,7 +1619,7 @@
           "type": {
             "type": "string",
             "format": "uri",
-            "description": "An absolute URI that identifies the problem type.  When dereferenced,\nit SHOULD provide human-readable documentation for the problem type\n(e.g., using HTML).\n",
+            "description": "An absolute URI that identifies the problem type.  When referenced,\nit SHOULD provide human-readable documentation for the problem type\n(e.g., using HTML).\n",
             "default": "about:blank",
             "example": "https://zalando.github.io/problem/constraint-violation"
           },
@@ -1770,15 +1766,6 @@
           "FAILED",
           "ABANDONED",
           "UNKNOWN"
-        ]
-      },
-      "ExtractionTypeEnum": {
-        "type": "string",
-        "description": "Indicates data extraction type.",
-        "example": "DEFAULT",
-        "enum": [
-          "DEFAULT",
-          "CUSTOM"
         ]
       }
     },

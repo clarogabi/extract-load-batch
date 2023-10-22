@@ -1,8 +1,6 @@
 package br.gov.sp.fatec.extractload.batch.job;
 
-import br.gov.sp.fatec.extractload.api.model.ExtractionTypeEnum;
 import br.gov.sp.fatec.extractload.batch.reader.ExtractJdbcPagingItemReader;
-import br.gov.sp.fatec.extractload.batch.validator.ExtractLoadJobParametersValidator;
 import br.gov.sp.fatec.extractload.batch.writer.CompositeJdbcPagingItemWriter;
 import br.gov.sp.fatec.extractload.batch.writer.InsertJdbcItemWriter;
 import br.gov.sp.fatec.extractload.batch.writer.LoadItemWriterClassifier;
@@ -95,29 +93,24 @@ public class ExtractLoadJobBuilder {
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
 
-    @Autowired
-    private ExtractLoadJobParametersValidator jobParametersValidator;
-
     public Job job(JobParametersDto jobParams) {
         var dataBundleId = jobParams.getDataBundleId();
         var bundleName = dataBundleService.findDataBundleNameById(dataBundleId);
 
         return jobBuilderFactory
                 .get(JOB_NAME.concat(bundleName).toUpperCase())
-                .validator(jobParametersValidator)
                 .incrementer(new RunIdIncrementer())
-                .start(getStepsFlow(bundleName, dataBundleId, ExtractionTypeEnum.fromValue(jobParams.getExtractionType().getValue())))
+                .start(getStepsFlow(bundleName, dataBundleId))
                 .end()
                 .build();
     }
 
-    public Flow getStepsFlow(String bundleName, Long dataBundleId, ExtractionTypeEnum extractionType) {
+    public Flow getStepsFlow(String bundleName, Long dataBundleId) {
         var flowName = JOB_NAME.concat(bundleName).toUpperCase();
         log.info("Building Job Flow [{}]", flowName);
-        List<Step> steps = buildSteps(getTables(dataBundleId), extractionType);
+        List<Step> steps = buildSteps(getTables(dataBundleId));
 
         FlowBuilder<Flow> flowBuilder = new FlowBuilder<>(flowName);
-
         for (Step step : steps) {
             if (0 == steps.indexOf(step)) {
                 flowBuilder.start(step);
@@ -137,7 +130,7 @@ public class ExtractLoadJobBuilder {
         return bundledAppTableService.findBundledAppTablesByDataBundleId(dataBundleId);
     }
 
-    public List<Step> buildSteps(List<BundledAppTableDto> tables, ExtractionTypeEnum extractionType) {
+    public List<Step> buildSteps(List<BundledAppTableDto> tables) {
 
         if (isNull(tables) || 0 == tables.size()) {
             throw new UnprocessableEntityProblem("Pacote de extração e carregamento de dados deve conter ao menos uma tabela!");
@@ -147,11 +140,11 @@ public class ExtractLoadJobBuilder {
         //TODO: check if table exists in target datasource from jdbc metadata
 
         return tables.stream()
-                .map(table -> step(table, extractionType))
+                .map(this::step)
                 .collect(Collectors.toList());
     }
 
-    public Step step(BundledAppTableDto bundledAppTableDto, ExtractionTypeEnum extractionType) {
+    public Step step(BundledAppTableDto bundledAppTableDto) {
         StringBuilder stepName = new StringBuilder();
         stepName.append("EXTRACT_LOAD_DATA_STEP-");
         stepName.append(bundledAppTableDto.getSourceAppTableName().trim().toUpperCase());
@@ -159,7 +152,7 @@ public class ExtractLoadJobBuilder {
         log.info("Building Step: [{}]", stepName);
 
         ExtractJdbcPagingItemReader reader = context.getBean(ExtractJdbcPagingItemReader.class,
-                sourceDataSource, sourceJdbcUtils, targetJdbcTemplate, fetchSize, bundledAppTableDto, extractionType);
+                sourceDataSource, sourceJdbcUtils, targetJdbcTemplate, fetchSize, bundledAppTableDto);
 
         InsertJdbcItemWriter insertWriter = context.getBean(InsertJdbcItemWriter.class, targetDataSource, targetJdbcUtils,
                 bundledAppTableDto.getTargetAppTableName());

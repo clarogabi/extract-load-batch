@@ -1,6 +1,5 @@
 package br.gov.sp.fatec.extractload.batch.reader;
 
-import br.gov.sp.fatec.extractload.api.model.ExtractionTypeEnum;
 import br.gov.sp.fatec.extractload.domain.dto.BundledAppTableDto;
 import br.gov.sp.fatec.extractload.domain.dto.RowMappedDto;
 import br.gov.sp.fatec.extractload.utils.JdbcUtils;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 import static br.gov.sp.fatec.extractload.utils.Constants.ITEM_READER_NAME;
 import static br.gov.sp.fatec.extractload.utils.ExtractLoadUtils.getPrimaryKey;
 import static br.gov.sp.fatec.extractload.utils.ExtractLoadUtils.getTableName;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -33,13 +33,13 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
     private Set<String> primaryKeys;
 
     public ExtractJdbcPagingItemReader(DataSource dataSource, JdbcUtils jdbcUtils, NamedParameterJdbcTemplate jdbcTemplate,
-                                       Integer fetchSize, BundledAppTableDto bundledAppTableDto, ExtractionTypeEnum extractionType) throws Exception {
+                                       Integer fetchSize, BundledAppTableDto bundledAppTableDto) throws Exception {
 
         var sourceTableName = bundledAppTableDto.getSourceAppTableName();
         this.primaryKeys = jdbcUtils.getPrimaryKeys(getTableName(sourceTableName));
 
         log.info("Preparing paging reader of table [{}] with fetch size [{}] and page size [{}]", sourceTableName, fetchSize, fetchSize);
-        var queryProvider = getQueryProvider(extractionType, dataSource, sourceTableName, bundledAppTableDto.getExtractCustomQuery());
+        var queryProvider = getQueryProvider(dataSource, sourceTableName, bundledAppTableDto.getExtractCustomQuery());
         setName(ITEM_READER_NAME.concat(sourceTableName.toUpperCase()));
         setDataSource(dataSource);
         setPageSize(fetchSize);
@@ -50,7 +50,7 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
         log.info("Reader SQL Query [{}]", queryProvider.generateFirstPageQuery(fetchSize));
     }
 
-    protected PagingQueryProvider getQueryProvider(ExtractionTypeEnum extractionType, DataSource dataSource, String tableName, String customQuery)
+    protected PagingQueryProvider getQueryProvider(DataSource dataSource, String tableName, String customQuery)
         throws Exception {
 
         Map<String, Order> sortKeys = new LinkedHashMap<>();
@@ -58,11 +58,13 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
         factory.setDataSource(dataSource);
 //        factory.setDatabaseType(dataSource.getConnection().getCatalog()); //TODO
 
-        if (ExtractionTypeEnum.DEFAULT.equals(extractionType)) {
+        if (isNull(customQuery)) {
+            log.info("Bundled table [{}] has non custom query, generating default paging query sql.", tableName);
             factory.setSelectClause("*");
             factory.setFromClause(tableName);
             primaryKeys.forEach(p -> sortKeys.put(p, Order.ASCENDING));
         } else {
+            log.info("Bundled table [{}] has custom query, generating paging query sql from it.", tableName);
             var query = customQuery.toUpperCase();
             factory.setSelectClause((String) query.subSequence(query.indexOf("SELECT"), query.indexOf("FROM")));
             String fromClause;
