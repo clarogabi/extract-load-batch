@@ -1,0 +1,32 @@
+@startuml
+title Activity Diagram - Extract And Load Application
+
+(*) --> "Configure data source"
+--> "Add new database connection"
+
+if "Connection success?" then
+  ->[yes] "Configure data tables"
+  --> "Configure data bundle"
+  --> "Add data tables to bundle"
+  --> "Start Batch Job Execution"
+
+  if "is started?" then
+    -->[yes] ===REDIRECT_GET===
+    --> "Get Job Execution Status"
+    if "is finished?" then
+      --> [yes] (*)
+    else
+      --> [no] ===REDIRECT_GET===
+    end if
+  else
+    -->[no] ===REDIRECT_CHECK===
+  endif
+
+else
+  -->[no] ===REDIRECT_CHECK===
+endif
+
+--> "Review Configuration"
+"Review Configuration" --> (*)
+
+@enduml

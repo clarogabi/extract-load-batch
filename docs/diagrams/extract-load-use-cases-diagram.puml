@@ -1,0 +1,22 @@
+@startuml
+skinparam actorStyle awesome
+package UC as "Casos de Uso - Extração e Carregamento de Dados" {
+"System Admin" as Admin << Person >>
+"Scheduler" as Scheduler << Application >>
+"RF01 - Gerenciar Cadastro de Bancos de Dados" as (RF01)
+"RF02 - Gerenciar Cadastro de Tabelas" as (RF02)
+"RF03 - Gerenciar Cadastro de Pacotes de Extração e Carregamento de Dados" as (RF03)
+"RF04 - Gerenciar Cadastro das Tabelas de um Pacote de Extração e Carregamento de Dados" as (RF04)
+"RF05 - Executar processamento em lote de um Pacote de Extração e Carregamento de Dados" as (RF05)
+"RF06 - Acompanhar execução do processamento em lote de um Pacote de Extração e Carregamento de Dados" as (RF06)
+left to right direction
+Admin ---> (RF01)
+Admin ---> (RF02)
+Admin ---> (RF03)
+Admin ---> (RF04)
+Admin ---> (RF05)
+Scheduler ---> (RF05)
+Admin ---> (RF06)
+Scheduler ---> (RF06)
+}
+@enduml

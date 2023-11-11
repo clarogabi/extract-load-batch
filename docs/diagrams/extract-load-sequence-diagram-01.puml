@@ -1,0 +1,79 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 01 - POST Datasource Configuration Properties
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+actor "System Admin" as sysadmin
+end box
+
+box "Batch Application Environment" #HoneyDew
+participant "extract-load-data-batch" as app
+collections "db-connection-pool" as pool
+database "oracle-extract-load" as el_db
+end box
+
+box "External Datasource Environment" #Azure
+database "app-database" as app_db #Gray
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Datasource Configuration Properties API
+end legend
+
+sysadmin -> app:	**HTTP POST /v1/datasource**
+note right of sysadmin
+  **Request body (application/json)**
+     {
+        "databaseName": "H2_DUMMY_DB",
+        "databasePlatform": "org.hibernate.dialect.H2Dialect",
+        "userName": "h2sa",
+        "password": "admin",
+        "jdbcConnectionUrl": "jdbc:h2:mem:testdb",
+        "driverClassName": "org.h2.Driver",
+        "databaseDialect": "Oracle",
+        "databaseSchema": "DUMMY_SCHEMA"
+     }
+end note
+
+activate app
+    app -> app: validateInputData()
+    alt
+        app -> el_db: saveDatasourceConfiguration()
+        activate el_db
+        el_db --> app: <<ok>>
+        deactivate el_db
+        alt
+            app -> pool: updateConnectionPool()
+            activate pool
+            pool -> app_db: addNewConnection()
+            activate app_db
+            app_db --> pool: <<connection success>>
+            pool --> app: <<ok>>
+            app --> sysadmin: **HTTP Status Code 201**\n**Created**
+            note right of sysadmin
+              **Response body (application/json)**
+
+              {
+                "uid": 009
+              }
+            end note
+        else connection pool error
+            app_db --> pool: <<connection failed>>
+            deactivate app_db
+            pool --> app: <<error>>
+            deactivate pool
+            app --> sysadmin: **HTTP Status Code 422**\n**Unprocessable Entity**
+        end alt
+    else validation error
+        app --> sysadmin: **HTTP Status Code 400**\n**Bad Request**
+        deactivate app
+    end alt
+@enduml

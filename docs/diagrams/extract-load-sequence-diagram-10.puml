@@ -1,0 +1,87 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 10 - Batch Job Execution Flow
+
+'a list of the actors and participants'
+box "extract-load-data-batch" #HoneyDew
+participant "spring-batch" as batch
+participant "batch-job-repository" as job_repository
+end box
+
+box "Extract And Load Database" #pink
+database "oracle-extract-load" as el_db
+end box
+
+box "External Datasource Environment" #Azure
+database "source-app-db" as source_db #Gray
+database "target-app-db" as target_db #Gray
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Batch Job Execution Flow
+end legend
+activate batch
+group job
+   loop for each step in job
+      loop for each chunck
+         group reader
+            batch -> source_db: read()
+            activate source_db
+            source_db --> batch: <<sql result>>
+            deactivate source_db
+         end group
+         group processor
+            batch -> target_db: findRecordsByPrimaryKeys()
+            activate target_db
+            target_db --> batch: <<sql result>>
+            deactivate target_db
+            batch -> batch: verifyWriteMode()
+            alt record not found
+               batch -> batch: setInsertMode()
+            else
+               batch -> batch: setUpdateMode()
+            end alt
+         end group
+         group writer
+            batch -> batch: checkWriteMode()
+            alt insert mode
+               batch -> target_db: insert()
+               activate target_db
+               target_db --> batch: <<sql result>>
+               deactivate target_db
+            else
+               batch -> target_db: update()
+               activate target_db
+               target_db --> batch: <<sql result>>
+               deactivate target_db
+            end alt
+         end group
+      end loop
+      batch -> job_repository: persistStepMetadata()
+      activate job_repository
+      job_repository -> el_db: <<sql statement>>
+      activate el_db
+      el_db --> job_repository: <<sql result>>
+      deactivate el_db
+      job_repository --> batch: <<sql result>>
+      deactivate job_repository
+   end loop
+   batch -> job_repository: persistJobMetadata()
+   activate job_repository
+   job_repository -> el_db: <<sql statement>>
+   activate el_db
+   el_db --> job_repository: <<sql result>>
+   deactivate el_db
+   job_repository --> batch: <<sql result>>
+   deactivate job_repository
+   ...
+   batch -x batch: finish()
+end group
+@enduml

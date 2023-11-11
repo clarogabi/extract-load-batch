@@ -1,0 +1,53 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 06 - GET Bundled Tables Definitions
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+actor "System Admin" as sysadmin
+end box
+
+box "Batch Application Environment" #HoneyDew
+participant "extract-load-data-batch" as app
+database "oracle-extract-load" as el_db
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Bundled Tables Definitions API
+end legend
+
+sysadmin -> app: **HTTP GET /v1/data/bundles/{bundleId}/tables/{bundledTableId}**
+activate app
+    alt
+        app -> el_db: findBundledTableByBundleIdAndTableId()
+        activate el_db
+        el_db --> app: <<ok>>
+        app --> sysadmin: **HTTP Status Code 200**\n**OK**
+        note right of sysadmin
+           **Response body (application/json)**
+
+              {
+                 "bundledTableId": 12,
+                 "sourceTableId": 12,
+                 "targetTableId": 12,
+                 "tablePhysicalName": "DUMMY_TABLE_NAME",
+                 "relationalOrdering": 1,
+                 "querySelect": "DUMMY SELECT STATEMENT",
+                 "queryInsert": "DUMMY INSERT STATEMENT",
+                 "queryUpdate": "DUMMY UPDATE STATEMENT"
+              }
+        end note
+    else error
+        el_db --> app: <<register not found>>
+        deactivate el_db
+        app --> sysadmin: **HTTP Status Code 404**\n**Not Found**
+        deactivate app
+    end alt
+@enduml

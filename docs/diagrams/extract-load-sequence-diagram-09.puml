@@ -1,0 +1,110 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 09 - POST Batch Job Execution
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+participant "Scheduler" as scheduler
+end box
+
+box "extract-load-data-batch" #HoneyDew
+participant "controller" as controller
+participant "service" as service
+participant "repository" as repository
+participant "spring-batch" as batch
+participant "batch-job-repository" as job_repository
+end box
+
+box "Extract And Load Database" #pink
+database "oracle-extract-load" as el_db
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Batch Job Execution API
+end legend
+
+scheduler -> controller: **HTTP POST /v1/batch/job**
+activate controller
+note right of scheduler
+  **Request body (application/json)**
+     {
+        "dataBundleId": 12
+     }
+end note
+controller -> service: <<dataBundleId>>
+activate service
+    service -> service: validateInputData()
+    alt
+        service -> repository: findDataBundle()
+        alt
+           activate repository
+           repository -> el_db: <<sql statement>>
+           activate el_db
+           el_db --> repository: <<sql result>>
+           deactivate el_db
+           repository --> service: <<entity>>
+           deactivate repository
+           service -> service: logicalValidation()
+           note right of service
+              Data bundle must contain
+              at least one table.
+           end note
+           alt
+              service -> batch: buildBatchJob()
+              activate batch
+                 loop for each table in dataBundle
+                    batch -> batch: buildSteps()
+                 end loop
+              batch --> service: <<jobName>>
+              deactivate batch
+              service -> service: buildJobParameters()
+              service -> batch: startJob()
+              activate batch
+              batch -> job_repository: generateJobExecution()
+              activate job_repository
+              job_repository -> el_db: <<sql statement>>
+              activate el_db
+              el_db -> job_repository: <<sql result>>
+              deactivate el_db
+              job_repository --> batch: <<jobExecutionId>>
+              deactivate job_repository
+              batch --> service: <<jobExecutionId>>
+              service --> controller: <<response>>
+              controller --> scheduler: **HTTP Status Code 201**\n**Created**
+              note right of scheduler
+                 **Response body (application/json)**
+
+                 {
+                    "uid": "d6b1bc25-e721-44c6-9c3e-0f639d05e667"
+                 }
+              end note
+           else error
+              service --> controller: <<response error>>
+              controller --> scheduler: **HTTP Status Code 402**\n**Unprocessable Entity**
+           end alt
+        else error
+           service --> controller: <<response error>>
+           controller --> scheduler: **HTTP Status Code 404**\n**Not Found**
+        end alt
+    else error
+        service --> controller: <<response error>>
+        deactivate service
+        controller --> scheduler: **HTTP Status Code 400**\n**Bad Request**
+        deactivate controller
+    end alt
+group job execution flow
+    ...
+    ref over batch, job_repository
+       **Sequence Diagram 10 - Batch Job Execution Flow**
+    end ref
+    batch -x batch: finish()
+end group
+deactivate batch
+@enduml

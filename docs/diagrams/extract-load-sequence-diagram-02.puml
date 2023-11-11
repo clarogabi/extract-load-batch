@@ -1,0 +1,56 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 02 - GET Datasource Configuration Properties
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+actor "System Admin" as sysadmin
+end box
+
+box "Batch Application Environment" #HoneyDew
+participant "extract-load-data-batch" as app
+database "oracle-extract-load" as el_db
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Datasource Configuration Properties API
+end legend
+
+sysadmin -> app:	**HTTP GET /v1/datasource/{datasourceId}**
+activate app
+    alt
+        app -> el_db: findDatasourceConfiguration()
+        activate el_db
+        el_db --> app: <<ok>>
+        app --> sysadmin: **HTTP Status Code 200**\n**OK**
+        note right of sysadmin
+           **Response body (application/json)**
+
+              {
+                 "databaseId": 12,
+                 "databaseName": "H2_DUMMY_DB",
+                 "databasePlatform": "org.hibernate.dialect.H2Dialect",
+                 "userName": "h2sa",
+                 "password": "admin",
+                 "jdbcConnectionUrl": "jdbc:h2:mem:testdb",
+                 "driverClassName": "org.h2.Driver",
+                 "databaseDialect": "Oracle",
+                 "databaseSchema": "DUMMY_SCHEMA",
+                 "createDateTime": "2020-07-10 15:00:00.000",
+                 "updateDateTime": "2020-07-10 15:00:00.000"
+              }
+        end note
+    else error
+        el_db --> app: <<register not found>>
+        deactivate el_db
+        app --> sysadmin: **HTTP Status Code 404**\n**Not Found**
+        deactivate app
+    end alt
+@enduml

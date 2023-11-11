@@ -1,0 +1,64 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 04 - DELETE Datasource Configuration Properties
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+actor "System Admin" as sysadmin
+end box
+
+box "Batch Application Environment" #HoneyDew
+participant "extract-load-data-batch" as app
+collections "db-connection-pool" as pool
+database "oracle-extract-load" as el_db
+end box
+
+box "External Datasource Environment" #Azure
+database "app-database" as app_db #Gray
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Datasource Configuration Properties API
+end legend
+
+sysadmin -> app: **HTTP DELETE /v1/datasource/{datasourceId}**
+activate app
+     alt
+        app -> el_db: findDatasourceConfiguration()
+        activate el_db
+        el_db --> app: <<ok>>
+        alt
+            app -> pool: updateConnectionPool()
+            activate pool
+            pool -> app_db: removeConnection()
+            activate app_db
+            app_db --> pool: <<ok>>
+            pool --> app: <<ok>>
+            app -> pool: testConnection()
+            pool --> app: <<connection unknown>>
+            app -> el_db: deleteDatasourceConfiguration()
+            activate el_db
+            el_db --> app: <<ok>>
+            deactivate el_db
+            app --> sysadmin: **HTTP Status Code 204**\n**No Content**
+        else connection pool error
+            app_db --> pool: <<error>>
+            deactivate app_db
+            pool --> app: <<error>>
+            deactivate pool
+            app --> sysadmin: **HTTP Status Code 500**\n**Internal Server Error**
+        end alt
+    else error
+        el_db --> app: <<register not found>>
+        deactivate el_db
+        app --> sysadmin: **HTTP Status Code 404**\n**Not Found**
+        deactivate app
+    end alt
+@enduml

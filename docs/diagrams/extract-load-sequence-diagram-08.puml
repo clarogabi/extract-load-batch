@@ -1,0 +1,41 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 08 - DELETE Bundled Tables Definitions
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+actor "System Admin" as sysadmin
+end box
+
+box "Batch Application Environment" #HoneyDew
+participant "extract-load-data-batch" as app
+database "oracle-extract-load" as el_db
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Bundled Tables Definitions API
+end legend
+
+sysadmin -> app: **HTTP DELETE /v1/data/bundles/{bundleId}/tables/{bundledTableId}**
+activate app
+     alt
+        app -> el_db: findBundledTable()
+        activate el_db
+        el_db --> app: <<ok>>
+        app -> el_db: removeBundledTable()
+        el_db --> app: <<ok>>
+        app --> sysadmin: **HTTP Status Code 204**\n**No Content**
+    else error
+        el_db --> app: <<register not found>>
+        deactivate el_db
+        app --> sysadmin: **HTTP Status Code 404**\n**Not Found**
+        deactivate app
+    end alt
+@enduml

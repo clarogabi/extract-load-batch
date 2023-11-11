@@ -1,0 +1,88 @@
+@startuml
+left to right direction
+skinparam roundcorner 5
+skinparam linetype ortho
+skinparam shadowing false
+skinparam handwritten false
+skinparam class {
+    BackgroundColor white
+    ArrowColor #2688d4
+    BorderColor #2688d4
+}
+skinparam legendBackgroundColor white
+
+!define primary_key(name) <b><color:#b8861b><&key></color> name</b>
+!define foreign_key(name) <color:#aaaaaa><&key></color> name
+!define column(name) <color:#efefef><&media-record></color> name
+!define table(logical, physical) entity "logical" as physical << (T, white) >>
+
+'diagram title'
+'title Extract Load Batch Application - Logical Model
+
+table( Datasource Configuration, EL_DATASOURCE_CONFIGURATION ) {
+  primary_key( Datasource Configuration Uid )
+  --
+  column( Database Name )
+  column( Database Platform )
+  column( Database Provider )
+  column( Database Connection Url )
+  column( Database User Name )
+  column( Database Password )
+  column( Driver Class Name )
+  column( Database Dialect )
+  column( Database Schema )
+  column( Create Date Time )
+  column( Update Date Time )
+}
+
+table( Data Bundle, EL_DATA_BUNDLE ) {
+  primary_key( Data Bundle Unique Identifier )
+  --
+  foreign_key( Source Datasource Configuration Unique Identifier )
+  foreign_key( Target Datasource Configuration Unique Identifier )
+  --
+  column( Data Bundle Name )
+  column( Create Date Time )
+  column( Update Date Time )
+}
+
+table( Application Table, EL_TABLE ) {
+  primary_key( Table Unique Identifier )
+  --
+  column( Application Table Physical Name )
+  column( Create Date Time )
+  column( Update Date Time )
+}
+
+table( Bundled Application Table, EL_BUNDLED_TABLES ) {
+  primary_key( Bundled Application Table Unique Identifier )
+  --
+  foreign_key( Data Bundle Unique Identifier )
+  foreign_key( Source Application Table Unique Identifier )
+  foreign_key( Target Application Table Unique Identifier )
+  --
+  column( Relational Ordering Number )
+  column( Extract Custom Query )
+  column( Load Custom Insert Query)
+  column( Load Custom Update Query )
+  column( Create Date Time )
+  column( Update Date Time )
+}
+
+EL_DATASOURCE_CONFIGURATION "(1,1)" --> "(0,n)" EL_DATA_BUNDLE
+EL_DATASOURCE_CONFIGURATION "(1,1)" --> "(0,n)" EL_DATA_BUNDLE
+
+EL_TABLE "(1,1)" ---> "(0,n)" EL_BUNDLED_TABLES
+EL_TABLE "(1,1)" ---> "(0,n)" EL_BUNDLED_TABLES
+
+EL_BUNDLED_TABLES "(0,n)" <-- "(1,1)" EL_DATA_BUNDLE
+
+legend left
+    |= |= Type |
+    | <b>T</b> | Table |
+    | <color:#b8861b><&key></color> | Primary Key |
+    | <color:#aaaaaa><&key></color> | Foreign Key |
+    | <color:#efefef><&media-record></color> | Attribute |
+endlegend
+
+@enduml

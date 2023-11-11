@@ -1,0 +1,57 @@
+@startuml
+'diagram parameters'
+autonumber
+'skinparam dpi 300
+skinparam LegendBackgroundColor #white
+
+'diagram title'
+title Sequence Diagram 07 - PUT Bundled Tables Definitions
+
+'a list of the actors and participants'
+box #DarkSeaGreen
+actor "System Admin" as sysadmin
+end box
+
+box "Batch Application Environment" #HoneyDew
+participant "extract-load-data-batch" as app
+database "oracle-extract-load" as el_db
+end box
+
+'a brief description of the diagram'
+legend top
+-- \t**Abstract:**\t --
+Extract and Load - Bundled Tables Definitions API
+end legend
+
+sysadmin -> app:	**HTTP PUT /v1/data/bundles/{bundleId}/tables/{bundledTableId}**
+note right of sysadmin
+  **Request body (application/json)**
+    {
+       "sourceTableId": 1,
+       "targetTableId": 1,
+       "relationalOrdering": 1,
+       "querySelect": "DUMMY SELECT STATEMENT",
+       "queryInsert": "DUMMY INSERT STATEMENT",
+       "queryUpdate": "DUMMY UPDATE STATEMENT"
+    }
+end note
+
+activate app
+    app -> app: validateInputData()
+    alt
+        app -> el_db: findBundledTable()
+        activate el_db
+        el_db --> app: <<entity>>
+        alt
+            app -> el_db: updateBundledTable()
+            el_db --> app: <<ok>>
+        else register not found
+            el_db --> app: <<register not found>>
+            deactivate el_db
+            app --> sysadmin: **HTTP Status Code 404**\n**Not Found**
+        end alt
+    else validation error
+        app --> sysadmin: **HTTP Status Code 400**\n**Bad Request**
+        deactivate app
+    end alt
+@enduml
