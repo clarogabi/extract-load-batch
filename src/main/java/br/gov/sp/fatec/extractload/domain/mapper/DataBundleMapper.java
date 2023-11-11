@@ -35,6 +35,7 @@ public interface DataBundleMapper {
     @Mapping(target = "bundledAppTables", source = "bundledTables")
     DataBundleDto requestToDto(DataBundleRequest dataBundleRequest);
 
+    @Mapping(target = "bundledAppTables", ignore = true)
     @Mapping(target = "dataBundleName", source = "bundleRequest.bundleName")
     DataBundleDto requestToDto(Long uid, BundleRequest bundleRequest);
 

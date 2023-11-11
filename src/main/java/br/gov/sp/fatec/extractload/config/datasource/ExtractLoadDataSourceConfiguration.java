@@ -2,6 +2,7 @@ package br.gov.sp.fatec.extractload.config.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,14 +19,13 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "extractLoadDataSourceEntityManagerFactory",
-        transactionManagerRef = "extractLoadDataSourceTransactionManager",
-        basePackages = "br.gov.sp.fatec.extractload.repository"
+    entityManagerFactoryRef = "extractLoadDataSourceEmf",
+    transactionManagerRef = "extractLoadDataSourceTm",
+    basePackages = "br.gov.sp.fatec.extractload.repository"
 )
 @EnableTransactionManagement
 public class ExtractLoadDataSourceConfiguration {
@@ -46,21 +46,20 @@ public class ExtractLoadDataSourceConfiguration {
     }
 
     @Primary
-    @Bean(name = "extractLoadDataSourceEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean extractLoadDataSourceEntityManagerFactory(
-            EntityManagerFactoryBuilder builder, @Qualifier("extractLoadDataSource") DataSource dataSource) {
+    @Bean(name = "extractLoadDataSourceEmf")
+    public LocalContainerEntityManagerFactoryBean extractLoadDataSourceEmf(EntityManagerFactoryBuilder builder,
+        @Qualifier("extractLoadDataSource") DataSource dataSource) {
 
         return builder
-                .dataSource(dataSource)
-                .persistenceUnit("extractLoadDataSource")
-                .packages("br.gov.sp.fatec.*.entity")
-                .build();
+            .dataSource(dataSource)
+            .persistenceUnit("extractLoadDataSource")
+            .packages("br.gov.sp.fatec.*.entity")
+            .build();
     }
 
     @Primary
-    @Bean(name = "extractLoadDataSourceTransactionManager")
-    public PlatformTransactionManager extractLoadDataSourceTransactionManager(
-            @Autowired @Qualifier("extractLoadDataSourceEntityManagerFactory") EntityManagerFactory emf) {
+    @Bean(name = "extractLoadDataSourceTm")
+    public PlatformTransactionManager extractLoadDataSourceTm(@Qualifier("extractLoadDataSourceEmf") EntityManagerFactory emf) {
 
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
@@ -78,4 +77,5 @@ public class ExtractLoadDataSourceConfiguration {
     public JpaDialect getJpaDialect() {
         return new HibernateJpaDialect();
     }
+
 }

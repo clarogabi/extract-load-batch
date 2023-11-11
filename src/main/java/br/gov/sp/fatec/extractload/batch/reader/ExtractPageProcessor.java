@@ -35,41 +35,45 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
         if (!page.isEmpty()) {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("ids", page.stream()
-                    .map(row -> row.getRow().entrySet()
-                            .stream()
-                            .filter(field -> field.getKey().isPrimaryKey() && primaryKeyName.equals(field.getKey().getName()))
-                            .findFirst()
-                            .map(Map.Entry::getValue)
-                            .orElse(null)).collect(Collectors.toList()));
+                .map(row -> row.getRow().entrySet()
+                    .stream()
+                    .filter(field -> field.getKey().isPrimaryKey() && primaryKeyName.equals(field.getKey().getName()))
+                    .findFirst()
+                    .map(Map.Entry::getValue)
+                    .orElse(null)).collect(Collectors.toList()));
 
             jdbcTemplate.query(generateSelectIdsQuery(tableName, primaryKeyName), parameters, new RowExtractor(ids));
 
             if (!ids.isEmpty()) {
                 page.forEach(row -> row.getRow()
-                        .entrySet().stream()
-                        .filter(map -> map.getKey().isPrimaryKey())
-                        .findFirst()
-                        .ifPresent(field -> {
-                            if (ids.contains(field.getValue().toString())) {
-                                row.setLoadMode(LoadModeEnum.UPDATE);
-                            }
-                        }));
+                    .entrySet().stream()
+                    .filter(map -> map.getKey().isPrimaryKey())
+                    .findFirst()
+                    .ifPresent(field -> {
+                        if (ids.contains(field.getValue().toString())) {
+                            row.setLoadMode(LoadModeEnum.UPDATE);
+                        }
+                    }));
             }
         }
     }
 
     private class RowExtractor implements ResultSetExtractor<Void> {
+
         private final List<String> ids;
+
         public RowExtractor(List<String> ids) {
             this.ids = ids;
         }
 
         @Override
         public Void extractData(ResultSet rs) throws SQLException, DataAccessException {
-            while(rs.next()) {
+            while (rs.next()) {
                 ids.add(rs.getString(primaryKeyName));
             }
             return null;
         }
+
     }
+
 }

@@ -25,4 +25,5 @@ public class CompositeJdbcPagingItemReader<T> extends JdbcPagingItemReader<T> {
             pageProcessor.process(results);
         }
     }
+
 }

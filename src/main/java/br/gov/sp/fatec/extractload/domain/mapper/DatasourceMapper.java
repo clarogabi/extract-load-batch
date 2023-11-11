@@ -22,11 +22,15 @@ public interface DatasourceMapper {
     DatasourcePropertiesResponse dtoToResponse(DatasourceDto dto);
 
     @Mapping(target = "uid", ignore = true)
+    @Mapping(target = "createDateTime", ignore = true)
+    @Mapping(target = "updateDateTime", ignore = true)
     @Mapping(target = "databaseUserName", source = "userName")
     @Mapping(target = "databasePassword", source = "password")
     @Mapping(target = "databaseConnectionUrl", source = "jdbcConnectionUrl")
     DatasourceDto requestToDto(DatasourcePropertiesRequest request);
 
+    @Mapping(target = "createDateTime", ignore = true)
+    @Mapping(target = "updateDateTime", ignore = true)
     @Mapping(target = "databaseUserName", source = "request.userName")
     @Mapping(target = "databasePassword", source = "request.password")
     @Mapping(target = "databaseConnectionUrl", source = "request.jdbcConnectionUrl")

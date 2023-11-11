@@ -91,21 +91,20 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
             List<String> orderKeys;
             if (orderByClause.contains(ASC)) {
                 orderKeys = Arrays.stream(orderByClause.subSequence(0, orderByClause.length() - 3).toString().split(COMMA))
-                        .map(String::trim)
-                        .collect(Collectors.toList());
+                    .map(String::trim)
+                    .collect(Collectors.toList());
                 orderKeys.forEach(k -> sortKeys.put(k, Order.ASCENDING));
             } else if (query.contains(DESC)) {
                 orderKeys = Arrays.stream(orderByClause.subSequence(0, orderByClause.length() - 4).toString().split(COMMA))
-                        .map(String::trim)
-                        .collect(Collectors.toList());
+                    .map(String::trim)
+                    .collect(Collectors.toList());
                 orderKeys.forEach(k -> sortKeys.put(k, Order.DESCENDING));
             } else {
                 orderKeys = Arrays.stream(orderByClause.subSequence(0, orderByClause.length()).toString().split(COMMA))
-                        .map(String::trim)
-                        .collect(Collectors.toList());
+                    .map(String::trim)
+                    .collect(Collectors.toList());
                 orderKeys.forEach(k -> sortKeys.put(k, Order.ASCENDING));
             }
-
         }
 
         factory.setSortKeys(sortKeys);

@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(value = "extractLoadDataSourceTransactionManager", propagation = Propagation.REQUIRES_NEW)
+@Transactional(value = "extractLoadDataSourceTm", propagation = Propagation.REQUIRES_NEW)
 public class BundledAppTableService {
 
     private final ExtractLoadBundledAppTableRepository bundledAppTableRepository;
