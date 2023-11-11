@@ -3,6 +3,7 @@ package br.gov.sp.fatec.extractload.service;
 import br.gov.sp.fatec.extractload.api.model.CreatedObjectResponse;
 import br.gov.sp.fatec.extractload.batch.job.ExtractLoadJobBuilder;
 import br.gov.sp.fatec.extractload.domain.dto.JobParametersDto;
+import br.gov.sp.fatec.extractload.exception.NotFoundProblem;
 import br.gov.sp.fatec.extractload.exception.UnprocessableEntityProblem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
@@ -52,7 +54,11 @@ public class BatchExecutionService {
     }
 
     public JobExecution findJobExecutionById(Long jobExecutionId) {
-        return jobExplorer.getJobExecution(jobExecutionId);
+        var jobExecution =  jobExplorer.getJobExecution(jobExecutionId);
+        if (isNull(jobExecution)) {
+            throw new NotFoundProblem("Registro não encontrado.");
+        }
+        return jobExecution;
     }
 
 }

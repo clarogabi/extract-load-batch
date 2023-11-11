@@ -213,3 +213,25 @@ alter table CO_APP_TARGET.inventory add constraint inventory_store_id_fk
 
 alter table CO_APP_TARGET.inventory add constraint inventory_product_id_fk
     foreign key (product_id) references CO_APP_TARGET.products (product_id);
+
+-- CONSUMERS TABLE
+
+create sequence CO_APP_TARGET.consumers_seq
+    minvalue 1
+    increment by 1
+    START with 1
+    cache 20
+    nocycle;
+
+create table CO_APP_TARGET.consumers (
+                                         customer_id     	integer,
+                                         email_address   	varchar2(255 char) not null,
+                                         full_name       	varchar2(255 char) not null,
+                                         create_date_time  timestamp(6) default sysdate not null,
+                                         update_date_time  timestamp(6) default sysdate not null)
+
+;
+
+create index CO_APP_TARGET.consumers_name_i on CO_APP_TARGET.consumers ( full_name );
+alter table CO_APP_TARGET.consumers add constraint consumers_pk primary key (customer_id);
+alter table CO_APP_TARGET.consumers add constraint consumers_email_u unique (email_address);

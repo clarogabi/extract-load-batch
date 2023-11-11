@@ -8,11 +8,14 @@
         <version>2.7.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>br.gov.sp.fatec</groupId>
     <artifactId>extract-load-batch</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>extract-load-batch</name>
     <description>extract-load-batch</description>
+    <packaging>jar</packaging>
+
     <properties>
         <java.version>11</java.version>
         <mapstruct.version>1.5.2.Final</mapstruct.version>
@@ -23,6 +26,7 @@
         <jackson-databind-nullable.version>0.2.1</jackson-databind-nullable.version>
         <openapi-generator-maven-plugin.version>6.2.1</openapi-generator-maven-plugin.version>
     </properties>
+
     <dependencies>
 
         <dependency>
@@ -130,10 +134,53 @@
             <artifactId>spring-batch-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/clarogabi/extract-load-batch</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <type>jar</type>
+                            <overWrite>false</overWrite>
+                        </artifactItem>
+                    </artifactItems>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
@@ -166,7 +213,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
