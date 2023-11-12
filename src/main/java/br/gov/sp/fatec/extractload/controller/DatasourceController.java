@@ -31,7 +31,7 @@ public class DatasourceController implements DatasourceApi {
     }
 
     @Override
-    public ResponseEntity<CreatedObjectResponse> postDatasourceProperties(DatasourcePropertiesRequest datasourcePropertiesRequest) {
+    public ResponseEntity<CreatedObjectResponse> postDatasourceConnection(DatasourcePropertiesRequest datasourcePropertiesRequest) {
         return new ResponseEntity<>(new CreatedObjectResponse()
             .uid(datasourceService.createDatasource(datasourceMapper.requestToDto(datasourcePropertiesRequest))), HttpStatus.CREATED);
     }
