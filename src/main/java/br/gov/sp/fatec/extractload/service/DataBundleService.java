@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(value = "extractLoadDataSourceTransactionManager", propagation = Propagation.REQUIRES_NEW)
+@Transactional(value = "extractLoadDataSourceTm", propagation = Propagation.REQUIRES_NEW)
 public class DataBundleService {
 
     private final ExtractLoadDataBundleRepository dataBundleRepository;

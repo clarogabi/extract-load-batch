@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CompositeJdbcPagingItemWriter extends ClassifierCompositeItemWriter<RowMappedDto> {
 
-    public CompositeJdbcPagingItemWriter(Classifier<RowMappedDto, ItemWriter<? super RowMappedDto>> classifier) {
-        setClassifier(classifier);
+    public CompositeJdbcPagingItemWriter(Classifier<RowMappedDto, ItemWriter<? super RowMappedDto>> loadItemWriterClassifier) {
+        setClassifier(loadItemWriterClassifier);
     }
+
 }

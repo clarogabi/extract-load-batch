@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(value = "extractLoadDataSourceTransactionManager", propagation = Propagation.REQUIRES_NEW)
+@Transactional(value = "extractLoadDataSourceTm", propagation = Propagation.REQUIRES_NEW)
 public class DatasourceService {
 
     private final ExtractLoadDatasourceConfigurationRepository datasourceConfigurationRepository;

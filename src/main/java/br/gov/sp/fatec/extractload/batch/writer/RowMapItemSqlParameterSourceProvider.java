@@ -12,9 +12,7 @@ public class RowMapItemSqlParameterSourceProvider implements ItemSqlParameterSou
     @Override
     public SqlParameterSource createSqlParameterSource(RowMappedDto item) {
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        item.getRow().forEach((keyField, value) ->
-                mapSqlParameterSource.addValue(keyField.getName(), value, keyField.getJdbcType())
-        );
+        item.getRow().forEach((keyField, value) -> mapSqlParameterSource.addValue(keyField.getName(), value, keyField.getJdbcType()));
         return mapSqlParameterSource;
     }
 }

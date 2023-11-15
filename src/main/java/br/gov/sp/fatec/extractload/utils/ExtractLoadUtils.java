@@ -6,14 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Set;
 
 import static br.gov.sp.fatec.extractload.utils.Constants.DOT_REGEX;
 import static br.gov.sp.fatec.extractload.utils.Constants.ONE;
 import static br.gov.sp.fatec.extractload.utils.Constants.ZERO;
-import static io.micrometer.core.instrument.util.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -58,12 +56,8 @@ public class ExtractLoadUtils {
         return null;
     }
 
-    public static LocalDateTime dateToLocalDateTime(Date date) {
-        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-    }
-
-    public static String findElapsedTime(Date startTime, Date endTime) {
-        Duration duration = Duration.between(dateToLocalDateTime(startTime), dateToLocalDateTime(endTime));
+    public static String findElapsedTime(LocalDateTime startTime, LocalDateTime endTime) {
+        Duration duration = Duration.between(startTime, endTime);
 
         long hours = duration.toHours();
         duration = duration.minusHours(hours);

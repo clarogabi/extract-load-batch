@@ -12,26 +12,29 @@ import br.gov.sp.fatec.extractload.exception.UnprocessableEntityProblem;
 import br.gov.sp.fatec.extractload.service.BundledAppTableService;
 import br.gov.sp.fatec.extractload.service.DataBundleService;
 import br.gov.sp.fatec.extractload.utils.JdbcUtils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.dao.DeadlockLoserDataAccessException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,8 +46,7 @@ import static org.springframework.batch.core.ExitStatus.FAILED;
 import static org.springframework.batch.core.ExitStatus.NOOP;
 
 @Slf4j
-@Component
-@EnableBatchProcessing
+@Configuration
 public class ExtractLoadJobBuilder {
 
     @Value("${batch.execution.concurrencyLimit:2}")
@@ -60,24 +62,13 @@ public class ExtractLoadJobBuilder {
     public Integer retryLimit;
 
     @Autowired
-    public ApplicationContext context;
+    public ApplicationContext applicationContext;
 
     @Autowired
     private DataBundleService dataBundleService;
 
     @Autowired
     private BundledAppTableService bundledAppTableService;
-
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
-
-    @Autowired
-    @Qualifier("sourceJdbcUtils")
-    private JdbcUtils sourceJdbcUtils;
-
-    @Autowired
-    @Qualifier("targetJdbcUtils")
-    private JdbcUtils targetJdbcUtils;
 
     @Autowired
     @Qualifier("sourceDataSource")
@@ -89,17 +80,13 @@ public class ExtractLoadJobBuilder {
 
     @Autowired
     @Qualifier("targetNamedParameterJdbcTemplate")
-    private NamedParameterJdbcTemplate targetJdbcTemplate;
-
-    @Autowired
-    private JobBuilderFactory jobBuilderFactory;
+    private NamedParameterJdbcTemplate targetNamedParameterJdbcTemplate;
 
     public Job job(JobParametersDto jobParams) {
         var dataBundleId = jobParams.getDataBundleId();
         var bundleName = dataBundleService.findDataBundleNameById(dataBundleId);
 
-        return jobBuilderFactory
-                .get(JOB_NAME.concat(bundleName).toUpperCase())
+        return new JobBuilder(JOB_NAME.concat(bundleName).toUpperCase(), applicationContext.getBean(JobRepository.class))
                 .incrementer(new RunIdIncrementer())
                 .start(getStepsFlow(bundleName, dataBundleId))
                 .end()
@@ -133,7 +120,7 @@ public class ExtractLoadJobBuilder {
 
     public List<Step> buildSteps(List<BundledAppTableDto> tables) {
 
-        if (isNull(tables) || 0 == tables.size()) {
+        if (isNull(tables) || tables.isEmpty()) {
             throw new UnprocessableEntityProblem("Pacote de extração e carregamento de dados deve conter ao menos uma tabela!");
         }
 
@@ -145,30 +132,32 @@ public class ExtractLoadJobBuilder {
                 .collect(Collectors.toList());
     }
 
+    @SneakyThrows(SQLException.class)
     public Step step(BundledAppTableDto bundledAppTableDto) {
         var stepName = STEP_NAME.concat(bundledAppTableDto.getSourceAppTableName().trim()).toUpperCase();
         log.info("Building Step: [{}]", stepName);
 
-        ExtractJdbcPagingItemReader reader = context.getBean(ExtractJdbcPagingItemReader.class,
-                sourceDataSource, sourceJdbcUtils, targetJdbcTemplate, fetchSize, bundledAppTableDto);
+        ExtractJdbcPagingItemReader reader = applicationContext.getBean(ExtractJdbcPagingItemReader.class,
+                sourceDataSource, new JdbcUtils(sourceDataSource), targetNamedParameterJdbcTemplate, fetchSize, bundledAppTableDto);
 
-        InsertJdbcItemWriter insertWriter = context.getBean(InsertJdbcItemWriter.class, targetDataSource, targetJdbcUtils,
+        var targetJdbcUtils = new JdbcUtils(targetDataSource);
+
+        InsertJdbcItemWriter insertWriter = applicationContext.getBean(InsertJdbcItemWriter.class, targetDataSource, targetJdbcUtils,
                 bundledAppTableDto.getTargetAppTableName());
 
-        UpdateJdbcItemWriter updateWriter = context.getBean(UpdateJdbcItemWriter.class, targetDataSource, targetJdbcUtils,
+        UpdateJdbcItemWriter updateWriter = applicationContext.getBean(UpdateJdbcItemWriter.class, targetDataSource, targetJdbcUtils,
                 bundledAppTableDto.getTargetAppTableName());
 
-        CompositeJdbcPagingItemWriter writerClassifier = context.getBean(CompositeJdbcPagingItemWriter.class,
+        CompositeJdbcPagingItemWriter writerClassifier = applicationContext.getBean(CompositeJdbcPagingItemWriter.class,
                 new LoadItemWriterClassifier(insertWriter, updateWriter));
 
-        return stepBuilderFactory
-                .get(stepName)
-                .<RowMappedDto, RowMappedDto>chunk(chunkSize)
+        return new StepBuilder(stepName, applicationContext.getBean(JobRepository.class))
+                .<RowMappedDto, RowMappedDto>chunk(chunkSize, applicationContext.getBean(PlatformTransactionManager.class))
                 .reader(reader)
                 .writer(writerClassifier)
                 .faultTolerant()
                 .retryLimit(retryLimit)
-                .retry(DeadlockLoserDataAccessException.class)
+                .retry(PessimisticLockingFailureException.class)
                 .taskExecutor(stepTaskExecutor())
                 .build();
     }
