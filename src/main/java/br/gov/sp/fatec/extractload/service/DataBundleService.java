@@ -3,7 +3,7 @@ package br.gov.sp.fatec.extractload.service;
 import br.gov.sp.fatec.extractload.domain.dto.DataBundleDto;
 import br.gov.sp.fatec.extractload.domain.mapper.DataBundleMapper;
 import br.gov.sp.fatec.extractload.entity.ExtractLoadDataBundle;
-import br.gov.sp.fatec.extractload.entity.ExtractLoadDatasourceConfiguration;
+import br.gov.sp.fatec.extractload.entity.ExtractLoadDataSourceConfiguration;
 import br.gov.sp.fatec.extractload.exception.NotFoundProblem;
 import br.gov.sp.fatec.extractload.repository.ExtractLoadDataBundleRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,55 +18,51 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(value = "extractLoadDataSourceTm", propagation = Propagation.REQUIRES_NEW)
+@Transactional(value = "primaryTransactionManager", propagation = Propagation.REQUIRES_NEW)
 public class DataBundleService {
 
     private final ExtractLoadDataBundleRepository dataBundleRepository;
 
     private final DataBundleMapper dataBundleMapper;
 
-    private final DatasourceService datasourceService;
+    private final DataSourceService datasourceService;
 
-    private ExtractLoadDataBundle findExtractLoadDataBundleById(Long dataBundleId) {
+    private ExtractLoadDataBundle findExtractLoadDataBundleById(final Long dataBundleId) {
         return dataBundleRepository.findByUid(dataBundleId)
             .orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
     }
 
-    public DataBundleDto findDataBundleById(Long dataBundleId) {
+    public DataBundleDto findDataBundleById(final Long dataBundleId) {
         return dataBundleMapper.mapToDto(findExtractLoadDataBundleById(dataBundleId));
     }
 
-    public String findDataBundleNameById(Long dataBundleId) {
-        return findDataBundleById(dataBundleId).getDataBundleName();
-    }
-
-    public Long createDataBundle(DataBundleDto dataBundleDto) {
+    public Long createDataBundle(final DataBundleDto dataBundleDto) {
         return dataBundleRepository.save(dataBundleMapper.dtoToEntity(dataBundleDto)).getUid();
     }
 
-    public void updateDataBundle(DataBundleDto dataBundleDto) {
+    public void updateDataBundle(final DataBundleDto dataBundleDto) {
         var entity = findExtractLoadDataBundleById(dataBundleDto.getUid());
         entity.setDataBundleName(dataBundleDto.getDataBundleName());
-        entity.setUpdateDateTime(Timestamp.valueOf(LocalDateTime.now()));
+        entity.setUpdateDateTime(LocalDateTime.now());
 
-        ExtractLoadDatasourceConfiguration sourceDatasource = new ExtractLoadDatasourceConfiguration();
-        sourceDatasource.setUid(datasourceService.getDatasourceProperties(dataBundleDto.getSourceDatasourceId()).getUid());
-        entity.setSourceDatasourceConfig(sourceDatasource);
+        var sourceDataSource = new ExtractLoadDataSourceConfiguration();
+        sourceDataSource.setUid(datasourceService.getDataSourceProperties(dataBundleDto.getSourceDataSourceId()).getUid());
+        entity.setSourceDataSourceConfig(sourceDataSource);
 
-        ExtractLoadDatasourceConfiguration targetDatasource = new ExtractLoadDatasourceConfiguration();
-        targetDatasource.setUid(datasourceService.getDatasourceProperties(dataBundleDto.getTargetDatasourceId()).getUid());
-        entity.setTargetDatasourceConfig(targetDatasource);
+        var targetDataSource = new ExtractLoadDataSourceConfiguration();
+        targetDataSource.setUid(datasourceService.getDataSourceProperties(dataBundleDto.getTargetDataSourceId()).getUid());
+        entity.setTargetDataSourceConfig(targetDataSource);
 
         dataBundleRepository.save(entity);
     }
 
-    public void deleteDataBundle(Long dataBundleId) {
+    public void deleteDataBundle(final Long dataBundleId) {
         if (existsDataBundleById(dataBundleId)) {
             dataBundleRepository.deleteById(dataBundleId);
         }
     }
 
-    public boolean existsDataBundleById(Long dataBundleId) {
+    public boolean existsDataBundleById(final Long dataBundleId) {
         return dataBundleRepository.existsById(dataBundleId);
     }
 

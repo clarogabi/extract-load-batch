@@ -1,8 +1,8 @@
 package br.gov.sp.fatec.extractload.domain.dto;
 
-import io.micrometer.core.instrument.util.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter

@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.batch.core.JobExecution;
 
-@Mapper(componentModel="spring",
+@Mapper(componentModel = "spring",
     imports = { ExtractLoadUtils.class },
     uses = { BatchStatusMapper.class, ExitStatusMapper.class, StepExecutionMapper.class })
 public abstract class JobExecutionMapper {

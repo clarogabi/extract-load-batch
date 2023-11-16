@@ -11,8 +11,8 @@ public class DataBundleDto {
 
     private Long uid;
     private String dataBundleName;
-    private Long sourceDatasourceId;
-    private Long targetDatasourceId;
+    private Long sourceDataSourceId;
+    private Long targetDataSourceId;
     private List<BundledAppTableDto> bundledAppTables;
 
 }

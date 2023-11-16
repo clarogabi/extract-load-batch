@@ -21,24 +21,24 @@ public class BundlesController implements BundlesApi {
     private final DataBundleMapper dataBundleMapper;
 
     @Override
-    public ResponseEntity<Void> deleteBundle(Long bundleId) {
+    public ResponseEntity<Void> deleteBundle(final Long bundleId) {
         dataBundleService.deleteDataBundle(bundleId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<DataBundleResponse> getBundle(Long bundleId) {
+    public ResponseEntity<DataBundleResponse> getBundle(final Long bundleId) {
         return new ResponseEntity<>(dataBundleMapper.mapToResponse(dataBundleService.findDataBundleById(bundleId)), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<CreatedObjectResponse> postBundle(DataBundleRequest dataBundleRequest) {
+    public ResponseEntity<CreatedObjectResponse> postBundle(final DataBundleRequest dataBundleRequest) {
         return new ResponseEntity<>(new CreatedObjectResponse()
             .uid(dataBundleService.createDataBundle(dataBundleMapper.requestToDto(dataBundleRequest))), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Void> putBundle(Long bundleId, BundleRequest bundleRequest) {
+    public ResponseEntity<Void> putBundle(final Long bundleId, final BundleRequest bundleRequest) {
         dataBundleService.updateDataBundle(dataBundleMapper.requestToDto(bundleId, bundleRequest));
         return new ResponseEntity<>(HttpStatus.OK);
     }

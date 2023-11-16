@@ -8,7 +8,6 @@ import br.gov.sp.fatec.extractload.domain.mapper.JobExecutionMapper;
 import br.gov.sp.fatec.extractload.domain.mapper.JobParameterMapper;
 import br.gov.sp.fatec.extractload.service.BatchExecutionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,12 +23,12 @@ public class BatchExecutionController implements BatchApi {
     private final JobExecutionMapper jobExecutionMapper;
 
     @Override
-    public ResponseEntity<JobExecutionResponse> getBatchJobExecution(Long jobExecutionId) {
+    public ResponseEntity<JobExecutionResponse> getBatchJobExecution(final Long jobExecutionId) {
         return new ResponseEntity<>(jobExecutionMapper.map(batchExecutionService.findJobExecutionById(jobExecutionId)), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<CreatedObjectResponse> postBatchJobExecution(JobParametersRequest request) {
+    public ResponseEntity<CreatedObjectResponse> postBatchJobExecution(final JobParametersRequest request) {
         return new ResponseEntity<>(batchExecutionService.startJob(jobParameterMapper.map(request)), HttpStatus.CREATED);
     }
 

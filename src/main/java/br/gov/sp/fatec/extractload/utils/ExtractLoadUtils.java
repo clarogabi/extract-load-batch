@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Locale;
 
 import static br.gov.sp.fatec.extractload.utils.Constants.DOT_REGEX;
 import static br.gov.sp.fatec.extractload.utils.Constants.ONE;
@@ -17,7 +18,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExtractLoadUtils {
 
-    public static String getTableName(String fullTableName) {
+    public static String getTableName(final String fullTableName) {
         if (isEmpty(fullTableName)) {
             return "";
         }
@@ -48,7 +49,7 @@ public class ExtractLoadUtils {
         return sbSql.toString();
     }
 
-    public static String getPrimaryKey(Set<String> primaryKeys) {
+    public static String getPrimaryKey(Collection<String> primaryKeys) {
         if (!primaryKeys.isEmpty()) {
             return primaryKeys.stream().findFirst()
                 .orElse(null);
@@ -72,6 +73,10 @@ public class ExtractLoadUtils {
 
     public static String pad(long value, long length) {
         return String.format("%0" + length + "d", value);
+    }
+
+    public static String textNormalizer(String text) {
+        return text.trim().toUpperCase(Locale.getDefault());
     }
 
 }

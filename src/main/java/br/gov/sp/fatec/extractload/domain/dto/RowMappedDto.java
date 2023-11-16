@@ -1,7 +1,11 @@
 package br.gov.sp.fatec.extractload.domain.dto;
 
 import br.gov.sp.fatec.extractload.domain.enums.LoadModeEnum;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Map;
 

@@ -4,8 +4,8 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <springProperty scope="context" name="service" source="br.gov.sp.fatec.extractload"/>
-    <springProperty scope="local" name="level" source="extractload.logging.level" defaultValue="INFO"/>
-    <springProperty scope="local" name="appender" source="extractload.logging.appender" defaultValue="CONSOLE"/>
+    <springProperty scope="local" name="level" source="logging.level.extractload" defaultValue="INFO"/>
+    <springProperty scope="local" name="appender" source="logging.appender.extractload" defaultValue="CONSOLE"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

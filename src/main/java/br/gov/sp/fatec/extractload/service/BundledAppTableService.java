@@ -11,14 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(value = "extractLoadDataSourceTm", propagation = Propagation.REQUIRES_NEW)
+@Transactional(value = "primaryTransactionManager", propagation = Propagation.REQUIRES_NEW)
 public class BundledAppTableService {
 
     private final ExtractLoadBundledAppTableRepository bundledAppTableRepository;
@@ -29,27 +27,22 @@ public class BundledAppTableService {
 
     private final AppTableService appTableService;
 
-    public List<BundledAppTableDto> findBundledAppTablesByDataBundleId(Long dataBundleId) {
-        return bundledAppTableMapper.mapToDtoList(bundledAppTableRepository
-            .findAllByExtractLoadDataBundleUidOrderByRelationalOrderingNumberAsc(dataBundleId));
-    }
-
-    private ExtractLoadBundledAppTable findExtractLoadBundledAppByUidAndBundleUid(Long bundledTableId, Long bundleId) {
+    private ExtractLoadBundledAppTable findExtractLoadBundledAppByUidAndBundleUid(final Long bundledTableId, final Long bundleId) {
         return bundledAppTableRepository.findByUidAndExtractLoadDataBundleUid(bundledTableId, bundleId)
             .orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
     }
 
-    public BundledAppTableDto findBundledAppTableByBundledTableIdAndBundleId(Long bundleId, Long bundledTableId) {
+    public BundledAppTableDto findBundledAppTableByBundledTableIdAndBundleId(final Long bundleId, final Long bundledTableId) {
         return bundledAppTableMapper.mapToDto(findExtractLoadBundledAppByUidAndBundleUid(bundledTableId, bundleId));
     }
 
-    public void deleteBundledTable(Long bundleId, Long bundledTableId) {
+    public void deleteBundledTable(final Long bundleId, final Long bundledTableId) {
         if (bundledAppTableRepository.existsByUidAndExtractLoadDataBundleUid(bundledTableId, bundleId)) {
             bundledAppTableRepository.deleteByUid(bundledTableId);
         }
     }
 
-    public Long addBundledTable(Long bundleId, BundledAppTableDto bundledAppTableDto) {
+    public Long addBundledTable(final Long bundleId, final BundledAppTableDto bundledAppTableDto) {
         if (dataBundleService.existsDataBundleById(bundleId)) {
             return bundledAppTableRepository.save(bundledAppTableMapper.mapToEntityForAddition(bundledAppTableDto, bundleId)).getUid();
         } else {
@@ -57,7 +50,7 @@ public class BundledAppTableService {
         }
     }
 
-    public void updateBundledTable(Long bundleId, Long bundledTableId, BundledAppTableDto bundledAppTableDto) {
+    public void updateBundledTable(final Long bundleId, final Long bundledTableId, final BundledAppTableDto bundledAppTableDto) {
         var entity = findExtractLoadBundledAppByUidAndBundleUid(bundledTableId, bundleId);
 
         entity.setSourceAppTable(appTableService.findAppTableById(bundledAppTableDto.getSourceAppTableId()));
@@ -66,7 +59,7 @@ public class BundledAppTableService {
         entity.setExtractCustomQuery(bundledAppTableDto.getExtractCustomQuery());
         entity.setLoadCustomInsertQuery(bundledAppTableDto.getLoadCustomInsertQuery());
         entity.setLoadCustomUpdateQuery(bundledAppTableDto.getLoadCustomUpdateQuery());
-        entity.setUpdateDateTime(Timestamp.valueOf(LocalDateTime.now()));
+        entity.setUpdateDateTime(LocalDateTime.now());
 
         bundledAppTableRepository.save(entity);
     }

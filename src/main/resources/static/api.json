@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "Swagger Extract And Load Data Batch",
-        "description": "The Extract and Load Data Batch Swagger UI offers the ability to perform API requests such as GET, POST, PUT and DELETE to different endpoints in the backend service like data sources, data bundles, batch execution, etc.",
+        "title": "extract-load-batch-api",
+        "description": "The Extract and Load Batch Swagger UI provides the ability to perform API requests such as GET, POST, PUT and DELETE to all available endpoints.",
         "contact": {
             "email": "gabriela.claro@fatec.sp.gov.br"
         },
@@ -24,8 +24,8 @@
     ],
     "tags": [
         {
-            "name": "Datasource",
-            "description": "Datasource Configuration Properties"
+            "name": "DataSource",
+            "description": "Data Source Connection Properties"
         },
         {
             "name": "Tables",
@@ -48,21 +48,16 @@
         "/v1/datasource": {
             "post": {
                 "tags": [
-                    "Datasource"
+                    "DataSource"
                 ],
-                "summary": "Post datasource configuration and add connection",
-                "description": "Inserts new datasource configuration properties and add connection",
-                "operationId": "postDatasourceConnection",
+                "summary": "Post data source properties and add connection",
+                "description": "Inserts new data source configuration properties and add connection.",
+                "operationId": "postDataSourceConnection",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/DatasourcePropertiesRequest"
-                            },
-                            "examples": {
-                                "datasourcePropertiesRequest": {
-                                    "$ref": "#/components/examples/datasourcePropertiesRequest"
-                                }
+                                "$ref": "#/components/schemas/DataSourcePropertiesRequest"
                             }
                         }
                     },
@@ -102,19 +97,19 @@
                 ]
             }
         },
-        "/v1/datasource/{datasourceId}": {
+        "/v1/datasource/{dataSourceId}": {
             "get": {
                 "tags": [
-                    "Datasource"
+                    "DataSource"
                 ],
-                "summary": "Get datasource configuration",
-                "description": "Retrieve datasource configuration data by Id",
-                "operationId": "getDatasourceProperties",
+                "summary": "Get data source properties and connection status",
+                "description": "Retrieve data source connection properties by Id.",
+                "operationId": "getDataSourceProperties",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "datasourceId",
-                        "description": "Datasource Id",
+                        "name": "dataSourceId",
+                        "description": "Data Source Id",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -128,7 +123,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/DatasourcePropertiesResponse"
+                                    "$ref": "#/components/schemas/DataSourcePropertiesResponse"
                                 }
                             }
                         }
@@ -157,16 +152,16 @@
             },
             "put": {
                 "tags": [
-                    "Datasource"
+                    "DataSource"
                 ],
-                "summary": "Update datasource configuration",
-                "description": "Updates datasource configuration properties",
-                "operationId": "putDatasourceProperties",
+                "summary": "Update data source properties and connection",
+                "description": "Updates data source properties and refresh connection.",
+                "operationId": "putDataSourceProperties",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "datasourceId",
-                        "description": "Datasource Id",
+                        "name": "dataSourceId",
+                        "description": "Data Source Id",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -178,12 +173,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/DatasourcePropertiesRequest"
-                            },
-                            "examples": {
-                                "datasourcePropertiesRequest": {
-                                    "$ref": "#/components/examples/datasourcePropertiesRequest"
-                                }
+                                "$ref": "#/components/schemas/DataSourcePropertiesRequest"
                             }
                         }
                     },
@@ -217,16 +207,16 @@
             },
             "delete": {
                 "tags": [
-                    "Datasource"
+                    "DataSource"
                 ],
-                "summary": "Delete datasource configuration",
-                "description": "Deletes datasource configuration properties by Id",
-                "operationId": "deleteDatasourceProperties",
+                "summary": "Delete data source properties and remove connection",
+                "description": "Deletes data source connection properties by Id.",
+                "operationId": "deleteDataSourceProperties",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "datasourceId",
-                        "description": "Datasource Id",
+                        "name": "dataSourceId",
+                        "description": "Data Source Id",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -267,18 +257,13 @@
                     "Tables"
                 ],
                 "summary": "Post table definitions",
-                "description": "Inserts new table to be bundled",
+                "description": "Inserts new table to be bundled.",
                 "operationId": "postTable",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/DataTableRequest"
-                            },
-                            "examples": {
-                                "dataTableRequest": {
-                                    "$ref": "#/components/examples/dataTableRequest"
-                                }
                             }
                         }
                     },
@@ -324,7 +309,7 @@
                     "Tables"
                 ],
                 "summary": "Get table definitions",
-                "description": "Retrieve table definitions data by Id",
+                "description": "Retrieve table definitions data by Id.",
                 "operationId": "getTable",
                 "parameters": [
                     {
@@ -376,7 +361,7 @@
                     "Tables"
                 ],
                 "summary": "Put table definitions",
-                "description": "Updates table definitions by Id",
+                "description": "Updates table definitions by Id.",
                 "operationId": "putTable",
                 "parameters": [
                     {
@@ -395,11 +380,6 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/DataTableRequest"
-                            },
-                            "examples": {
-                                "dataTableRequest": {
-                                    "$ref": "#/components/examples/dataTableRequest"
-                                }
                             }
                         }
                     },
@@ -436,7 +416,7 @@
                     "Tables"
                 ],
                 "summary": "Delete table definitions",
-                "description": "Deletes table definitions by Id",
+                "description": "Deletes table definitions by Id.",
                 "operationId": "deleteTable",
                 "parameters": [
                     {
@@ -483,18 +463,13 @@
                     "Bundles"
                 ],
                 "summary": "Post definitions of extract and load data bundle",
-                "description": "Inserts new data bundle definitions",
+                "description": "Inserts new data bundle definitions.",
                 "operationId": "postBundle",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/DataBundleRequest"
-                            },
-                            "examples": {
-                                "dataBundleRequest": {
-                                    "$ref": "#/components/examples/dataBundleRequest"
-                                }
                             }
                         }
                     },
@@ -540,7 +515,7 @@
                     "Bundles"
                 ],
                 "summary": "Get data bundle definitions",
-                "description": "Retrieve data bundle definitions by Id",
+                "description": "Retrieve data bundle definitions by Id.",
                 "operationId": "getBundle",
                 "parameters": [
                     {
@@ -592,7 +567,7 @@
                     "Bundles"
                 ],
                 "summary": "Put data bundle definitions",
-                "description": "Updates data bundle definitions",
+                "description": "Updates data bundle definitions.",
                 "operationId": "putBundle",
                 "parameters": [
                     {
@@ -611,11 +586,6 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/BundleRequest"
-                            },
-                            "examples": {
-                                "bundleRequest": {
-                                    "$ref": "#/components/examples/bundleRequest"
-                                }
                             }
                         }
                     },
@@ -652,7 +622,7 @@
                     "Bundles"
                 ],
                 "summary": "Delete data bundle definitions",
-                "description": "Deletes data bundle definitions by Id",
+                "description": "Deletes data bundle definitions by Id.",
                 "operationId": "deleteBundle",
                 "parameters": [
                     {
@@ -718,11 +688,6 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/BundledTableRequest"
-                            },
-                            "examples": {
-                                "bundledTableRequest": {
-                                    "$ref": "#/components/examples/bundledTableRequest"
-                                }
                             }
                         }
                     },
@@ -859,11 +824,6 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/BundledTableRequest"
-                            },
-                            "examples": {
-                                "bundledTableRequest": {
-                                    "$ref": "#/components/examples/bundledTableRequest"
-                                }
                             }
                         }
                     },
@@ -900,7 +860,7 @@
                     "BundledTables"
                 ],
                 "summary": "Delete bundled table",
-                "description": "Deletes bundled tables by Id",
+                "description": "Deletes bundled tables by Id.",
                 "operationId": "deleteBundledTable",
                 "parameters": [
                     {
@@ -957,18 +917,13 @@
                     "Batch"
                 ],
                 "summary": "Post extract-load data batch job execution",
-                "description": "Start batch job execution using job parameters request for extract-load data",
+                "description": "Start batch job execution using job parameters request for extract-load data.",
                 "operationId": "postBatchJobExecution",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/JobParametersRequest"
-                            },
-                            "examples": {
-                                "jobParametersRequest": {
-                                    "$ref": "#/components/examples/jobParametersRequest"
-                                }
                             }
                         }
                     },
@@ -1035,11 +990,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/JobExecutionResponse"
-                                },
-                                "examples": {
-                                    "jobExecutionResponse": {
-                                        "$ref": "#/components/examples/jobExecutionResponse"
-                                    }
                                 }
                             }
                         }
@@ -1155,7 +1105,7 @@
                     "uid": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Object unique identifier"
+                        "description": "Object unique identifier."
                     }
                 },
                 "required": [
@@ -1165,50 +1115,57 @@
             "BundleRequest": {
                 "type": "object",
                 "title": "BundleRequest",
-                "description": "Body for update bundle definitions",
+                "description": "Body for update bundle definitions.",
                 "properties": {
                     "bundleName": {
                         "type": "string",
                         "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Bundle name"
+                        "description": "Bundle name.",
+                        "example": "DUMMY_BUNDLE"
                     },
-                    "sourceDatasourceId": {
+                    "sourceDataSourceId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Unique identifier from source Datasource."
+                        "description": "Unique identifier from origin data source.",
+                        "example": 0
                     },
-                    "targetDatasourceId": {
+                    "targetDataSourceId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Unique identifier from target data migration datasource"
+                        "description": "Unique identifier from target data source.",
+                        "example": 1
                     }
                 },
                 "required": [
                     "bundleName",
-                    "sourceDatasourceId",
-                    "targetDatasourceId"
+                    "sourceDataSourceId",
+                    "targetDataSourceId"
                 ]
             },
             "DataBundleRequest": {
                 "type": "object",
                 "title": "DataBundleRequest",
-                "description": "Body for create bundled and bundled tables",
+                "description": "Body for create bundle and it's bundled tables.",
                 "properties": {
                     "bundleName": {
                         "type": "string",
                         "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Bundle name"
+                        "description": "Bundle name.",
+                        "example": "DUMMY_BUNDLE"
                     },
-                    "sourceDatasourceId": {
+                    "sourceDataSourceId": {
                         "type": "integer",
-                        "description": "Unique identifier from source data migration datasource"
+                        "description": "Unique identifier from origin data source.",
+                        "example": 0
                     },
-                    "targetDatasourceId": {
+                    "targetDataSourceId": {
                         "type": "integer",
-                        "description": "Unique identifier from target data migration datasource"
+                        "description": "Unique identifier from target data source.",
+                        "example": 1
                     },
                     "bundledTables": {
                         "type": "array",
+                        "description": "List of bundled tables for extract and load data.",
                         "items": {
                             "$ref": "#/components/schemas/BundledTableRequest"
                         },
@@ -1217,20 +1174,21 @@
                 },
                 "required": [
                     "bundleName",
-                    "sourceDatasourceId",
-                    "targetDatasourceId",
+                    "sourceDataSourceId",
+                    "targetDataSourceId",
                     "bundledTables"
                 ]
             },
             "DataTableRequest": {
                 "type": "object",
                 "title": "DataTableRequest",
-                "description": "Body for create new table definition",
+                "description": "Body for create new table definition.",
                 "properties": {
                     "tablePhysicalName": {
                         "type": "string",
                         "pattern": "^[a-zA-Z0-9_-]+$",
-                        "description": "Table physical name"
+                        "description": "Table physical name identifier.",
+                        "example": "DUMMY_TABLE"
                     }
                 },
                 "required": [
@@ -1240,178 +1198,172 @@
             "DataTableResponse": {
                 "type": "object",
                 "title": "DataTableResponse",
-                "description": "Body for retrieve unique identifier from created table definition",
+                "description": "Body for retrieve unique identifier from created table definition.",
                 "properties": {
                     "tableId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Table unique identifier"
+                        "description": "Table unique identifier.",
+                        "example": 0
                     },
                     "tablePhysicalName": {
                         "type": "string",
-                        "description": "Table physical name"
+                        "description": "Table physical name identifier.",
+                        "example": "DUMMY_TABLE"
                     },
                     "createDateTime": {
                         "type": "string",
-                        "description": "ISO format date time from register creation."
+                        "description": "ISO format date time from register creation.",
+                        "example": "2023-11-15 10:30:55.001"
                     },
                     "updateDateTime": {
                         "type": "string",
-                        "description": "ISO format date time from last update."
+                        "description": "ISO format date time from last update.",
+                        "example": "2023-11-15 10:30:55.001"
                     }
                 }
             },
             "DataBundleResponse": {
                 "type": "object",
                 "title": "DataBundleResponse",
-                "description": "Bundle definitions response",
+                "description": "Bundle definitions response. Represents the data table grouping that should be extracted and loaded.",
                 "properties": {
                     "bundleId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Bundle unique identifier"
+                        "description": "Bundle unique identifier.",
+                        "example": 0
                     },
                     "bundleName": {
                         "type": "string",
-                        "description": "Bundle name"
+                        "description": "Bundle name.",
+                        "example": "DUMMY_BUNDLE"
                     },
-                    "sourceDatasourceId": {
+                    "sourceDataSourceId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Unique identifier from source datasource."
+                        "description": "Unique identifier from origin data source.",
+                        "example": 0
                     },
-                    "targetDatasourceId": {
+                    "targetDataSourceId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Unique identifier from target datasource."
+                        "description": "Unique identifier from target data source.",
+                        "example": 1
                     },
                     "bundledTables": {
                         "type": "array",
+                        "description": "List of bundled tables for extract and load data.",
                         "items": {
                             "$ref": "#/components/schemas/BundledTableResponse"
                         }
                     }
-                },
-                "required": [
-                    "clusterName",
-                    "sourceDatasourceId",
-                    "targetDatasourceId",
-                    "tables"
-                ]
+                }
             },
-            "DatasourcePropertiesRequest": {
+            "DataSourcePropertiesRequest": {
                 "type": "object",
-                "title": "DatasourcePropertiesRequest",
-                "description": "Body for datasource properties request",
+                "title": "DataSourcePropertiesRequest",
+                "description": "Body for data source properties request.",
                 "properties": {
+                    "productName": {
+                        "$ref": "#/components/schemas/DatabaseProductEnum"
+                    },
+                    "hostName": {
+                        "type": "string",
+                        "maxLength": 63,
+                        "description": "Database host name.",
+                        "example": "localhost"
+                    },
+                    "numberPort": {
+                        "type": "integer",
+                        "format": "int32",
+                        "minimum": 0,
+                        "maximum": 65535,
+                        "description": "Database number port.",
+                        "example": 1521
+                    },
                     "databaseName": {
                         "type": "string",
-                        "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Database name",
-                        "x-pattern-message": "extension pattern message."
-                    },
-                    "databaseProvider": {
-                        "type": "string",
-                        "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Database provider"
-                    },
-                    "databasePlatform": {
-                        "type": "string",
-                        "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Full qualified library name from database platform"
+                        "maxLength": 128,
+                        "description": "Database name.",
+                        "example": "xe"
                     },
                     "userName": {
                         "type": "string",
-                        "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Database user name"
+                        "maxLength": 128,
+                        "description": "Database user name.",
+                        "example": "system"
                     },
                     "password": {
                         "type": "string",
-                        "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Database Password"
-                    },
-                    "jdbcConnectionUrl": {
-                        "type": "string",
-                        "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Jdbc connection url"
-                    },
-                    "driverClassName": {
-                        "type": "string",
-                        "pattern": "(.|\\s)*\\S(.|\\s)*",
-                        "description": "Full qualified library driver name"
-                    },
-                    "databaseDialect": {
-                        "type": "string",
-                        "description": "Database SQL dialect"
-                    },
-                    "databaseSchema": {
-                        "type": "string",
-                        "description": "Database schema name"
+                        "maxLength": 128,
+                        "description": "Database password.",
+                        "example": "iaa2OhAyxYG3lsn"
                     }
                 },
                 "required": [
+                    "productName",
+                    "hostName",
+                    "numberPort",
                     "databaseName",
-                    "databaseProvider",
-                    "databasePlatform",
                     "userName",
-                    "password",
-                    "jdbcConnectionUrl",
-                    "driverClassName",
-                    "databaseDialect"
+                    "password"
                 ]
             },
-            "DatasourcePropertiesResponse": {
+            "DataSourcePropertiesResponse": {
                 "type": "object",
-                "title": "DatasourcePropertiesResponse",
-                "description": "Datasource properties response",
+                "title": "DataSourcePropertiesResponse",
+                "description": "Data Source connection properties response.",
                 "properties": {
                     "databaseId": {
                         "type": "integer",
-                        "description": "Database unique identifier"
+                        "format": "int64",
+                        "description": "Data base unique identifier.",
+                        "example": 0
+                    },
+                    "productName": {
+                        "$ref": "#/components/schemas/DatabaseProductEnum"
+                    },
+                    "hostName": {
+                        "type": "string",
+                        "description": "Database host name.",
+                        "example": "localhost"
+                    },
+                    "numberPort": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Database number port.",
+                        "example": 1521
                     },
                     "databaseName": {
                         "type": "string",
-                        "description": "Database name"
-                    },
-                    "databaseProvider": {
-                        "type": "string",
-                        "description": "Database provider"
-                    },
-                    "databasePlatform": {
-                        "type": "string",
-                        "description": "Full qualified library name from database platform"
+                        "description": "Database name.",
+                        "example": "xe"
                     },
                     "userName": {
                         "type": "string",
-                        "description": "Database user name"
+                        "description": "Database user name.",
+                        "example": "system"
                     },
                     "password": {
                         "type": "string",
-                        "description": "Database Password"
+                        "description": "Database password.",
+                        "example": "iaa2OhAyxYG3lsn"
                     },
-                    "jdbcConnectionUrl": {
+                    "jdbcUrl": {
                         "type": "string",
-                        "description": "Jdbc connection url"
-                    },
-                    "driverClassName": {
-                        "type": "string",
-                        "description": "Full qualified library driver name"
-                    },
-                    "databaseDialect": {
-                        "type": "string",
-                        "description": "Database SQL dialect"
-                    },
-                    "databaseSchema": {
-                        "type": "string",
-                        "description": "Database schema name"
+                        "description": "Database formatted JDBC URL.",
+                        "example": "jdbc:oracle:thin:@//localhost:1521/xe"
                     },
                     "createDateTime": {
                         "type": "string",
-                        "description": "ISO format date time from register creation."
+                        "description": "ISO format date time from register creation.",
+                        "example": "2023-11-15 10:30:55.001"
                     },
                     "updateDateTime": {
                         "type": "string",
-                        "description": "ISO format date time from last update."
+                        "description": "ISO format date time from last update.",
+                        "example": "2023-11-15 10:30:55.001"
                     }
                 }
             },
@@ -1426,33 +1378,40 @@
                     "jobExecutionId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Job execution unique identifier"
+                        "description": "Job execution unique identifier.",
+                        "example": 0
                     },
                     "jobName": {
                         "type": "string",
-                        "description": "Job name."
+                        "description": "Job execution name.",
+                        "example": "JOB_DUMMY"
                     },
                     "jobStartTime": {
                         "type": "string",
-                        "description": "ISO format job execution start date time."
+                        "description": "ISO format job execution start date time.",
+                        "example": "2023-11-15 10:30:55.001"
                     },
                     "jobEndTime": {
                         "type": "string",
-                        "description": "ISO format job execution end date time."
+                        "description": "ISO format job execution end date time.",
+                        "example": "2023-11-15 10:30:55.001"
                     },
                     "jobElapsedTime": {
                         "type": "string",
-                        "description": "Job execution elapsed time."
+                        "description": "Job execution elapsed time.",
+                        "example": "10:30:55.001"
                     },
                     "exitStatus": {
                         "$ref": "#/components/schemas/ExitStatusEnum"
                     },
                     "exitMessage": {
                         "type": "string",
-                        "description": "Job execution exit message."
+                        "description": "Job execution exit message. Only available when exit status represents an job execution error.",
+                        "example": "Some job error message."
                     },
                     "steps": {
                         "type": "array",
+                        "description": "List of batch steps executions metadata.",
                         "items": {
                             "$ref": "#/components/schemas/StepMetadataResponse"
                         },
@@ -1470,58 +1429,67 @@
                     },
                     "stepName": {
                         "type": "string",
-                        "description": "Step name."
+                        "description": "Step name.",
+                        "example": "STEP_DUMMY"
                     },
                     "stepStartTime": {
                         "type": "string",
-                        "description": "ISO format job execution start date time."
+                        "description": "ISO format job execution start date time.",
+                        "example": "2023-11-15 10:30:55.001"
                     },
                     "stepEndTime": {
                         "type": "string",
-                        "description": "ISO format job execution end date time."
+                        "description": "ISO format job execution end date time.",
+                        "example": "2023-11-15 10:30:55.001"
                     },
                     "stepElapsedTime": {
                         "type": "string",
-                        "description": "Step execution elapsed time."
+                        "description": "Step execution elapsed time.",
+                        "example": "10:30:55.001"
                     },
                     "commitCount": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "The number of times in which the step has committed a transaction during this execution."
+                        "description": "The number of times in which the step has committed a transaction during this execution.",
+                        "example": 999
                     },
                     "readCount": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "The number of items read during this execution."
+                        "description": "The number of items read during this execution.",
+                        "example": 999
                     },
                     "writeCount": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "The number of items written and committed during this execution."
+                        "description": "The number of items written and committed during this execution.",
+                        "example": 999
                     },
                     "writeSkipCount": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "The number of items skipped on write during this execution."
+                        "description": "The number of items skipped on write during this execution.",
+                        "example": 999
                     },
                     "exitStatus": {
                         "$ref": "#/components/schemas/ExitStatusEnum"
                     },
                     "exitMessage": {
                         "type": "string",
-                        "description": "Job execution exit message."
+                        "description": "Step execution exit message. Only available when exit status represents an step execution error.",
+                        "example": "Some step error message."
                     }
                 }
             },
             "JobParametersRequest": {
                 "type": "object",
                 "title": "JobParametersRequest",
-                "description": "Body for start batch job execution with parameters",
+                "description": "Body for start batch job execution with parameters.",
                 "properties": {
                     "dataBundleId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Data Bundle unique identifier"
+                        "description": "Data Bundle unique identifier."
                     }
                 },
                 "required": [
@@ -1539,61 +1507,68 @@
                     "type": {
                         "type": "string",
                         "format": "uri",
-                        "description": "An absolute URI that identifies the problem type.  When referenced,\nit SHOULD provide human-readable documentation for the problem type\n(e.g., using HTML).\n",
+                        "description": "An absolute URI that identifies the problem type.  When referenced, it SHOULD provide human-readable documentation for the problem type (e.g., using HTML).",
                         "default": "about:blank"
                     },
                     "title": {
                         "type": "string",
-                        "description": "A short, summary of the problem type. Written in english and readable\nfor engineers (usually not suited for non technical stakeholders and\nnot localized); example: Service Unavailable\n"
+                        "description": "A short summary of the problem type. Written in english and readable for engineers, example: Service Unavailable."
                     },
                     "status": {
                         "type": "integer",
                         "format": "int32",
-                        "description": "The HTTP status code generated by the origin server for this occurrence\nof the problem.\n",
+                        "description": "The HTTP status code generated by the origin server for this occurrence of the problem.",
                         "minimum": 100,
                         "maximum": 600,
                         "exclusiveMaximum": true
                     },
                     "detail": {
                         "type": "string",
-                        "description": "A human readable explanation specific to this occurrence of the\nproblem.\n"
+                        "description": "A human readable explanation specific to this occurrence of the problem."
                     }
                 }
             },
             "BundledTableRequest": {
                 "type": "object",
                 "title": "BundledTableRequest",
-                "description": "Body for bundled table definitions request",
+                "description": "Body for bundled table definitions request.",
                 "properties": {
                     "sourceTableId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Indicates table definitions unique identifier from source Datasource."
+                        "description": "Indicates table definitions unique identifier from origin data source.",
+                        "example": 0
                     },
                     "targetTableId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Indicates table definitions unique identifier from target Datasource."
+                        "description": "Indicates table definitions unique identifier from target data source.",
+                        "example": 1
                     },
                     "relationalOrdering": {
                         "type": "integer",
                         "format": "int32",
-                        "description": "Indicates the table relational ordering from parents tables to child tables."
+                        "description": "Indicates the table relational ordering from parents to it's child tables.",
+                        "minimum": 1,
+                        "example": 1
                     },
                     "querySelect": {
                         "type": "string",
                         "pattern": "^SELECT(?:[^;'\\n]|(?:'[^'\\n]+'))+FROM(?:[^;'\\n]|(?:'[^'\\n]+'))+?\\s.*",
-                        "description": "Indicates extract data sql query (select). If it's not informed, the system will use default query."
+                        "description": "Indicates extract data sql query (select). If it's not informed, the system will use default query.",
+                        "example": "SELECT * FROM DUMMY_TABLE WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID"
                     },
                     "queryInsert": {
                         "type": "string",
                         "pattern": "^INSERT INTO(?:[^;'\\n]|(?:'[^'\\n]+'))+VALUES(?:[^;'\\n]|(?:'[^'\\n]+'))+?\\s.*",
-                        "description": "Indicates load data sql query (insert). If it's not informed, the system will use default query."
+                        "description": "Indicates load data sql query (insert). If it's not informed, the system will use default query.",
+                        "example": "INSERT INTO DUMMY_TABLE (DUMMY_TABLE_ID, DUMMY_TABLE_DESC) VALUES (:DUMMY_TABLE_ID, :DUMMY_TABLE_DESC)"
                     },
                     "queryUpdate": {
                         "type": "string",
                         "pattern": "^UPDATE(?:[^;'\\n]|(?:'[^'\\n]+'))+SET(?:[^;'\\n]|(?:'[^'\\n]+'))+?\\s.*",
-                        "description": "Indicates load data sql query (update). If it's not informed, the system will use default query."
+                        "description": "Indicates load data sql query (update). If it's not informed, the system will use default query.",
+                        "example": "UPDATE DUMMY_TABLE SET DUMMY_TABLE_DESC = :DUMMY_TABLE_DESC WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID"
                     }
                 },
                 "required": [
@@ -1605,43 +1580,51 @@
             "BundledTableResponse": {
                 "type": "object",
                 "title": "BundledTableResponse",
-                "description": "Body for table definitions response",
+                "description": "Body for table definitions response.",
                 "properties": {
                     "bundledTableId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Indicates bundled tables unique identifier."
+                        "description": "Indicates bundled tables unique identifier.",
+                        "example": 0
                     },
                     "sourceTableId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Indicates table definitions unique identifier from source Datasource."
+                        "description": "Indicates table definitions unique identifier from origin data source.",
+                        "example": 0
                     },
                     "targetTableId": {
                         "type": "integer",
                         "format": "int64",
-                        "description": "Indicates table definitions unique identifier from target Datasource."
+                        "description": "Indicates table definitions unique identifier from target data source.",
+                        "example": 1
                     },
                     "tablePhysicalName": {
                         "type": "string",
-                        "description": "Table physical name"
+                        "description": "Table physical name identifier.",
+                        "example": "DUMMY_TABLE"
                     },
                     "relationalOrdering": {
                         "type": "integer",
                         "format": "int32",
-                        "description": "Indicates the table relational ordering from parents tables to child tables."
+                        "description": "Indicates the table relational ordering from parents to it's child tables.",
+                        "example": 1
                     },
                     "querySelect": {
                         "type": "string",
-                        "description": "Indicates extract data sql query (select). If it's not informed, the system will use default query."
+                        "description": "Indicates extract data sql query (select). If it's not informed, the system will use default query.",
+                        "example": "SELECT * FROM DUMMY_TABLE WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID"
                     },
                     "queryInsert": {
                         "type": "string",
-                        "description": "Indicates load data sql query (insert). If it's not informed, the system will use default query."
+                        "description": "Indicates load data sql query (insert). If it's not informed, the system will use default query.",
+                        "example": "INSERT INTO DUMMY_TABLE (DUMMY_TABLE_ID, DUMMY_TABLE_DESC) VALUES (:DUMMY_TABLE_ID, :DUMMY_TABLE_DESC)"
                     },
                     "queryUpdate": {
                         "type": "string",
-                        "description": "Indicates load data sql query (update). If it's not informed, the system will use default query."
+                        "description": "Indicates load data sql query (update). If it's not informed, the system will use default query.",
+                        "example": "UPDATE DUMMY_TABLE SET DUMMY_TABLE_DESC = :DUMMY_TABLE_DESC WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID"
                     }
                 }
             },
@@ -1655,7 +1638,8 @@
                     "NOOP",
                     "FAILED",
                     "STOPPED"
-                ]
+                ],
+                "example": "COMPLETED"
             },
             "BatchStatusEnum": {
                 "type": "string",
@@ -1669,7 +1653,20 @@
                     "FAILED",
                     "ABANDONED",
                     "UNKNOWN"
-                ]
+                ],
+                "example": "COMPLETED"
+            },
+            "DatabaseProductEnum": {
+                "type": "string",
+                "description": "Name of supported database product. It's allows application to retrieve respective jdbc driver used for connection.",
+                "enum": [
+                    "ORACLE",
+                    "MYSQL",
+                    "SQLSERVER",
+                    "POSTGRESQL",
+                    "DB2"
+                ],
+                "example": "ORACLE"
             }
         },
         "examples": {
@@ -1717,97 +1714,6 @@
                     "detail": "Server Error"
                 },
                 "summary": "Server Error response"
-            },
-            "bundleRequest": {
-                "value": {
-                    "bundleName": "DUMMY_BUNDLE",
-                    "sourceDatasourceId": 0,
-                    "targetDatasourceId": 1
-                },
-                "summary": "Bundle request"
-            },
-            "dataBundleRequest": {
-                "value": {
-                    "bundleName": "DUMMY_BUNDLE",
-                    "sourceDatasourceId": 0,
-                    "targetDatasourceId": 1,
-                    "bundledTables": [
-                        {
-                            "sourceTableId": 0,
-                            "targetTableId": 1,
-                            "relationalOrdering": 1,
-                            "querySelect": "SELECT * FROM DUMMY_TABLE WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID",
-                            "queryInsert": "INSERT INTO DUMMY_TABLE (DUMMY_TABLE_ID, DUMMY_TABLE_DESC) VALUES (:DUMMY_TABLE_ID, :DUMMY_TABLE_DESC)",
-                            "queryUpdate": "UPDATE DUMMY_TABLE SET DUMMY_TABLE_DESC=:DUMMY_TABLE_DESC WHERE DUMMY_TABLE_ID=:DUMMY_TABLE_ID"
-                        }
-                    ]
-                },
-                "summary": "Data Bundle request"
-            },
-            "dataTableRequest": {
-                "value": {
-                    "tablePhysicalName": "DUMMY_NAME"
-                },
-                "summary": "Data Table request"
-            },
-            "datasourcePropertiesRequest": {
-                "value": {
-                    "databaseName": "H2",
-                    "databaseProvider": "H2",
-                    "databasePlatform": "org.hibernate.dialect.H2Dialect",
-                    "userName": "h2sa",
-                    "password": "admin",
-                    "jdbcConnectionUrl": "jdbc:h2:mem:testdb",
-                    "driverClassName": "org.h2.Driver",
-                    "databaseDialect": "H2Dialect",
-                    "databaseSchema": "DUMMY_SCHEMA"
-                },
-                "summary": "Datasource Properties request"
-            },
-            "jobParametersRequest": {
-                "value": {
-                    "dataBundleId": 0
-                },
-                "summary": "Job Parameters request"
-            },
-            "bundledTableRequest": {
-                "value": {
-                    "sourceTableId": 0,
-                    "targetTableId": 1,
-                    "relationalOrdering": 1,
-                    "querySelect": "SELECT * FROM DUMMY_TABLE WHERE DUMMY_TABLE_ID = :DUMMY_TABLE_ID",
-                    "queryInsert": "INSERT INTO DUMMY_TABLE (DUMMY_TABLE_ID, DUMMY_TABLE_DESC) VALUES (:DUMMY_TABLE_ID, :DUMMY_TABLE_DESC)",
-                    "queryUpdate": "UPDATE DUMMY_TABLE SET DUMMY_TABLE_DESC=:DUMMY_TABLE_DESC WHERE DUMMY_TABLE_ID=:DUMMY_TABLE_ID"
-                },
-                "summary": "Bundled Table request"
-            },
-            "jobExecutionResponse": {
-                "value": {
-                    "batchStatus": "COMPLETED",
-                    "jobExecutionId": 0,
-                    "jobName": "JOB_NAME",
-                    "jobStartTime": "2020-07-10 15:00:00.000",
-                    "jobEndTime": "2020-07-10 15:01:00.000",
-                    "jobElapsedTime": "00:01:00",
-                    "exitStatus": "FAILED",
-                    "exitMessage": "Dummy error message",
-                    "steps": [
-                        {
-                            "batchStatus": "COMPLETED",
-                            "stepName": "STEP_NAME",
-                            "stepStartTime": "2020-07-10 15:00:00.000",
-                            "stepEndTime": "2020-07-10 15:01:00.000",
-                            "stepElapsedTime": "00:01:00",
-                            "commitCount": 0,
-                            "readCount": 0,
-                            "writeCount": 0,
-                            "writeSkipCount": 0,
-                            "exitStatus": "FAILED",
-                            "exitMessage": "Dummy error message"
-                        }
-                    ]
-                },
-                "summary": "Job Execution response"
             }
         },
         "securitySchemes": {

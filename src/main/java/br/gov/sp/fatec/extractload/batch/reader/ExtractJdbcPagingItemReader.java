@@ -8,9 +8,8 @@ import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -35,27 +34,26 @@ import static br.gov.sp.fatec.extractload.utils.ExtractLoadUtils.getTableName;
 import static java.util.Objects.isNull;
 
 @Slf4j
-@Component
+@Configuration
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<RowMappedDto> {
 
     private final Set<String> primaryKeys;
 
-    public ExtractJdbcPagingItemReader(DataSource dataSource, JdbcUtils jdbcUtils, NamedParameterJdbcTemplate jdbcTemplate,
-                                       Integer fetchSize, BundledAppTableDto bundledAppTableDto) throws Exception {
-
-        var sourceTableName = bundledAppTableDto.getSourceAppTableName();
-        this.primaryKeys = jdbcUtils.getPrimaryKeys(getTableName(sourceTableName));
+    public ExtractJdbcPagingItemReader(DataSource dataSource, Integer fetchSize, BundledAppTableDto table) throws Exception {
+        var jdbcUtils = new JdbcUtils(dataSource);
+        var sourceTableName = getTableName(table.getSourceAppTableName());
+        this.primaryKeys = jdbcUtils.getPrimaryKeys(sourceTableName);
 
         log.info("Preparing paging reader of table [{}] with fetch size [{}] and page size [{}]", sourceTableName, fetchSize, fetchSize);
-        var queryProvider = getQueryProvider(dataSource, sourceTableName, bundledAppTableDto.getExtractCustomQuery());
+        var queryProvider = getQueryProvider(dataSource, sourceTableName, table.getExtractCustomQuery());
         setName(ITEM_READER_NAME.concat(sourceTableName.toUpperCase()));
         setDataSource(dataSource);
         setPageSize(fetchSize);
         setFetchSize(fetchSize);
         setQueryProvider(queryProvider);
-        setRowMapper(new ResultSetRowMapper(jdbcUtils.getPrimaryKeys(getTableName(sourceTableName))));
-        setPageProcessor(new ExtractPageProcessor(sourceTableName, getPrimaryKey(primaryKeys), jdbcTemplate));
+        setRowMapper(new ResultSetRowMapper(jdbcUtils.getPrimaryKeys(sourceTableName)));
+        setPageProcessor(new ExtractPageProcessor(sourceTableName, getPrimaryKey(primaryKeys), dataSource));
         log.info("Reader SQL Query [{}]", queryProvider.generateFirstPageQuery(fetchSize));
     }
 

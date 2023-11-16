@@ -15,7 +15,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -61,10 +61,10 @@ public class ExtractLoadBundledAppTable {
 
     @NotNull
     @Column(name = "CREATE_DATE_TIME", nullable = false)
-    private Timestamp createDateTime;
+    private LocalDateTime createDateTime;
 
     @NotNull
     @Column(name = "UPDATE_DATE_TIME", nullable = false)
-    private Timestamp updateDateTime;
+    private LocalDateTime updateDateTime;
 
 }

@@ -22,14 +22,13 @@ title Extract Load Batch Application - Physical Model
 table( EL_DATASOURCE_CONFIGURATION, EL_DATASOURCE_CONFIGURATION ) {
   primary_key( datasource_configuration_uid ) : NUMBER(20,0) NOT NULL
   --
-  column( database_name ) : VARCHAR2(50) NOT NULL
-  column( database_platform ) : VARCHAR2(255) NOT NULL
-  column( database_user_name ) : VARCHAR2(255) NOT NULL
-  column( database_password ) : VARCHAR2(255) NOT NULL
-  column( jdbc_connection_url ) : VARCHAR2(255) NOT NULL
-  column( driver_class_name ) : VARCHAR2(255) NOT NULL
-  column( database_dialect ) : VARCHAR2(100)
-  column( database_schema ) : VARCHAR2(100)
+  column( database_name ) : VARCHAR2(128) NOT NULL
+  column( database_host ) : VARCHAR2(63) NOT NULL
+  column( database_port_number ) : NUMBER(5,0) NOT NULL
+  column( database_user_name ) : VARCHAR2(128) NOT NULL
+  column( database_password ) : VARCHAR2(128) NOT NULL
+  column( database_product_name ) : VARCHAR2(50)
+  column( deleted_indicator ) : VARCHAR2(5)
   column( create_date_time ) : TIMESTAMP NOT NULL
   column( update_date_time ) : TIMESTAMP NOT NULL
 }
@@ -40,7 +39,7 @@ table( EL_DATA_BUNDLE, EL_DATA_BUNDLE ) {
   foreign_key( source_configuration_uid ) : NUMBER(20,0) NOT NULL
   foreign_key( target_configuration_uid ) : NUMBER(20,0) NOT NULL
   --
-  column( bundle_name ) : VARCHAR2(50) NOT NULL
+  column( bundle_name ) : VARCHAR2(128) NOT NULL
   column( create_date_time ) : TIMESTAMP NOT NULL
   column( update_date_time ) : TIMESTAMP NOT NULL
 }
@@ -48,7 +47,7 @@ table( EL_DATA_BUNDLE, EL_DATA_BUNDLE ) {
 table( EL_TABLE, EL_TABLE ) {
   primary_key( table_uid ) : NUMBER(20,0) NOT NULL
   --
-  column( table_physical_name ) : VARCHAR2(255) NOT NULL
+  column( table_physical_name ) : VARCHAR2(128) NOT NULL
   column( create_date_time ) : TIMESTAMP NOT NULL
   column( update_date_time ) : TIMESTAMP NOT NULL
 }

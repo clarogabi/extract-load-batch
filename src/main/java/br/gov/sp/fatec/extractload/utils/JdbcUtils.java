@@ -119,7 +119,7 @@ public class JdbcUtils {
         return sbSqlUpdate.toString();
     }
 
-    private void setValueOnFields(Set<String> fields, StringBuilder sbSqlUpdate) {
+    private static void setValueOnFields(Set<String> fields, StringBuilder sbSqlUpdate) {
         for (Iterator<String> itField = fields.iterator(); itField.hasNext();) {
             var field = itField.next();
             sbSqlUpdate.append(field).append(EMPTY_SPACE).append(ATTRIBUTION);

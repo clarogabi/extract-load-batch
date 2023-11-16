@@ -7,11 +7,10 @@ import br.gov.sp.fatec.extractload.entity.ExtractLoadBundledAppTable;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper(componentModel="spring", uses = { AppTableMapper.class }, imports = { LocalDateTime.class, Timestamp.class })
+@Mapper(componentModel = "spring", uses = { AppTableMapper.class }, imports = { LocalDateTime.class })
 public interface BundledAppTableMapper {
 
     @Mapping(target = "sourceAppTableId", source = "sourceAppTable.uid")
@@ -48,17 +47,17 @@ public interface BundledAppTableMapper {
     @Mapping(target = "extractLoadDataBundle", ignore = true)
     @Mapping(target = "sourceAppTable.uid", source = "sourceAppTableId")
     @Mapping(target = "targetAppTable.uid", source = "targetAppTableId")
-    @Mapping(target = "createDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
-    @Mapping(target = "updateDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
+    @Mapping(target = "createDateTime", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "updateDateTime", expression = "java(LocalDateTime.now())")
     ExtractLoadBundledAppTable mapToEntity(BundledAppTableDto bundledAppTableDto);
 
     @Mapping(target = "extractLoadDataBundle.uid", source = "dataBundleUid")
     @Mapping(target = "sourceAppTable.uid", source = "dto.sourceAppTableId")
     @Mapping(target = "targetAppTable.uid", source = "dto.targetAppTableId")
-    @Mapping(target = "createDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
-    @Mapping(target = "updateDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
+    @Mapping(target = "createDateTime", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "updateDateTime", expression = "java(LocalDateTime.now())")
     ExtractLoadBundledAppTable mapToEntityForAddition(BundledAppTableDto dto, Long dataBundleUid);
 
-    List<ExtractLoadBundledAppTable> mapToEntityList(List<BundledAppTableDto> BundledAppTableDto);
+    List<ExtractLoadBundledAppTable> mapToEntityList(List<BundledAppTableDto> bundledAppTableDtoList);
 
 }

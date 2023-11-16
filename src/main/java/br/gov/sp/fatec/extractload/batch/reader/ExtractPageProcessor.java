@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,14 +19,14 @@ import static br.gov.sp.fatec.extractload.utils.ExtractLoadUtils.generateSelectI
 
 public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
     private final String tableName;
     private final String primaryKeyName;
 
-    public ExtractPageProcessor(String tableName, String primaryKeyName, NamedParameterJdbcTemplate jdbcTemplate) {
+    public ExtractPageProcessor(String tableName, String primaryKeyName, DataSource dataSource) {
+        this.dataSource = dataSource;
         this.tableName = tableName;
         this.primaryKeyName = primaryKeyName;
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -40,8 +41,10 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
                     .filter(field -> field.getKey().isPrimaryKey() && primaryKeyName.equals(field.getKey().getName()))
                     .findFirst()
                     .map(Map.Entry::getValue)
-                    .orElse(null)).collect(Collectors.toList()));
+                    .orElse(null))
+                .toList());
 
+            var jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
             jdbcTemplate.query(generateSelectIdsQuery(tableName, primaryKeyName), parameters, new RowExtractor(ids));
 
             if (!ids.isEmpty()) {

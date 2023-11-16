@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,16 +27,16 @@ public class ExtractLoadAppTable {
     private Long uid;
 
     @NotNull
-    @Size(max = 255)
+    @Size(max = 128)
     @Column(name = "APP_TABLE_PHYSICAL_NAME", nullable = false)
     private String appTablePhysicalName;
 
     @NotNull
     @Column(name = "CREATE_DATE_TIME", nullable = false)
-    private Timestamp createDateTime;
+    private LocalDateTime createDateTime;
 
     @NotNull
     @Column(name = "UPDATE_DATE_TIME", nullable = false)
-    private Timestamp updateDateTime;
+    private LocalDateTime updateDateTime;
 
 }

@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(value = "extractLoadDataSourceTm", propagation = Propagation.REQUIRES_NEW)
+@Transactional(value = "primaryTransactionManager", propagation = Propagation.REQUIRES_NEW)
 public class AppTableService {
 
     private final ExtractLoadAppTableRepository extractLoadAppTableRepository;
@@ -29,34 +29,34 @@ public class AppTableService {
 
     private final AppTableMapper appTableMapper;
 
-    public ExtractLoadAppTable findAppTableById(Long tableId) {
+    public ExtractLoadAppTable findAppTableById(final Long tableId) {
         Optional<ExtractLoadAppTable> appTable = extractLoadAppTableRepository.findById(tableId);
         return appTable.orElseThrow(() -> new NotFoundProblem("Registro não encontrado."));
     }
 
-    public AppTableDto getAppTableById(Long tableId) {
+    public AppTableDto getAppTableById(final Long tableId) {
         return appTableMapper.entityToDto(findAppTableById(tableId));
     }
 
-    public Long createAppTable(AppTableDto appTableDto) {
+    public Long createAppTable(final AppTableDto appTableDto) {
         return extractLoadAppTableRepository.save(appTableMapper.dtoToEntity(appTableDto)).getUid();
     }
 
-    public void deleteAppTable(Long tableId) {
+    public void deleteAppTable(final Long tableId) {
         if (extractLoadAppTableRepository.existsById(tableId)) {
             if (extractLoadBundledAppTableRepository.existsByTargetAppTableUid(tableId)
                 || extractLoadBundledAppTableRepository.existsBySourceAppTableUid(tableId)) {
                 throw new UnprocessableEntityProblem(String
-                    .format("Registro [%s] está atribuído a um ou mais pacotes de extração e carregamento, não foi possível excluir!", tableId));
+                    .format("Registro [%s] está atribuído a um ou mais pacotes de extração e carregamento, não é possível excluir.", tableId));
             }
             extractLoadAppTableRepository.deleteById(tableId);
         }
     }
 
-    public void updateAppTable(AppTableDto appTableDto) {
+    public void updateAppTable(final AppTableDto appTableDto) {
         var entity = findAppTableById(appTableDto.getUid());
         entity.setAppTablePhysicalName(appTableDto.getAppTablePhysicalName());
-        entity.setUpdateDateTime(Timestamp.valueOf(LocalDateTime.now()));
+        entity.setUpdateDateTime(LocalDateTime.now());
         extractLoadAppTableRepository.save(entity);
     }
 

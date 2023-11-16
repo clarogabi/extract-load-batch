@@ -23,14 +23,12 @@ table( Datasource Configuration, EL_DATASOURCE_CONFIGURATION ) {
   primary_key( Datasource Configuration Uid )
   --
   column( Database Name )
-  column( Database Platform )
-  column( Database Provider )
-  column( Database Connection Url )
+  column( Database Host )
+  column( Database Number Port )
   column( Database User Name )
   column( Database Password )
-  column( Driver Class Name )
-  column( Database Dialect )
-  column( Database Schema )
+  column( Database Product Name )
+  column( Deleted Indicator )
   column( Create Date Time )
   column( Update Date Time )
 }

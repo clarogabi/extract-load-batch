@@ -4,13 +4,13 @@ import br.gov.sp.fatec.extractload.domain.dto.RowMappedDto;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.classify.Classifier;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import static br.gov.sp.fatec.extractload.domain.enums.LoadModeEnum.INSERT;
 import static java.util.Objects.nonNull;
 
-@Component
+@Configuration
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class LoadItemWriterClassifier implements Classifier<RowMappedDto, ItemWriter<? super RowMappedDto>> {
 
