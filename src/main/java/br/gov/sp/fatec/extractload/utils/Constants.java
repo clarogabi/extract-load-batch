@@ -8,10 +8,11 @@ public final class Constants {
 
     public static final int ZERO = 0;
     public static final int ONE = 1;
-    public static final int EIGHT = 8;
-    public static final int FOUR = 4;
+    public static final int TWO = 2;
     public static final int THREE = 3;
-    public static final String EMPTY_SPACE = " ";
+    public static final int FOUR = 4;
+    public static final int EIGHT = 8;
+    public static final String BLANK_SPACE = " ";
     public static final String DOT_REGEX = "\\.";
     public static final String COLON = ":";
     public static final String ATTRIBUTION = "=";

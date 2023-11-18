@@ -8,9 +8,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import static br.gov.sp.fatec.extractload.utils.Constants.DOT_REGEX;
 import static br.gov.sp.fatec.extractload.utils.Constants.ONE;
+import static br.gov.sp.fatec.extractload.utils.Constants.THREE;
+import static br.gov.sp.fatec.extractload.utils.Constants.TWO;
 import static br.gov.sp.fatec.extractload.utils.Constants.ZERO;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -18,12 +21,14 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExtractLoadUtils {
 
+    private static final Pattern dotRegex = Pattern.compile(DOT_REGEX);
+
     public static String getTableName(final String fullTableName) {
         if (isEmpty(fullTableName)) {
             return "";
         }
 
-        String[] tableName = fullTableName.split(DOT_REGEX);
+        String[] tableName = fullTableName.split(dotRegex.pattern());
 
         if (ONE == tableName.length) {
             return tableName[ZERO];
@@ -32,24 +37,11 @@ public class ExtractLoadUtils {
         return tableName[tableName.length - ONE];
     }
 
-    public static String generateSelectIdsQuery(String tableName, String primaryKey) {
-        StringBuilder sbSql = new StringBuilder();
-
-        sbSql.append("SELECT ");
-        sbSql.append(primaryKey);
-        sbSql.append(" FROM ");
-        sbSql.append(tableName);
-        sbSql.append(" WHERE ");
-        sbSql.append(primaryKey);
-        sbSql.append(" IN (:ids) ");
-        sbSql.append("ORDER BY ");
-        sbSql.append(primaryKey);
-        sbSql.append(" ASC");
-
-        return sbSql.toString();
+    public static String generateSelectIdsQuery(final String tableName, final String primaryKey) {
+        return String.format("SELECT %s FROM %s WHERE %s IN (:ids) ORDER BY %s ASC", primaryKey, tableName, primaryKey, primaryKey);
     }
 
-    public static String getPrimaryKey(Collection<String> primaryKeys) {
+    public static String getPrimaryKey(final Collection<String> primaryKeys) {
         if (!primaryKeys.isEmpty()) {
             return primaryKeys.stream().findFirst()
                 .orElse(null);
@@ -57,7 +49,7 @@ public class ExtractLoadUtils {
         return null;
     }
 
-    public static String findElapsedTime(LocalDateTime startTime, LocalDateTime endTime) {
+    public static String findElapsedTime(final LocalDateTime startTime, final LocalDateTime endTime) {
         Duration duration = Duration.between(startTime, endTime);
 
         long hours = duration.toHours();
@@ -68,11 +60,12 @@ public class ExtractLoadUtils {
         duration = duration.minusSeconds(seconds);
         long millis = duration.toMillis();
 
-        return String.format("%s:%s:%s:%s", pad(hours, 2), pad(minutes, 2), pad(seconds, 2), pad(millis, 3));
+        return String.format("%s:%s:%s:%s", pad(hours, TWO), pad(minutes, TWO), pad(seconds, TWO), pad(millis, THREE));
     }
 
     public static String pad(long value, long length) {
-        return String.format("%0" + length + "d", value);
+        final var padFormat = "%0" + length + "d";
+        return String.format(padFormat, value);
     }
 
     public static String textNormalizer(String text) {
