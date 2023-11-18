@@ -15,7 +15,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -29,6 +31,8 @@ import java.time.LocalDateTime;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "EL_DATASOURCE_CONFIGURATION", schema = "EXTRACT_LOAD_BATCH")
 @SQLDelete(sql = "UPDATE EL_DATASOURCE_CONFIGURATION SET DELETED_INDICATOR = true WHERE DATASOURCE_UID = ?")
 @Where(clause = "DELETED_INDICATOR = false")

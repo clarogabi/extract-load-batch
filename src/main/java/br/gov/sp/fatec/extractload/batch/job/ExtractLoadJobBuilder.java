@@ -50,7 +50,7 @@ public class ExtractLoadJobBuilder {
 
     private final DataSourceRoutingManager datasourceRoutingManager;
 
-    public ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     public ExtractLoadJobBuilder(final JobRepository jobRepository,
         final PlatformTransactionManager platformTransactionManager,

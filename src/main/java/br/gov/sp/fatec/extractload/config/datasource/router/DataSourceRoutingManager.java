@@ -20,19 +20,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class DataSourceRoutingManager {
 
-    private final ThreadLocal<Long> currentInstance = new ThreadLocal<>();
+    private static final ThreadLocal<Long> CURRENT_INSTANCE = new ThreadLocal<>();
     private final Map<Object, Object> dataSourcesInstances = new ConcurrentHashMap<>();
     private final Map<Long, DataSourceProperties> dataSourcesProps = new ConcurrentHashMap<>();
-    private AbstractRoutingDataSource dataSourceRouting;
+    private final AbstractRoutingDataSource dataSourceRouting = new AbstractRoutingDataSource() {
+        @Override
+        protected Object determineCurrentLookupKey() {
+            return CURRENT_INSTANCE.get();
+        }
+    };
 
     @Bean
     public DataSource dataSourceRouting(@Qualifier("extractLoadDataSource") final DataSource extractLoadDataSource) {
-        dataSourceRouting = new AbstractRoutingDataSource() {
-            @Override
-            protected Object determineCurrentLookupKey() {
-                return currentInstance.get();
-            }
-        };
         dataSourceRouting.setTargetDataSources(dataSourcesInstances);
         dataSourceRouting.setDefaultTargetDataSource(extractLoadDataSource);
         dataSourceRouting.afterPropertiesSet();
@@ -108,6 +107,10 @@ public class DataSourceRoutingManager {
 
     public boolean instanceIsAbsent(Long instanceId) {
         return !dataSourcesInstances.containsKey(instanceId);
+    }
+
+    public void unload() {
+        CURRENT_INSTANCE.remove();
     }
 
 }
