@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static br.gov.sp.fatec.extractload.utils.ExtractLoadUtils.generateSelectIdsQuery;
+import static java.util.Objects.nonNull;
 
 public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
 
@@ -30,7 +31,6 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
 
     @Override
     public void process(List<RowMappedDto> page) {
-        List<String> ids = new ArrayList<>();
 
         if (!page.isEmpty()) {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
@@ -44,9 +44,9 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
                 .toList());
 
             var jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-            jdbcTemplate.query(generateSelectIdsQuery(tableName, primaryKeyName), parameters, new RowExtractor(ids));
+            List<String> ids = jdbcTemplate.query(generateSelectIdsQuery(tableName, primaryKeyName), parameters, new RowExtractor());
 
-            if (!ids.isEmpty()) {
+            if (nonNull(ids) && !ids.isEmpty()) {
                 page.forEach(row -> row.getRow()
                     .entrySet().stream()
                     .filter(map -> map.getKey().primaryKey())
@@ -60,20 +60,20 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
         }
     }
 
-    private class RowExtractor implements ResultSetExtractor<Void> {
+    private class RowExtractor implements ResultSetExtractor<List<String>> {
 
         private final List<String> ids;
 
-        public RowExtractor(final List<String> ids) {
-            this.ids = ids;
+        public RowExtractor() {
+            this.ids = new ArrayList<>();
         }
 
         @Override
-        public Void extractData(final ResultSet rs) throws SQLException, DataAccessException {
+        public List<String> extractData(final ResultSet rs) throws SQLException, DataAccessException {
             while (rs.next()) {
                 ids.add(rs.getString(primaryKeyName));
             }
-            return null;
+            return List.copyOf(ids);
         }
 
     }

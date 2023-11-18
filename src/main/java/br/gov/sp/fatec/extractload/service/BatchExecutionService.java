@@ -55,7 +55,7 @@ public class BatchExecutionService {
             .toJobParameters();
 
         log.info("Building Job structure for data extraction and loading batch processing of package [{} - {}].", dataBundleId, bundleName);
-        final var job = jobBuilder.job(dataBundle);
+        final var job = jobBuilder.build(dataBundle);
 
         try {
             log.info("Job of package [{} - {}] is ready to start.", dataBundleId, bundleName);

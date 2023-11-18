@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CompositeJdbcPagingItemWriter extends ClassifierCompositeItemWriter<RowMappedDto> {
 
-    public CompositeJdbcPagingItemWriter(Classifier<RowMappedDto, ItemWriter<? super RowMappedDto>> loadItemWriterClassifier) {
-        setClassifier(loadItemWriterClassifier);
+    public CompositeJdbcPagingItemWriter(final Classifier<RowMappedDto, ItemWriter<? super RowMappedDto>> loadItemWriterClassifier) {
+        super.setClassifier(loadItemWriterClassifier);
     }
 
 }

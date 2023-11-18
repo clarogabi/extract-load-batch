@@ -18,12 +18,12 @@ public class ResultSetRowMapper implements RowMapper<RowMappedDto> {
 
     private final Set<String> primaryKeys;
 
-    public ResultSetRowMapper(Set<String> primaryKeys) {
-        this.primaryKeys = primaryKeys;
+    public ResultSetRowMapper(final Set<String> primaryKeys) {
+        this.primaryKeys = Set.copyOf(primaryKeys);
     }
 
     @Override
-    public RowMappedDto mapRow(ResultSet rs, int rowNumber) throws SQLException {
+    public RowMappedDto mapRow(final ResultSet rs, int rowNumber) throws SQLException {
         final var metaData = rs.getMetaData();
         final var columnsCount = metaData.getColumnCount();
 

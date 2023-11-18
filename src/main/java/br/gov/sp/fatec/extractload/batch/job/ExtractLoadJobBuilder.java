@@ -64,7 +64,7 @@ public class ExtractLoadJobBuilder {
         this.applicationContext = applicationContext;
     }
 
-    public Job job(final DataBundleDto dataBundleDto) {
+    public Job build(final DataBundleDto dataBundleDto) {
         final var jobName = JOB_NAME.concat(textNormalizer(dataBundleDto.dataBundleName()));
         return new JobBuilder(jobName, jobRepository)
             .incrementer(new RunIdIncrementer())
@@ -97,20 +97,20 @@ public class ExtractLoadJobBuilder {
             .end();
     }
 
-    private List<Step> buildSteps(DataSource sourceDataSource, DataSource targetDataSource, List<BundledAppTableDto> tables) {
+    private List<Step> buildSteps(final DataSource sourceDataSource, final DataSource targetDataSource, final List<BundledAppTableDto> tables) {
         return tables.stream()
-            .map(table -> step(sourceDataSource, targetDataSource, table))
+            .map(table -> buildStep(sourceDataSource, targetDataSource, table))
             .toList();
     }
 
-    private Step step(DataSource sourceDataSource, DataSource targetDataSource, BundledAppTableDto bundledAppTable) {
+    private Step buildStep(final DataSource sourceDataSource, final DataSource targetDataSource, final BundledAppTableDto bundledAppTable) {
         final var sourceTableName = textNormalizer(bundledAppTable.sourceAppTableName());
         final var targetTableName = textNormalizer(bundledAppTable.targetAppTableName());
         final var stepName = String.format(STEP_NAME, sourceTableName, targetTableName);
         log.info("Building Step: [{}]", stepName);
 
-        final var reader = applicationContext.getBean(ExtractJdbcPagingItemReader.class, sourceDataSource, batchExecutionProps.fetchSize(),
-            bundledAppTable);
+        final var reader = applicationContext.getBean(ExtractJdbcPagingItemReader.class, sourceDataSource, batchExecutionProps.pageSize(),
+            batchExecutionProps.fetchSize(), bundledAppTable);
 
         final var insertWriter = applicationContext.getBean(InsertJdbcItemWriter.class, targetDataSource, targetTableName);
         final var updateWriter = applicationContext.getBean(UpdateJdbcItemWriter.class, targetDataSource, targetTableName);
@@ -128,7 +128,7 @@ public class ExtractLoadJobBuilder {
             .build();
     }
 
-    private static TaskExecutor stepTaskExecutor(int concurrencyLimit) {
+    private static TaskExecutor stepTaskExecutor(final int concurrencyLimit) {
         SimpleAsyncTaskExecutor simpleAsyncTaskExecutor = new SimpleAsyncTaskExecutor();
         simpleAsyncTaskExecutor.setConcurrencyLimit(concurrencyLimit);
         simpleAsyncTaskExecutor.setThreadNamePrefix("Task-Exec-");

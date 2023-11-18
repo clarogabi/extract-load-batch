@@ -79,4 +79,8 @@ public class ExtractLoadUtils {
         return text.trim().toUpperCase(Locale.getDefault());
     }
 
+    public static String toUpperCase(String text) {
+        return text.toUpperCase(Locale.getDefault());
+    }
+
 }

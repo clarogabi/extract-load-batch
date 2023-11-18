@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 public class RowMapItemSqlParameterSourceProvider implements ItemSqlParameterSourceProvider<RowMappedDto> {
 
     @Override
-    public SqlParameterSource createSqlParameterSource(RowMappedDto item) {
+    public SqlParameterSource createSqlParameterSource(final RowMappedDto item) {
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
         item.getRow().forEach((keyField, value) -> mapSqlParameterSource.addValue(keyField.name(), value, keyField.jdbcType()));
         return mapSqlParameterSource;
