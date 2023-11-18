@@ -32,9 +32,9 @@ public class ApplicationReadyListener {
             try {
                 var dataSourceProperties = buildDataSourceProperties(dataSourceDto);
                 dataSourceRoutingManager.addConnection(dataSourceDto.uid(), dataSourceProperties);
-                log.info("Loaded data source for instance [{} - {}].", dataSourceDto.uid(), dataSourceDto.databaseName());
+                log.info("Loaded data source of instance ID [{}] under connection [{}].", dataSourceDto.uid(), dataSourceDto.getJdbcUrl());
             } catch (SQLException e) {
-                log.error("Could not load data source for instance [{} - {}]!", dataSourceDto.uid(), dataSourceDto.databaseName(), e);
+                log.error("Could not load data source under connection [{}].", dataSourceDto.getJdbcUrl(), e);
             }
         }
     }
