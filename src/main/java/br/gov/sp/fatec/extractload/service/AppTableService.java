@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -54,8 +53,8 @@ public class AppTableService {
     }
 
     public void updateAppTable(final AppTableDto appTableDto) {
-        var entity = findAppTableById(appTableDto.getUid());
-        entity.setAppTablePhysicalName(appTableDto.getAppTablePhysicalName());
+        var entity = findAppTableById(appTableDto.uid());
+        entity.setAppTablePhysicalName(appTableDto.appTablePhysicalName());
         entity.setUpdateDateTime(LocalDateTime.now());
         extractLoadAppTableRepository.save(entity);
     }

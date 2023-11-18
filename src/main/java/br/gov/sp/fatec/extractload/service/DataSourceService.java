@@ -66,26 +66,26 @@ public class DataSourceService {
     }
 
     public void updateDataSource(final DataSourceDto datasourceDto) {
-        var entity = findDataSourceById(datasourceDto.getUid());
+        var entity = findDataSourceById(datasourceDto.uid());
 
-        entity.setDatabaseName(datasourceDto.getDatabaseName());
-        entity.setDatabaseHost(datasourceDto.getHostName());
-        entity.setDatabaseNumberPort(datasourceDto.getNumberPort());
-        entity.setDatabaseUserName(datasourceDto.getUserName());
-        entity.setDatabasePassword(datasourceDto.getPassword());
-        entity.setDatabaseProductName(datasourceDto.getDatabaseDriver());
+        entity.setDatabaseName(datasourceDto.databaseName());
+        entity.setDatabaseHost(datasourceDto.hostName());
+        entity.setDatabaseNumberPort(datasourceDto.numberPort());
+        entity.setDatabaseUserName(datasourceDto.userName());
+        entity.setDatabasePassword(datasourceDto.password());
+        entity.setDatabaseProductName(datasourceDto.databaseDriver());
         entity.setUpdateDateTime(LocalDateTime.now());
         dataSourceConfigurationRepository.save(entity);
 
         try {
-            dataSourceRoutingManager.replaceConnection(datasourceDto.getUid(), buildDataSourceProperties(datasourceDto));
+            dataSourceRoutingManager.replaceConnection(datasourceDto.uid(), buildDataSourceProperties(datasourceDto));
         } catch (SQLException e) {
             log.error("Error when attempting to replace data source connection.", e);
             throw new UnprocessableEntityProblem(format("%s%s","Ocorreu um erro ao atualizar a conexão com o banco de dados. ",
                 "Verifique os dados informados e tente novamente mais tarde."), e.getMessage());
         }
 
-        log.info("Data source properties and connection updated with ID [{}].", datasourceDto.getUid());
+        log.info("Data source properties and connection updated with ID [{}].", datasourceDto.uid());
     }
 
     public List<DataSourceDto> findAllDataSources() {

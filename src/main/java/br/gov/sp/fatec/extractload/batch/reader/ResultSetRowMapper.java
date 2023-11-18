@@ -37,10 +37,7 @@ public class ResultSetRowMapper implements RowMapper<RowMappedDto> {
             objMapped.put(keyField, value);
         }
 
-        return RowMappedDto.builder()
-            .row(objMapped)
-            .loadMode(LoadModeEnum.INSERT)
-            .build();
+        return new RowMappedDto(objMapped, LoadModeEnum.INSERT);
     }
 
     public Object getObject(final ResultSet rs, final int index, final int jdbcType) throws SQLException {

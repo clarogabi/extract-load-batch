@@ -65,7 +65,7 @@ public class ExtractLoadJobBuilder {
     }
 
     public Job job(final DataBundleDto dataBundleDto) {
-        final var jobName = JOB_NAME.concat(textNormalizer(dataBundleDto.getDataBundleName()));
+        final var jobName = JOB_NAME.concat(textNormalizer(dataBundleDto.dataBundleName()));
         return new JobBuilder(jobName, jobRepository)
             .incrementer(new RunIdIncrementer())
             .start(getStepsFlow(jobName, dataBundleDto))
@@ -77,9 +77,9 @@ public class ExtractLoadJobBuilder {
     private Flow getStepsFlow(final String jobName, final DataBundleDto dataBundleDto) {
         log.info("Building Job Flow [{}]", jobName);
 
-        var sourceDataSource = datasourceRoutingManager.getInstance(dataBundleDto.getSourceDataSourceId());
-        var targetDataSource = datasourceRoutingManager.getInstance(dataBundleDto.getTargetDataSourceId());
-        List<Step> steps = buildSteps(sourceDataSource, targetDataSource, dataBundleDto.getBundledAppTables());
+        var sourceDataSource = datasourceRoutingManager.getInstance(dataBundleDto.sourceDataSourceId());
+        var targetDataSource = datasourceRoutingManager.getInstance(dataBundleDto.targetDataSourceId());
+        List<Step> steps = buildSteps(sourceDataSource, targetDataSource, dataBundleDto.bundledAppTables());
 
         FlowBuilder<Flow> flowBuilder = new FlowBuilder<>(jobName);
         for (Step step : steps) {
@@ -104,8 +104,8 @@ public class ExtractLoadJobBuilder {
     }
 
     private Step step(DataSource sourceDataSource, DataSource targetDataSource, BundledAppTableDto bundledAppTable) {
-        final var sourceTableName = textNormalizer(bundledAppTable.getSourceAppTableName());
-        final var targetTableName = textNormalizer(bundledAppTable.getTargetAppTableName());
+        final var sourceTableName = textNormalizer(bundledAppTable.sourceAppTableName());
+        final var targetTableName = textNormalizer(bundledAppTable.targetAppTableName());
         final var stepName = String.format(STEP_NAME, sourceTableName, targetTableName);
         log.info("Building Step: [{}]", stepName);
 

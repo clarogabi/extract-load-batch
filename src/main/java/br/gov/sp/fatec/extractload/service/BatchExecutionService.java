@@ -37,19 +37,19 @@ public class BatchExecutionService {
 
     public CreatedObjectResponse startJob(final JobParametersDto jobParams) {
 
-        final var dataBundleId = jobParams.getDataBundleId();
+        final var dataBundleId = jobParams.dataBundleId();
         log.info("Processing input parameters validation and enrichment for Job execution: package ID [{}].", dataBundleId);
         final var dataBundle = dataBundleService.findDataBundleById(dataBundleId);
-        final var tables = dataBundle.getBundledAppTables();
+        final var tables = dataBundle.bundledAppTables();
 
         if (isNull(tables) || tables.isEmpty()) {
             throw new UnprocessableEntityProblem("Pacote de extração e carregamento de dados deve conter ao menos uma tabela.");
         }
 
-        final var bundleName = dataBundle.getDataBundleName();
+        final var bundleName = dataBundle.dataBundleName();
         final var jobParameters = new JobParametersBuilder()
             .addString("uuid", UUID.randomUUID().toString())
-            .addLong("dataBundleId", jobParams.getDataBundleId())
+            .addLong("dataBundleId", jobParams.dataBundleId())
             .addString("dataBundleName", bundleName)
             .addString("executionDateTime", LocalDateTime.now().toString())
             .toJobParameters();

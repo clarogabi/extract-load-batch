@@ -83,11 +83,11 @@ public class DataSourceRoutingManager {
 
     public static DataSourceProperties buildDataSourceProperties(DataSourceDto dataSourceDto) {
         final var properties = new DataSourceProperties();
-        properties.setName(dataSourceDto.getDatabaseName());
+        properties.setName(dataSourceDto.databaseName());
         properties.setUrl(dataSourceDto.getJdbcUrl());
-        properties.setUsername(dataSourceDto.getUserName());
-        properties.setPassword(dataSourceDto.getPassword());
-        properties.setDriverClassName(dataSourceDto.getDatabaseDriver().getClassName());
+        properties.setUsername(dataSourceDto.userName());
+        properties.setPassword(dataSourceDto.password());
+        properties.setDriverClassName(dataSourceDto.databaseDriver().getClassName());
         return properties;
     }
 

@@ -9,7 +9,8 @@ import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
 
-@Mapper(componentModel = "spring", imports = { LocalDateTime.class })
+@Mapper(componentModel = "spring",
+    imports = { LocalDateTime.class })
 public interface AppTableMapper {
 
     AppTableDto entityToDto(ExtractLoadAppTable entity);

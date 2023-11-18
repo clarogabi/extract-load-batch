@@ -9,6 +9,7 @@ public enum LoadModeEnum {
 
     INSERT("INSERT"),
     UPDATE("UPDATE");
+
     private final String value;
 
     @Override

@@ -42,11 +42,11 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
 
     public ExtractJdbcPagingItemReader(DataSource dataSource, Integer fetchSize, BundledAppTableDto table) throws Exception {
         var jdbcUtils = new JdbcUtils(dataSource);
-        var sourceTableName = getTableName(table.getSourceAppTableName());
+        var sourceTableName = getTableName(table.sourceAppTableName());
         this.primaryKeys = jdbcUtils.getPrimaryKeys(sourceTableName);
 
         log.info("Preparing paging reader of table [{}] with fetch size [{}] and page size [{}]", sourceTableName, fetchSize, fetchSize);
-        var queryProvider = getQueryProvider(dataSource, sourceTableName, table.getExtractCustomQuery());
+        var queryProvider = getQueryProvider(dataSource, sourceTableName, table.extractCustomQuery());
         setName(ITEM_READER_NAME.concat(sourceTableName.toUpperCase()));
         setDataSource(dataSource);
         setPageSize(fetchSize);

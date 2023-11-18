@@ -10,7 +10,9 @@ import org.mapstruct.Mapping;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = { AppTableMapper.class }, imports = { LocalDateTime.class })
+@Mapper(componentModel = "spring",
+    uses = { AppTableMapper.class },
+    imports = { LocalDateTime.class })
 public interface BundledAppTableMapper {
 
     @Mapping(target = "sourceAppTableId", source = "sourceAppTable.uid")

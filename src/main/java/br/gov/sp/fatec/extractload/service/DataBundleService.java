@@ -41,16 +41,16 @@ public class DataBundleService {
     }
 
     public void updateDataBundle(final DataBundleDto dataBundleDto) {
-        var entity = findExtractLoadDataBundleById(dataBundleDto.getUid());
-        entity.setDataBundleName(dataBundleDto.getDataBundleName());
+        var entity = findExtractLoadDataBundleById(dataBundleDto.uid());
+        entity.setDataBundleName(dataBundleDto.dataBundleName());
         entity.setUpdateDateTime(LocalDateTime.now());
 
         var sourceDataSource = new ExtractLoadDataSourceConfiguration();
-        sourceDataSource.setUid(datasourceService.getDataSourceProperties(dataBundleDto.getSourceDataSourceId()).getUid());
+        sourceDataSource.setUid(datasourceService.getDataSourceProperties(dataBundleDto.sourceDataSourceId()).uid());
         entity.setSourceDataSourceConfig(sourceDataSource);
 
         var targetDataSource = new ExtractLoadDataSourceConfiguration();
-        targetDataSource.setUid(datasourceService.getDataSourceProperties(dataBundleDto.getTargetDataSourceId()).getUid());
+        targetDataSource.setUid(datasourceService.getDataSourceProperties(dataBundleDto.targetDataSourceId()).uid());
         entity.setTargetDataSourceConfig(targetDataSource);
 
         dataBundleRepository.save(entity);

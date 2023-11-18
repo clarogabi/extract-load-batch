@@ -31,10 +31,10 @@ public class ApplicationReadyListener {
         for (DataSourceDto dataSourceDto : dataSources) {
             try {
                 var dataSourceProperties = buildDataSourceProperties(dataSourceDto);
-                dataSourceRoutingManager.addConnection(dataSourceDto.getUid(), dataSourceProperties);
-                log.info("Loaded data source for instance [{} - {}].", dataSourceDto.getUid(), dataSourceDto.getDatabaseName());
+                dataSourceRoutingManager.addConnection(dataSourceDto.uid(), dataSourceProperties);
+                log.info("Loaded data source for instance [{} - {}].", dataSourceDto.uid(), dataSourceDto.databaseName());
             } catch (SQLException e) {
-                log.error("Could not load data source for instance [{} - {}]!", dataSourceDto.getUid(), dataSourceDto.getDatabaseName(), e);
+                log.error("Could not load data source for instance [{} - {}]!", dataSourceDto.uid(), dataSourceDto.databaseName(), e);
             }
         }
     }

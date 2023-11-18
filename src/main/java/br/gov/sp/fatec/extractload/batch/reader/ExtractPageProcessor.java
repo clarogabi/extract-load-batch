@@ -23,7 +23,7 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
     private final String tableName;
     private final String primaryKeyName;
 
-    public ExtractPageProcessor(String tableName, String primaryKeyName, DataSource dataSource) {
+    public ExtractPageProcessor(final String tableName, final String primaryKeyName, final DataSource dataSource) {
         this.dataSource = dataSource;
         this.tableName = tableName;
         this.primaryKeyName = primaryKeyName;
@@ -38,7 +38,7 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
             parameters.addValue("ids", page.stream()
                 .map(row -> row.getRow().entrySet()
                     .stream()
-                    .filter(field -> field.getKey().isPrimaryKey() && primaryKeyName.equals(field.getKey().getName()))
+                    .filter(field -> field.getKey().primaryKey() && primaryKeyName.equals(field.getKey().name()))
                     .findFirst()
                     .map(Map.Entry::getValue)
                     .orElse(null))
@@ -50,7 +50,7 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
             if (!ids.isEmpty()) {
                 page.forEach(row -> row.getRow()
                     .entrySet().stream()
-                    .filter(map -> map.getKey().isPrimaryKey())
+                    .filter(map -> map.getKey().primaryKey())
                     .findFirst()
                     .ifPresent(field -> {
                         if (ids.contains(field.getValue().toString())) {
@@ -65,12 +65,12 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
 
         private final List<String> ids;
 
-        public RowExtractor(List<String> ids) {
+        public RowExtractor(final List<String> ids) {
             this.ids = ids;
         }
 
         @Override
-        public Void extractData(ResultSet rs) throws SQLException, DataAccessException {
+        public Void extractData(final ResultSet rs) throws SQLException, DataAccessException {
             while (rs.next()) {
                 ids.add(rs.getString(primaryKeyName));
             }

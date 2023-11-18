@@ -53,12 +53,12 @@ public class BundledAppTableService {
     public void updateBundledTable(final Long bundleId, final Long bundledTableId, final BundledAppTableDto bundledAppTableDto) {
         var entity = findExtractLoadBundledAppByUidAndBundleUid(bundledTableId, bundleId);
 
-        entity.setSourceAppTable(appTableService.findAppTableById(bundledAppTableDto.getSourceAppTableId()));
-        entity.setSourceAppTable(appTableService.findAppTableById(bundledAppTableDto.getTargetAppTableId()));
-        entity.setRelationalOrderingNumber(bundledAppTableDto.getRelationalOrderingNumber());
-        entity.setExtractCustomQuery(bundledAppTableDto.getExtractCustomQuery());
-        entity.setLoadCustomInsertQuery(bundledAppTableDto.getLoadCustomInsertQuery());
-        entity.setLoadCustomUpdateQuery(bundledAppTableDto.getLoadCustomUpdateQuery());
+        entity.setSourceAppTable(appTableService.findAppTableById(bundledAppTableDto.sourceAppTableId()));
+        entity.setSourceAppTable(appTableService.findAppTableById(bundledAppTableDto.targetAppTableId()));
+        entity.setRelationalOrderingNumber(bundledAppTableDto.relationalOrderingNumber());
+        entity.setExtractCustomQuery(bundledAppTableDto.extractCustomQuery());
+        entity.setLoadCustomInsertQuery(bundledAppTableDto.loadCustomInsertQuery());
+        entity.setLoadCustomUpdateQuery(bundledAppTableDto.loadCustomUpdateQuery());
         entity.setUpdateDateTime(LocalDateTime.now());
 
         bundledAppTableRepository.save(entity);

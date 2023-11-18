@@ -10,7 +10,9 @@ import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
 
-@Mapper(componentModel = "spring", uses = { BundledAppTableMapper.class }, imports = { LocalDateTime.class })
+@Mapper(componentModel = "spring",
+    uses = { BundledAppTableMapper.class },
+    imports = { LocalDateTime.class })
 public interface DataBundleMapper {
 
     @Mapping(target = "sourceDataSourceId", source = "sourceDataSourceConfig.uid")
