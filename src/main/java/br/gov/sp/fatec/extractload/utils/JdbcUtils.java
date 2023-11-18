@@ -15,7 +15,7 @@ import static br.gov.sp.fatec.extractload.utils.Constants.ATTRIBUTION;
 import static br.gov.sp.fatec.extractload.utils.Constants.COLON;
 import static br.gov.sp.fatec.extractload.utils.Constants.COLUMN_NAME;
 import static br.gov.sp.fatec.extractload.utils.Constants.COMMA;
-import static br.gov.sp.fatec.extractload.utils.Constants.EMPTY_SPACE;
+import static br.gov.sp.fatec.extractload.utils.Constants.BLANK_SPACE;
 import static br.gov.sp.fatec.extractload.utils.Constants.INSERT_INTO;
 import static br.gov.sp.fatec.extractload.utils.Constants.LEFT_PARENTHESES;
 import static br.gov.sp.fatec.extractload.utils.Constants.RIGHT_PARENTHESES;
@@ -33,7 +33,7 @@ public class JdbcUtils {
         this.connection = dataSource.getConnection();
     }
 
-    public Set<String> getPrimaryKeys(String tableName) throws SQLException {
+    public Set<String> getPrimaryKeys(final String tableName) throws SQLException {
         Set<String> primaryKeys = new HashSet<>();
 
         ResultSet pk = connection.getMetaData().getPrimaryKeys(null, null, tableName);
@@ -44,7 +44,7 @@ public class JdbcUtils {
         return primaryKeys;
     }
 
-    private Set<String> getFieldsTable(String tableName) throws SQLException {
+    private Set<String> getFieldsTable(final String tableName) throws SQLException {
         Set<String> fields = new HashSet<>();
 
         ResultSet columns = connection.getMetaData().getColumns(null, null, tableName, null);
@@ -56,13 +56,13 @@ public class JdbcUtils {
         return fields;
     }
 
-    public String generateInsert(String tableName) {
+    public String generateInsert(final String tableName) {
         StringBuilder sbSqlInsert = new StringBuilder();
         try {
             var fields = getFieldsTable(tableName);
             StringBuilder sbValuesInsert = new StringBuilder();
-            sbSqlInsert.append(INSERT_INTO).append(EMPTY_SPACE);
-            sbSqlInsert.append(tableName).append(EMPTY_SPACE);
+            sbSqlInsert.append(INSERT_INTO).append(BLANK_SPACE);
+            sbSqlInsert.append(tableName).append(BLANK_SPACE);
             sbSqlInsert.append(LEFT_PARENTHESES);
 
             for (Iterator<String> itField = fields.iterator(); itField.hasNext(); ) {
@@ -72,13 +72,13 @@ public class JdbcUtils {
                 sbValuesInsert.append(field);
 
                 if (itField.hasNext()) {
-                    sbSqlInsert.append(COMMA).append(EMPTY_SPACE);
-                    sbValuesInsert.append(COMMA).append(EMPTY_SPACE);
+                    sbSqlInsert.append(COMMA).append(BLANK_SPACE);
+                    sbValuesInsert.append(COMMA).append(BLANK_SPACE);
                 }
             }
 
             sbSqlInsert.append(RIGHT_PARENTHESES);
-            sbSqlInsert.append(EMPTY_SPACE).append(VALUES).append(EMPTY_SPACE);
+            sbSqlInsert.append(BLANK_SPACE).append(VALUES).append(BLANK_SPACE);
             sbSqlInsert.append(LEFT_PARENTHESES);
             sbSqlInsert.append(sbValuesInsert);
             sbSqlInsert.append(RIGHT_PARENTHESES);
@@ -89,7 +89,7 @@ public class JdbcUtils {
         return sbSqlInsert.toString();
     }
 
-    public String generateUpdate(String tableName) {
+    public String generateUpdate(final String tableName) {
         StringBuilder sbSqlUpdate = new StringBuilder();
 
         try {
@@ -97,19 +97,19 @@ public class JdbcUtils {
             var primaryKeys = getPrimaryKeys(tableName);
             fields.removeAll(primaryKeys);
 
-            sbSqlUpdate.append(UPDATE).append(EMPTY_SPACE);
-            sbSqlUpdate.append(tableName).append(EMPTY_SPACE);
-            sbSqlUpdate.append(SET).append(EMPTY_SPACE);
+            sbSqlUpdate.append(UPDATE).append(BLANK_SPACE);
+            sbSqlUpdate.append(tableName).append(BLANK_SPACE);
+            sbSqlUpdate.append(SET).append(BLANK_SPACE);
             setValueOnFields(fields, sbSqlUpdate);
-            sbSqlUpdate.append(EMPTY_SPACE).append(WHERE).append(EMPTY_SPACE);
+            sbSqlUpdate.append(BLANK_SPACE).append(WHERE).append(BLANK_SPACE);
 
             for (Iterator<String> itPK = primaryKeys.iterator(); itPK.hasNext();) {
                 var pkField = itPK.next();
-                sbSqlUpdate.append(pkField).append(EMPTY_SPACE).append(ATTRIBUTION);
-                sbSqlUpdate.append(EMPTY_SPACE).append(COLON).append(pkField);
+                sbSqlUpdate.append(pkField).append(BLANK_SPACE).append(ATTRIBUTION);
+                sbSqlUpdate.append(BLANK_SPACE).append(COLON).append(pkField);
 
                 if (itPK.hasNext()) {
-                    sbSqlUpdate.append(EMPTY_SPACE).append(AND).append(EMPTY_SPACE);
+                    sbSqlUpdate.append(BLANK_SPACE).append(AND).append(BLANK_SPACE);
                 }
             }
         } catch (SQLException e) {
@@ -119,14 +119,14 @@ public class JdbcUtils {
         return sbSqlUpdate.toString();
     }
 
-    private void setValueOnFields(Set<String> fields, StringBuilder sbSqlUpdate) {
+    private static void setValueOnFields(Set<String> fields, StringBuilder sbSqlUpdate) {
         for (Iterator<String> itField = fields.iterator(); itField.hasNext();) {
             var field = itField.next();
-            sbSqlUpdate.append(field).append(EMPTY_SPACE).append(ATTRIBUTION);
-            sbSqlUpdate.append(EMPTY_SPACE).append(COLON).append(field);
+            sbSqlUpdate.append(field).append(BLANK_SPACE).append(ATTRIBUTION);
+            sbSqlUpdate.append(BLANK_SPACE).append(COLON).append(field);
 
             if (itField.hasNext()) {
-                sbSqlUpdate.append(COMMA).append(EMPTY_SPACE);
+                sbSqlUpdate.append(COMMA).append(BLANK_SPACE);
             }
         }
     }

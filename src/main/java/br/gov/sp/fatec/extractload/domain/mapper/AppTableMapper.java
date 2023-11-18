@@ -7,10 +7,10 @@ import br.gov.sp.fatec.extractload.entity.ExtractLoadAppTable;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Mapper(componentModel="spring", imports = { LocalDateTime.class, Timestamp.class })
+@Mapper(componentModel = "spring",
+    imports = { LocalDateTime.class })
 public interface AppTableMapper {
 
     AppTableDto entityToDto(ExtractLoadAppTable entity);
@@ -30,8 +30,8 @@ public interface AppTableMapper {
     @Mapping(target = "appTablePhysicalName", source = "request.tablePhysicalName")
     AppTableDto requestToDto(Long uid, DataTableRequest request);
 
-    @Mapping(target = "createDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
-    @Mapping(target = "updateDateTime", expression = "java(Timestamp.valueOf(LocalDateTime.now()))")
+    @Mapping(target = "createDateTime", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "updateDateTime", expression = "java(LocalDateTime.now())")
     ExtractLoadAppTable dtoToEntity(AppTableDto dto);
 
 }

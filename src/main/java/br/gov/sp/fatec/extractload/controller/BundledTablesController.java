@@ -20,25 +20,25 @@ public class BundledTablesController implements BundledTablesApi {
     private final BundledAppTableMapper bundledAppTableMapper;
 
     @Override
-    public ResponseEntity<Void> deleteBundledTable(Long bundleId, Long bundledTableId) {
+    public ResponseEntity<Void> deleteBundledTable(final Long bundleId, final Long bundledTableId) {
         bundledAppTableService.deleteBundledTable(bundleId, bundledTableId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<BundledTableResponse> getBundledTable(Long bundleId, Long bundledTableId) {
+    public ResponseEntity<BundledTableResponse> getBundledTable(final Long bundleId, final Long bundledTableId) {
         return new ResponseEntity<>(bundledAppTableMapper.mapToResponse(bundledAppTableService
             .findBundledAppTableByBundledTableIdAndBundleId(bundleId, bundledTableId)), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<CreatedObjectResponse> postBundledTables(Long bundleId, BundledTableRequest bundledTableRequest) {
+    public ResponseEntity<CreatedObjectResponse> postBundledTables(final Long bundleId, final BundledTableRequest bundledTableRequest) {
         return new ResponseEntity<>(new CreatedObjectResponse().uid(bundledAppTableService
             .addBundledTable(bundleId, bundledAppTableMapper.requestToDto(bundledTableRequest))), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Void> putBundledTable(Long bundleId, Long bundledTableId, BundledTableRequest bundledTableRequest) {
+    public ResponseEntity<Void> putBundledTable(final Long bundleId, final Long bundledTableId, final BundledTableRequest bundledTableRequest) {
         bundledAppTableService.updateBundledTable(bundleId, bundledTableId, bundledAppTableMapper.requestToDto(bundledTableRequest));
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -9,7 +9,7 @@ import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertyResolver;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -23,14 +23,14 @@ import static java.util.Objects.nonNull;
 
 @Configuration
 @EnableJpaRepositories(
-    entityManagerFactoryRef = "extractLoadDataSourceEmf",
-    transactionManagerRef = "extractLoadDataSourceTm",
+    entityManagerFactoryRef = "primaryEntityManagerFactory",
+    transactionManagerRef = "primaryTransactionManager",
     basePackages = "br.gov.sp.fatec.extractload.repository"
 )
 @EnableTransactionManagement
 public class PrimaryDataSourceConfig {
 
-    private static HikariConfig extractLoadDataSourceConfig(PrimaryDataSourceProps primaryDataSourceProps) {
+    private static HikariConfig extractLoadDataSourceConfig(final PrimaryDataSourceProps primaryDataSourceProps) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(primaryDataSourceProps.jdbcUrl());
         config.setUsername(primaryDataSourceProps.username());
@@ -46,14 +46,14 @@ public class PrimaryDataSourceConfig {
 
     @Primary
     @Bean(name = "extractLoadDataSource")
-    public DataSource extractLoadDataSource(PrimaryDataSourceProps primaryDataSourceProps) {
+    public DataSource extractLoadDataSource(final PrimaryDataSourceProps primaryDataSourceProps) {
         return new HikariDataSource(extractLoadDataSourceConfig(primaryDataSourceProps));
     }
 
     @Primary
-    @Bean(name = "extractLoadDataSourceEmf")
-    public LocalContainerEntityManagerFactoryBean extractLoadDataSourceEmf(EntityManagerFactoryBuilder builder,
-        @Qualifier("extractLoadDataSource") DataSource dataSource) {
+    @Bean(name = "primaryEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean primaryEntityManagerFactory(final EntityManagerFactoryBuilder builder,
+        final @Qualifier("extractLoadDataSource") DataSource dataSource) {
         return builder
             .dataSource(dataSource)
             .persistenceUnit("extractLoadDataSource")
@@ -62,15 +62,15 @@ public class PrimaryDataSourceConfig {
     }
 
     @Primary
-    @Bean(name = "extractLoadDataSourceTm")
-    public PlatformTransactionManager extractLoadDataSourceTm(@Qualifier("extractLoadDataSourceEmf") EntityManagerFactory emf,
-        Environment environment) {
+    @Bean(name = "primaryTransactionManager")
+    public PlatformTransactionManager primaryTransactionManager(final @Qualifier("primaryEntityManagerFactory") EntityManagerFactory emf,
+        final PropertyResolver propertyResolver) {
 
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
         transactionManager.setJpaDialect(new HibernateJpaDialect());
 
-        var timeout = environment.getProperty("platform.transaction.manager.default-timeout", Integer.class);
+        var timeout = propertyResolver.getProperty("platform.transaction.manager.default-timeout", Integer.class);
         if (nonNull(timeout)) {
             transactionManager.setDefaultTimeout(timeout);
         }

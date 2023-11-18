@@ -1,13 +1,15 @@
 package br.gov.sp.fatec.extractload.batch.reader;
 
+import lombok.NoArgsConstructor;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.util.Assert;
 
+@NoArgsConstructor
 public class CompositeJdbcPagingItemReader<T> extends JdbcPagingItemReader<T> {
 
     private PageProcessor<T> pageProcessor;
 
-    public void setPageProcessor(PageProcessor<T> pageProcessor) {
+    public void setPageProcessor(final PageProcessor<T> pageProcessor) {
         this.pageProcessor = pageProcessor;
     }
 

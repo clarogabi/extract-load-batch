@@ -9,7 +9,7 @@ import org.springframework.batch.core.StepExecution;
 import java.util.Collection;
 import java.util.List;
 
-@Mapper(componentModel="spring",
+@Mapper(componentModel = "spring",
     imports = { ExtractLoadUtils.class },
     uses = { BatchStatusMapper.class, ExitStatusMapper.class })
 public interface StepExecutionMapper {

@@ -7,10 +7,6 @@ import java.util.Optional;
 
 public interface ExtractLoadDataBundleRepository extends JpaRepository<ExtractLoadDataBundle, Long> {
 
-    Optional<ExtractLoadDataBundle> findByUid(Long uid);
-
-    boolean existsBySourceDatasourceConfigUid(Long datasourceUid);
-
-    boolean existsByTargetDatasourceConfigUid(Long datasourceUid);
+    Optional<ExtractLoadDataBundle> findByUid(final Long uid);
 
 }

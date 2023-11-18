@@ -31,33 +31,50 @@ import static java.util.Objects.isNull;
 public class BatchExecutionService {
 
     private final JobLauncher jobLauncher;
-
     private final JobExplorer jobExplorer;
-
+    private final DataBundleService dataBundleService;
     private final ExtractLoadJobBuilder jobBuilder;
 
-    public CreatedObjectResponse startJob(JobParametersDto jobParams) {
-        var jobParameters = new JobParametersBuilder()
+    public CreatedObjectResponse startJob(final JobParametersDto jobParams) {
+
+        final var dataBundleId = jobParams.dataBundleId();
+        log.info("Processing input parameters validation and enrichment for Job execution: package ID [{}].", dataBundleId);
+        final var dataBundle = dataBundleService.findDataBundleById(dataBundleId);
+        final var tables = dataBundle.bundledAppTables();
+
+        if (isNull(tables) || tables.isEmpty()) {
+            throw new UnprocessableEntityProblem("Pacote de extração e carregamento de dados deve conter ao menos uma tabela.");
+        }
+
+        final var bundleName = dataBundle.dataBundleName();
+        final var jobParameters = new JobParametersBuilder()
             .addString("uuid", UUID.randomUUID().toString())
-            .addLong("dataBundleId", jobParams.getDataBundleId())
+            .addLong("dataBundleId", jobParams.dataBundleId())
+            .addString("dataBundleName", bundleName)
             .addString("executionDateTime", LocalDateTime.now().toString())
             .toJobParameters();
 
-        var job = jobBuilder.job(jobParams);
+        log.info("Building Job structure for data extraction and loading batch processing of package [{} - {}].", dataBundleId, bundleName);
+        final var job = jobBuilder.build(dataBundle);
+
         try {
-            var jobExecution = jobLauncher.run(job, jobParameters);
+            log.info("Job of package [{} - {}] is ready to start.", dataBundleId, bundleName);
+            final var jobExecution = jobLauncher.run(job, jobParameters);
             return new CreatedObjectResponse().uid(jobExecution.getId());
         } catch (JobExecutionAlreadyRunningException | JobParametersInvalidException | JobInstanceAlreadyCompleteException | JobRestartException e) {
-            log.error("Job batch execution error {}", e.getMessage(), e);
+            log.error("Job batch execution error [{}].", e.getMessage(), e);
             throw new UnprocessableEntityProblem(format("Não foi possível executar o Job devido ao erro [%s].", e.getMessage()));
         }
+
     }
 
-    public JobExecution findJobExecutionById(Long jobExecutionId) {
-        var jobExecution =  jobExplorer.getJobExecution(jobExecutionId);
+    public JobExecution findJobExecutionById(final Long jobExecutionId) {
+        final var jobExecution =  jobExplorer.getJobExecution(jobExecutionId);
+
         if (isNull(jobExecution)) {
             throw new NotFoundProblem("Registro não encontrado.");
         }
+
         return jobExecution;
     }
 

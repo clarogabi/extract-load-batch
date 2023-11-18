@@ -6,10 +6,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.batch.core.JobExecution;
 
-@Mapper(componentModel="spring",
+@Mapper(componentModel = "spring",
     imports = { ExtractLoadUtils.class },
     uses = { BatchStatusMapper.class, ExitStatusMapper.class, StepExecutionMapper.class })
-public abstract class JobExecutionMapper {
+public interface JobExecutionMapper {
 
     @Mapping(target = "jobExecutionId", source = "id")
     @Mapping(target = "jobName", source = "jobInstance.jobName")
@@ -19,6 +19,6 @@ public abstract class JobExecutionMapper {
     @Mapping(target = "exitMessage", source = "exitStatus.exitDescription")
     @Mapping(target = "steps", source = "stepExecutions")
     @Mapping(target = "jobElapsedTime", expression = "java(ExtractLoadUtils.findElapsedTime(jobExecution.getStartTime(), jobExecution.getEndTime()))")
-    public abstract JobExecutionResponse map(JobExecution jobExecution);
+    JobExecutionResponse map(final JobExecution jobExecution);
 
 }

@@ -1,23 +1,13 @@
 package br.gov.sp.fatec.extractload.domain.dto;
 
-import io.micrometer.core.instrument.util.StringUtils;
-import lombok.Getter;
-import lombok.Setter;
+public record BundledAppTableDto(Long uid,
+                                 Long sourceAppTableId,
+                                 String sourceAppTableName,
+                                 Long targetAppTableId,
+                                 String targetAppTableName,
+                                 Long relationalOrderingNumber,
+                                 String extractCustomQuery,
+                                 String loadCustomInsertQuery,
+                                 String loadCustomUpdateQuery) {
 
-@Getter
-@Setter
-public class BundledAppTableDto {
-
-    private Long uid;
-    private Long sourceAppTableId;
-    private String sourceAppTableName;
-    private Long targetAppTableId;
-    private String targetAppTableName;
-    private Long relationalOrderingNumber;
-    private String extractCustomQuery;
-    private String loadCustomInsertQuery;
-    private String loadCustomUpdateQuery;
-    public boolean hasReaderQuery() {
-        return StringUtils.isNotEmpty(this.extractCustomQuery);
-    }
 }

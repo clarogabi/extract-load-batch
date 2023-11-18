@@ -18,12 +18,12 @@ public class ResultSetRowMapper implements RowMapper<RowMappedDto> {
 
     private final Set<String> primaryKeys;
 
-    public ResultSetRowMapper(Set<String> primaryKeys) {
-        this.primaryKeys = primaryKeys;
+    public ResultSetRowMapper(final Set<String> primaryKeys) {
+        this.primaryKeys = Set.copyOf(primaryKeys);
     }
 
     @Override
-    public RowMappedDto mapRow(ResultSet rs, int rowNumber) throws SQLException {
+    public RowMappedDto mapRow(final ResultSet rs, int rowNumber) throws SQLException {
         final var metaData = rs.getMetaData();
         final var columnsCount = metaData.getColumnCount();
 
@@ -37,10 +37,7 @@ public class ResultSetRowMapper implements RowMapper<RowMappedDto> {
             objMapped.put(keyField, value);
         }
 
-        return RowMappedDto.builder()
-            .row(objMapped)
-            .loadMode(LoadModeEnum.INSERT)
-            .build();
+        return new RowMappedDto(objMapped, LoadModeEnum.INSERT);
     }
 
     public Object getObject(final ResultSet rs, final int index, final int jdbcType) throws SQLException {

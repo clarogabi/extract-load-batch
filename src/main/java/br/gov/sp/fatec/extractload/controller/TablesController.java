@@ -20,24 +20,24 @@ public class TablesController implements TablesApi {
     private final AppTableMapper appTableMapper;
 
     @Override
-    public ResponseEntity<Void> deleteTable(Long tableId) {
+    public ResponseEntity<Void> deleteTable(final Long tableId) {
         appTableService.deleteAppTable(tableId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<DataTableResponse> getTable(Long tableId) {
+    public ResponseEntity<DataTableResponse> getTable(final Long tableId) {
         return new ResponseEntity<>(appTableMapper.dtoToResponse(appTableService.getAppTableById(tableId)), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<CreatedObjectResponse> postTable(DataTableRequest dataTableRequest) {
+    public ResponseEntity<CreatedObjectResponse> postTable(final DataTableRequest dataTableRequest) {
         return new ResponseEntity<>(new CreatedObjectResponse()
             .uid(appTableService.createAppTable(appTableMapper.requestToDto(dataTableRequest))), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Void> putTable(Long tableId, DataTableRequest dataTableRequest) {
+    public ResponseEntity<Void> putTable(final Long tableId, final DataTableRequest dataTableRequest) {
         appTableService.updateAppTable(appTableMapper.requestToDto(tableId, dataTableRequest));
         return new ResponseEntity<>(HttpStatus.OK);
     }
