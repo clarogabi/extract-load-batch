@@ -3,6 +3,7 @@ package br.gov.sp.fatec.extractload.batch.reader;
 import br.gov.sp.fatec.extractload.domain.dto.BundledAppTableDto;
 import br.gov.sp.fatec.extractload.domain.dto.RowMappedDto;
 import br.gov.sp.fatec.extractload.utils.JdbcUtils;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.Order;
@@ -43,23 +44,34 @@ import static java.util.Objects.isNull;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<RowMappedDto> {
 
-    private final Set<String> primaryKeys;
+    private final Set<String> sourcePKs;
 
     @SneakyThrows(SQLException.class)
-    public ExtractJdbcPagingItemReader(final DataSource dataSource, final int pageSize, final int fetchSize, final BundledAppTableDto table) {
-        final var jdbcUtils = new JdbcUtils(dataSource);
-        final var sourceTableName = getTableName(table.sourceAppTableName());
-        this.primaryKeys = jdbcUtils.getPrimaryKeys(sourceTableName);
+    public ExtractJdbcPagingItemReader(final HikariDataSource sourceDataSource,
+        final HikariDataSource targetDataSource,
+        final int fetchSize,
+        final int pageSize,
+        final BundledAppTableDto table) {
 
-        log.info("Preparing paging reader of table [{}] with fetch size [{}] and page size [{}]", sourceTableName, fetchSize, fetchSize);
-        final var queryProvider = buildQueryProvider(dataSource, sourceTableName, table.extractCustomQuery());
-        super.setName(ITEM_READER_NAME.concat(toUpperCase(sourceTableName)));
-        super.setDataSource(dataSource);
-        super.setPageSize(pageSize);
-        super.setFetchSize(fetchSize);
+        final var sourceJdbcUtils = new JdbcUtils(sourceDataSource);
+        final var sourceTableName = getTableName(table.sourceAppTableName());
+        this.sourcePKs = sourceJdbcUtils.getPrimaryKeys(sourceTableName);
+
+        log.info("Preparing paging reader of table [{}] with fetch size [{}] and page size [{}]", sourceTableName, fetchSize, pageSize);
+        final var queryProvider = buildQueryProvider(sourceDataSource, sourceTableName, table.extractCustomQuery());
+        super.setName(ITEM_READER_NAME.concat(sourceTableName));
+        super.setDataSource(sourceDataSource);
         super.setQueryProvider(queryProvider);
-        super.setRowMapper(new ResultSetRowMapper(jdbcUtils.getPrimaryKeys(sourceTableName)));
-        super.setPageProcessor(new ExtractPageProcessor(sourceTableName, getPrimaryKey(primaryKeys), dataSource));
+        super.setRowMapper(new ResultSetRowMapper(sourcePKs));
+        super.setFetchSize(fetchSize);
+        super.setPageSize(pageSize);
+
+        final var targetJdbcUtils = new JdbcUtils(targetDataSource);
+        final var targetTableName = getTableName(table.targetAppTableName());
+        final Set<String> targetPKs = targetJdbcUtils.getPrimaryKeys(targetTableName);
+        super.setPageProcessor(new ExtractPageProcessor(targetDataSource, targetJdbcUtils.getFullTableName(targetTableName),
+            getPrimaryKey(targetPKs), getPrimaryKey(sourcePKs)));
+
         log.info("Reader SQL Query [{}]", queryProvider.generateFirstPageQuery(fetchSize));
     }
 
@@ -71,10 +83,10 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
         factory.setDataSource(dataSource);
 
         if (isNull(customQuery) || customQuery.isBlank()) {
-            log.info("Bundled table [{}] has non custom query, generating default paging query sql.", tableName);
+            log.info("Bundled table [{}] custom query is not present, generating default paging query sql.", tableName);
             factory.setSelectClause(ASTERISK);
             factory.setFromClause(tableName);
-            primaryKeys.forEach(p -> sortKeys.put(p, Order.ASCENDING));
+            sourcePKs.forEach(p -> sortKeys.put(p, Order.ASCENDING));
         } else {
             log.info("Bundled table [{}] has custom query, generating paging query sql from it.", tableName);
             var query = toUpperCase(customQuery);

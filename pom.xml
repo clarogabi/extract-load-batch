@@ -11,7 +11,7 @@
 
     <groupId>br.gov.sp.fatec</groupId>
     <artifactId>extract-load-batch</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>extract-load-batch</name>
     <description>The Extract and Load Batch Swagger UI provides the ability to perform API requests such as GET, POST, PUT and DELETE to all available endpoints.</description>
     <packaging>jar</packaging>

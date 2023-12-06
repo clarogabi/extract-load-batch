@@ -1288,6 +1288,12 @@
                         "description": "Database name.",
                         "example": "xe"
                     },
+                    "schemaName": {
+                        "type": "string",
+                        "maxLength": 128,
+                        "description": "Schema name.",
+                        "example": "dummy_schema"
+                    },
                     "userName": {
                         "type": "string",
                         "maxLength": 128,
@@ -1339,6 +1345,11 @@
                         "type": "string",
                         "description": "Database name.",
                         "example": "xe"
+                    },
+                    "schemaName": {
+                        "type": "string",
+                        "description": "Schema name.",
+                        "example": "dummy_schema"
                     },
                     "userName": {
                         "type": "string",

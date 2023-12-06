@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static br.gov.sp.fatec.extractload.config.datasource.router.DataSourceRoutingManager.buildDataSourceProperties;
+import static br.gov.sp.fatec.extractload.config.datasource.router.DataSourceRoutingManager.buildHikariConfig;
 import static java.lang.String.format;
 
 @Slf4j
@@ -44,8 +44,7 @@ public class DataSourceService {
         final var instanceId = dataSourceConfigurationRepository.save(dataSourceMapper.dtoToEntity(datasourceDto)).getUid();
 
         try {
-            var dataSourceProperties = buildDataSourceProperties(datasourceDto);
-            dataSourceRoutingManager.addConnection(instanceId, dataSourceProperties);
+            dataSourceRoutingManager.addConnection(instanceId, buildHikariConfig(datasourceDto));
         } catch (SQLException e) {
             log.error("Error when attempting to add new data source connection.", e);
             throw new UnprocessableEntityProblem(format("%s%s","Ocorreu um erro ao adicionar nova conexão com o banco de dados. ",
@@ -69,6 +68,7 @@ public class DataSourceService {
         var entity = findDataSourceById(datasourceDto.uid());
 
         entity.setDatabaseName(datasourceDto.databaseName());
+        entity.setDatabaseSchema(datasourceDto.databaseSchema());
         entity.setDatabaseHost(datasourceDto.hostName());
         entity.setDatabaseNumberPort(datasourceDto.numberPort());
         entity.setDatabaseUserName(datasourceDto.userName());
@@ -78,7 +78,7 @@ public class DataSourceService {
         dataSourceConfigurationRepository.save(entity);
 
         try {
-            dataSourceRoutingManager.replaceConnection(datasourceDto.uid(), buildDataSourceProperties(datasourceDto));
+            dataSourceRoutingManager.replaceConnection(datasourceDto.uid(), buildHikariConfig(datasourceDto));
         } catch (SQLException e) {
             log.error("Error when attempting to replace data source connection.", e);
             throw new UnprocessableEntityProblem(format("%s%s","Ocorreu um erro ao atualizar a conexão com o banco de dados. ",

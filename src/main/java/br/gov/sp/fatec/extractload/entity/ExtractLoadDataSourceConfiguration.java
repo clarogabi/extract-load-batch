@@ -49,6 +49,10 @@ public class ExtractLoadDataSourceConfiguration {
     @Column(name = "DATABASE_NAME", nullable = false, length = 128)
     private String databaseName;
 
+    @Size(max = 128)
+    @Column(name = "DATABASE_SCHEMA", length = 128)
+    private String databaseSchema;
+
     @NotNull
     @Size(max = 63)
     @Column(name = "DATABASE_HOST", nullable = false, length = 63)

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static br.gov.sp.fatec.extractload.utils.ExtractLoadUtils.toUpperCase;
 import static java.util.Objects.nonNull;
 
 public class ResultSetRowMapper implements RowMapper<RowMappedDto> {
@@ -31,10 +32,9 @@ public class ResultSetRowMapper implements RowMapper<RowMappedDto> {
 
         for (int i = 1; i <= columnsCount; i++) {
             final int jdbcType = metaData.getColumnType(i);
-            final var value = getObject(rs, i, jdbcType);
             final var columnName = metaData.getColumnName(i);
-            final var keyField = new FieldMetadataDto(i, columnName, jdbcType, nonNull(primaryKeys) && primaryKeys.contains(columnName));
-            objMapped.put(keyField, value);
+            final var keyField = new FieldMetadataDto(i, toUpperCase(columnName), jdbcType, nonNull(primaryKeys) && primaryKeys.contains(columnName));
+            objMapped.put(keyField, getObject(rs, i, jdbcType));
         }
 
         return new RowMappedDto(objMapped, LoadModeEnum.INSERT);

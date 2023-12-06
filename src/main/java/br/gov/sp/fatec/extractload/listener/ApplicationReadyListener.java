@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.sql.SQLException;
 import java.util.List;
 
-import static br.gov.sp.fatec.extractload.config.datasource.router.DataSourceRoutingManager.buildDataSourceProperties;
+import static br.gov.sp.fatec.extractload.config.datasource.router.DataSourceRoutingManager.buildHikariConfig;
 
 @Slf4j
 @Component
@@ -25,13 +25,12 @@ public class ApplicationReadyListener {
 
     @EventListener
     public void onReady(final ApplicationReadyEvent applicationReadyEvent) {
-        log.info("Application has started [{}]. Handling routing database connections.", applicationReadyEvent.getTimeTaken());
+        log.info("Application has started in {}s. Handling routing database connections.", applicationReadyEvent.getTimeTaken().toSeconds());
         List<DataSourceDto> dataSources = dataSourceService.findAllDataSources();
 
         for (DataSourceDto dataSourceDto : dataSources) {
             try {
-                var dataSourceProperties = buildDataSourceProperties(dataSourceDto);
-                dataSourceRoutingManager.addConnection(dataSourceDto.uid(), dataSourceProperties);
+                dataSourceRoutingManager.addConnection(dataSourceDto.uid(), buildHikariConfig(dataSourceDto));
                 log.info("Loaded data source of instance ID [{}] under connection [{}].", dataSourceDto.uid(), dataSourceDto.getJdbcUrl());
             } catch (SQLException e) {
                 log.error("Could not load data source under connection [{}].", dataSourceDto.getJdbcUrl(), e);

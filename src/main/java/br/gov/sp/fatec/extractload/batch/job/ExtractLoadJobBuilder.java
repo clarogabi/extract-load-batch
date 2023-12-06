@@ -29,6 +29,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
 
 import static br.gov.sp.fatec.extractload.utils.Constants.JOB_NAME;
@@ -99,18 +100,19 @@ public class ExtractLoadJobBuilder {
 
     private List<Step> buildSteps(final DataSource sourceDataSource, final DataSource targetDataSource, final List<BundledAppTableDto> tables) {
         return tables.stream()
+            .sorted(Comparator.comparingLong(BundledAppTableDto::relationalOrderingNumber))
             .map(table -> buildStep(sourceDataSource, targetDataSource, table))
             .toList();
     }
 
     private Step buildStep(final DataSource sourceDataSource, final DataSource targetDataSource, final BundledAppTableDto bundledAppTable) {
-        final var sourceTableName = textNormalizer(bundledAppTable.sourceAppTableName());
-        final var targetTableName = textNormalizer(bundledAppTable.targetAppTableName());
+        final var sourceTableName = bundledAppTable.sourceAppTableName();
+        final var targetTableName = bundledAppTable.targetAppTableName();
         final var stepName = String.format(STEP_NAME, sourceTableName, targetTableName);
         log.info("Building Step: [{}]", stepName);
 
-        final var reader = applicationContext.getBean(ExtractJdbcPagingItemReader.class, sourceDataSource, batchExecutionProps.pageSize(),
-            batchExecutionProps.fetchSize(), bundledAppTable);
+        final var reader = applicationContext.getBean(ExtractJdbcPagingItemReader.class, sourceDataSource, targetDataSource,
+            batchExecutionProps.fetchSize(), batchExecutionProps.pageSize(), bundledAppTable);
 
         final var insertWriter = applicationContext.getBean(InsertJdbcItemWriter.class, targetDataSource, targetTableName);
         final var updateWriter = applicationContext.getBean(UpdateJdbcItemWriter.class, targetDataSource, targetTableName);

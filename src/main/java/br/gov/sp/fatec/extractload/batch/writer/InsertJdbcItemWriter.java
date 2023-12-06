@@ -3,6 +3,7 @@ package br.gov.sp.fatec.extractload.batch.writer;
 import br.gov.sp.fatec.extractload.domain.dto.RowMappedDto;
 import br.gov.sp.fatec.extractload.exception.UnprocessableEntityProblem;
 import br.gov.sp.fatec.extractload.utils.JdbcUtils;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -20,7 +21,7 @@ public class InsertJdbcItemWriter extends JdbcBatchItemWriter<RowMappedDto> {
 
     private final String tableName;
 
-    public InsertJdbcItemWriter(final DataSource dataSource, final String tableName) throws SQLException {
+    public InsertJdbcItemWriter(final HikariDataSource dataSource, final String tableName) throws SQLException {
         this.tableName = tableName;
         log.info("Preparing insert item writer of table [{}]", tableName);
         final var jdbcUtils = new JdbcUtils(dataSource);

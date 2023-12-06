@@ -1,71 +1,73 @@
-CREATE USER CO_APP_TARGET IDENTIFIED BY CO_APP;
+-- Oracle DDL script for the target_app schema
+-- https://github.com/oracle-samples/db-sample-schemas/blob/main/customer_orders/order_items.sql
 
-ALTER USER CO_APP_TARGET QUOTA 524M ON SYSTEM;
-GRANT UNLIMITED TABLESPACE TO CO_APP_TARGET;
+CREATE USER TARGET_APP IDENTIFIED BY TARGET_APP;
+ALTER USER TARGET_APP QUOTA 524M ON SYSTEM;
+GRANT UNLIMITED TABLESPACE TO TARGET_APP;
 
-alter user CO_APP_TARGET default tablespace USERS
+alter user TARGET_APP default tablespace USERS
              quota unlimited on USERS;
 
-alter user CO_APP_TARGET temporary tablespace TEMP;
+alter user TARGET_APP temporary tablespace TEMP;
 
 grant create session,
 create table,
 create sequence,
 create view,
 create procedure
-   to CO_APP_TARGET
- identified by "CO_APP_TARGET";
+   to TARGET_APP
+ identified by "TARGET_APP";
 
-create sequence CO_APP_TARGET.customers_seq
+create sequence TARGET_APP.customers_seq
     minvalue 1
     increment by 1
     START with 1
     cache 20
     nocycle;
 
-create sequence CO_APP_TARGET.stores_seq
+create sequence TARGET_APP.stores_seq
     minvalue 1
     increment by 1
     START with 1
     cache 20
     nocycle;
 
-create sequence CO_APP_TARGET.products_seq
+create sequence TARGET_APP.products_seq
     minvalue 1
     increment by 1
     START with 1
     cache 20
     nocycle;
 
-create sequence CO_APP_TARGET.orders_seq
+create sequence TARGET_APP.orders_seq
     minvalue 1
     increment by 1
     START with 1
     cache 20
     nocycle;
 
-create sequence CO_APP_TARGET.shipments_seq
+create sequence TARGET_APP.shipments_seq
     minvalue 1
     increment by 1
     START with 1
     cache 20
     nocycle;
 
-create sequence CO_APP_TARGET.order_items_seq
+create sequence TARGET_APP.order_items_seq
     minvalue 1
     increment by 1
     START with 1
     cache 20
     nocycle;
 
-create sequence CO_APP_TARGET.inventory_seq
+create sequence TARGET_APP.inventory_seq
     minvalue 1
     increment by 1
     START with 1
     cache 20
     nocycle;
 
-create table CO_APP_TARGET.customers (
+create table TARGET_APP.customers (
                                          customer_id     	integer,
                                          email_address   	varchar2(255 char) not null,
                                          full_name       	varchar2(255 char) not null,
@@ -74,7 +76,7 @@ create table CO_APP_TARGET.customers (
 
 ;
 
-create table CO_APP_TARGET.stores (
+create table TARGET_APP.stores (
                                       store_id          integer,
                                       store_name        varchar2(255 char) not null,
                                       web_address       varchar2(100 char),
@@ -90,7 +92,7 @@ create table CO_APP_TARGET.stores (
                                       update_date_time  timestamp(6) default sysdate not null)
 ;
 
-create table CO_APP_TARGET.products (
+create table TARGET_APP.products (
                                         product_id         integer,
                                         product_name       varchar2(255 char) not null,
                                         unit_price         number(10,2),
@@ -104,7 +106,7 @@ create table CO_APP_TARGET.products (
                                         update_date_time  timestamp(6) default sysdate not null)
 ;
 
-create table CO_APP_TARGET.orders (
+create table TARGET_APP.orders (
                                       order_id          integer,
                                       order_datetime    timestamp not null,
                                       customer_id       integer not null,
@@ -114,7 +116,7 @@ create table CO_APP_TARGET.orders (
                                       update_date_time  timestamp(6) default sysdate not null)
 ;
 
-create table CO_APP_TARGET.shipments (
+create table TARGET_APP.shipments (
                                          shipment_id          integer,
                                          store_id             integer not null,
                                          customer_id          integer not null,
@@ -124,7 +126,7 @@ create table CO_APP_TARGET.shipments (
                                          update_date_time  timestamp(6) default sysdate not null)
 ;
 
-create table CO_APP_TARGET.order_items (
+create table TARGET_APP.order_items (
                                            order_id        integer not null,
                                            line_item_id    integer not null,
                                            product_id      integer not null,
@@ -135,7 +137,7 @@ create table CO_APP_TARGET.order_items (
                                            update_date_time  timestamp(6) default sysdate not null)
 ;
 
-create table CO_APP_TARGET.inventory (
+create table TARGET_APP.inventory (
                                          inventory_id          integer,
                                          store_id              integer not null,
                                          product_id            integer not null,
@@ -144,86 +146,86 @@ create table CO_APP_TARGET.inventory (
                                          update_date_time  timestamp(6) default sysdate not null)
 ;
 
-create index CO_APP_TARGET.customers_name_i on CO_APP_TARGET.customers ( full_name );
-create index CO_APP_TARGET.orders_customer_id_i on CO_APP_TARGET.orders ( customer_id );
-create index CO_APP_TARGET.orders_store_id_i on CO_APP_TARGET.orders ( store_id );
-create index CO_APP_TARGET.shipments_store_id_i on CO_APP_TARGET.shipments ( store_id );
-create index CO_APP_TARGET.shipments_customer_id_i on CO_APP_TARGET.shipments ( customer_id );
-create index CO_APP_TARGET.order_items_shipment_id_i on CO_APP_TARGET.order_items ( shipment_id );
-create index CO_APP_TARGET.inventory_product_id_i on CO_APP_TARGET.inventory ( product_id );
+create index TARGET_APP.customers_name_i on TARGET_APP.customers ( full_name );
+create index TARGET_APP.orders_customer_id_i on TARGET_APP.orders ( customer_id );
+create index TARGET_APP.orders_store_id_i on TARGET_APP.orders ( store_id );
+create index TARGET_APP.shipments_store_id_i on TARGET_APP.shipments ( store_id );
+create index TARGET_APP.shipments_customer_id_i on TARGET_APP.shipments ( customer_id );
+create index TARGET_APP.order_items_shipment_id_i on TARGET_APP.order_items ( shipment_id );
+create index TARGET_APP.inventory_product_id_i on TARGET_APP.inventory ( product_id );
 
-alter table CO_APP_TARGET.customers add constraint customers_pk primary key (customer_id);
+alter table TARGET_APP.customers add constraint customers_pk primary key (customer_id);
 
-alter table CO_APP_TARGET.customers add constraint customers_email_u unique (email_address);
+alter table TARGET_APP.customers add constraint customers_email_u unique (email_address);
 
-alter table CO_APP_TARGET.stores add constraint stores_pk primary key (store_id);
+alter table TARGET_APP.stores add constraint stores_pk primary key (store_id);
 
-alter table CO_APP_TARGET.stores add constraint store_name_u unique (store_name);
+alter table TARGET_APP.stores add constraint store_name_u unique (store_name);
 
-alter table CO_APP_TARGET.stores add constraint store_at_least_one_address_c
+alter table TARGET_APP.stores add constraint store_at_least_one_address_c
     check (
             web_address is not null or physical_address is not null
         );
 
-alter table CO_APP_TARGET.products add constraint products_pk primary key (product_id);
+alter table TARGET_APP.products add constraint products_pk primary key (product_id);
 
-alter table CO_APP_TARGET.orders add constraint orders_pk primary key (order_id);
+alter table TARGET_APP.orders add constraint orders_pk primary key (order_id);
 
-alter table CO_APP_TARGET.orders add constraint orders_customer_id_fk
-    foreign key (customer_id) references CO_APP_TARGET.customers (customer_id);
+alter table TARGET_APP.orders add constraint orders_customer_id_fk
+    foreign key (customer_id) references TARGET_APP.customers (customer_id);
 
-alter table CO_APP_TARGET.orders add constraint  orders_status_c
+alter table TARGET_APP.orders add constraint  orders_status_c
     check ( order_status in
             ( 'CANCELLED','COMPLETE','OPEN','PAID','REFUNDED','SHIPPED'));
 
-alter table CO_APP_TARGET.orders add constraint orders_store_id_fk foreign key (store_id)
-    references CO_APP_TARGET.stores (store_id);
+alter table TARGET_APP.orders add constraint orders_store_id_fk foreign key (store_id)
+    references TARGET_APP.stores (store_id);
 
-alter table CO_APP_TARGET.shipments add constraint shipments_pk primary key (shipment_id);
+alter table TARGET_APP.shipments add constraint shipments_pk primary key (shipment_id);
 
-alter table CO_APP_TARGET.shipments add constraint shipments_store_id_fk
-    foreign key (store_id) references CO_APP_TARGET.stores (store_id);
+alter table TARGET_APP.shipments add constraint shipments_store_id_fk
+    foreign key (store_id) references TARGET_APP.stores (store_id);
 
-alter table CO_APP_TARGET.shipments add constraint shipments_customer_id_fk
-    foreign key (customer_id) references CO_APP_TARGET.customers (customer_id);
+alter table TARGET_APP.shipments add constraint shipments_customer_id_fk
+    foreign key (customer_id) references TARGET_APP.customers (customer_id);
 
-alter table CO_APP_TARGET.shipments add constraint shipment_status_c
+alter table TARGET_APP.shipments add constraint shipment_status_c
     check ( shipment_status in
             ( 'CREATED', 'SHIPPED', 'IN-TRANSIT', 'DELIVERED'));
 
-alter table CO_APP_TARGET.order_items add constraint order_items_pk primary key ( order_id, line_item_id );
+alter table TARGET_APP.order_items add constraint order_items_pk primary key ( order_id, line_item_id );
 
-alter table CO_APP_TARGET.order_items add constraint order_items_order_id_fk
-    foreign key (order_id) references CO_APP_TARGET.orders (order_id);
+alter table TARGET_APP.order_items add constraint order_items_order_id_fk
+    foreign key (order_id) references TARGET_APP.orders (order_id);
 
-alter table CO_APP_TARGET.order_items add constraint order_items_shipment_id_fk
-    foreign key (shipment_id) references CO_APP_TARGET.shipments (shipment_id);
+alter table TARGET_APP.order_items add constraint order_items_shipment_id_fk
+    foreign key (shipment_id) references TARGET_APP.shipments (shipment_id);
 
-alter table CO_APP_TARGET.order_items add constraint order_items_product_id_fk
-    foreign key (product_id) references CO_APP_TARGET.products (product_id);
+alter table TARGET_APP.order_items add constraint order_items_product_id_fk
+    foreign key (product_id) references TARGET_APP.products (product_id);
 
-alter table CO_APP_TARGET.order_items add constraint order_items_product_u unique ( product_id, order_id );
+alter table TARGET_APP.order_items add constraint order_items_product_u unique ( product_id, order_id );
 
-alter table CO_APP_TARGET.inventory add constraint inventory_pk primary key (inventory_id);
+alter table TARGET_APP.inventory add constraint inventory_pk primary key (inventory_id);
 
-alter table CO_APP_TARGET.inventory add constraint inventory_store_product_u unique (store_id, product_id);
+alter table TARGET_APP.inventory add constraint inventory_store_product_u unique (store_id, product_id);
 
-alter table CO_APP_TARGET.inventory add constraint inventory_store_id_fk
-    foreign key (store_id) references CO_APP_TARGET.stores (store_id);
+alter table TARGET_APP.inventory add constraint inventory_store_id_fk
+    foreign key (store_id) references TARGET_APP.stores (store_id);
 
-alter table CO_APP_TARGET.inventory add constraint inventory_product_id_fk
-    foreign key (product_id) references CO_APP_TARGET.products (product_id);
+alter table TARGET_APP.inventory add constraint inventory_product_id_fk
+    foreign key (product_id) references TARGET_APP.products (product_id);
 
 -- CONSUMERS TABLE
 
-create sequence CO_APP_TARGET.consumers_seq
+create sequence TARGET_APP.consumers_seq
     minvalue 1
     increment by 1
     START with 1
     cache 20
     nocycle;
 
-create table CO_APP_TARGET.consumers (
+create table TARGET_APP.consumers (
                                          customer_id     	integer,
                                          email_address   	varchar2(255 char) not null,
                                          full_name       	varchar2(255 char) not null,
@@ -232,6 +234,6 @@ create table CO_APP_TARGET.consumers (
 
 ;
 
-create index CO_APP_TARGET.consumers_name_i on CO_APP_TARGET.consumers ( full_name );
-alter table CO_APP_TARGET.consumers add constraint consumers_pk primary key (customer_id);
-alter table CO_APP_TARGET.consumers add constraint consumers_email_u unique (email_address);
+create index TARGET_APP.consumers_name_i on TARGET_APP.consumers ( full_name );
+alter table TARGET_APP.consumers add constraint consumers_pk primary key (customer_id);
+alter table TARGET_APP.consumers add constraint consumers_email_u unique (email_address);

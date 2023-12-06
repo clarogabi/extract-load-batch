@@ -17,4 +17,5 @@ public class RowMapItemSqlParameterSourceProvider implements ItemSqlParameterSou
         item.getRow().forEach((keyField, value) -> mapSqlParameterSource.addValue(keyField.name(), value, keyField.jdbcType()));
         return mapSqlParameterSource;
     }
+
 }
