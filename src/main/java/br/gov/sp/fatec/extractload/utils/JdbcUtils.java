@@ -42,7 +42,7 @@ public class JdbcUtils {
     public Set<String> getPrimaryKeys(final String tableName) throws SQLException {
         Set<String> primaryKeys = new HashSet<>();
 
-        ResultSet pk = connection.getMetaData().getPrimaryKeys(null, null, tableName);
+        ResultSet pk = connection.getMetaData().getPrimaryKeys(null, schemaName, tableName);
         while (pk.next()) {
             primaryKeys.add(pk.getString(COLUMN_NAME));
         }
