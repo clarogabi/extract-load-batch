@@ -37,7 +37,6 @@ public class DataSourceRoutingManager {
 
     @Bean
     public DataSource dataSourceRouting(@Qualifier("extractLoadDataSource") final DataSource extractLoadDataSource) {
-        dataSourcesInstances.put(DEFAULT, extractLoadDataSource);
         CURRENT_INSTANCE.set(DEFAULT);
         dataSourceRouting.setTargetDataSources(dataSourcesInstances);
         dataSourceRouting.setDefaultTargetDataSource(extractLoadDataSource);
@@ -129,6 +128,15 @@ public class DataSourceRoutingManager {
         dataSourcesInstances.clear();
         dataSourcesProps.clear();
         unload();
+    }
+
+    public void clearConnections() {
+        dataSourcesInstances.forEach((key, value) -> {
+            final var instance = (HikariDataSource) value;
+            instance.close();
+        });
+        dataSourcesInstances.clear();
+        dataSourceRouting.afterPropertiesSet();
     }
 
     public boolean instanceIsAbsent(final Long instanceId) {

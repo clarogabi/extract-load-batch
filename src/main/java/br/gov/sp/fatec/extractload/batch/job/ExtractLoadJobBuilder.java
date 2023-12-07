@@ -1,5 +1,6 @@
 package br.gov.sp.fatec.extractload.batch.job;
 
+import br.gov.sp.fatec.extractload.batch.listener.JobCompletedListener;
 import br.gov.sp.fatec.extractload.batch.reader.ExtractJdbcPagingItemReader;
 import br.gov.sp.fatec.extractload.batch.writer.CompositeJdbcPagingItemWriter;
 import br.gov.sp.fatec.extractload.batch.writer.InsertJdbcItemWriter;
@@ -52,23 +53,27 @@ public class ExtractLoadJobBuilder {
     private final DataSourceRoutingManager datasourceRoutingManager;
 
     private final ApplicationContext applicationContext;
+    private final JobCompletedListener jobCompletedListener;
 
     public ExtractLoadJobBuilder(final JobRepository jobRepository,
         final PlatformTransactionManager platformTransactionManager,
         final BatchExecutionProps batchExecutionProps,
         final DataSourceRoutingManager datasourceRoutingManager,
-        ApplicationContext applicationContext) {
+        ApplicationContext applicationContext,
+        final JobCompletedListener jobCompletedListener) {
         this.jobRepository = jobRepository;
         this.platformTransactionManager = platformTransactionManager;
         this.batchExecutionProps = batchExecutionProps;
         this.datasourceRoutingManager = datasourceRoutingManager;
         this.applicationContext = applicationContext;
+        this.jobCompletedListener = jobCompletedListener;
     }
 
     public Job build(final DataBundleDto dataBundleDto) {
         final var jobName = JOB_NAME.concat(textNormalizer(dataBundleDto.dataBundleName()));
         return new JobBuilder(jobName, jobRepository)
             .incrementer(new RunIdIncrementer())
+            .listener(jobCompletedListener)
             .start(getStepsFlow(jobName, dataBundleDto))
             .end()
             .build();
