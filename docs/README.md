@@ -7,8 +7,6 @@
 
 ## Table of Contents
 
------
-
 * [Installation Guide](#installation-guide)
     * [Requirements](#requirements)
     * [Environment Variables](#environment-variables)
