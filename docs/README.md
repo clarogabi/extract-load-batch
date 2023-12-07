@@ -1,7 +1,7 @@
 # extract-load-batch-api
 
 ### Data Extraction and Load with Spring Batch and Rest API
-### Version 0.0.2
+### Version 1.0.0-RELEASE
 
 ## Table of Contents
 
