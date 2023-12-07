@@ -37,7 +37,7 @@ public class ExtractLoadUtils {
         return tableName[tableName.length - ONE];
     }
 
-    public static String generateSelectIdsQuery(final String tableName, final String primaryKey) {
+    public static String generateSelectIdsQuery(final String primaryKey, final String tableName) {
         return String.format("SELECT %s FROM %s WHERE %s IN (:ids) ORDER BY %s ASC", primaryKey, tableName, primaryKey, primaryKey);
     }
 

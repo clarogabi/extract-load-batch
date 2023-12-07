@@ -19,14 +19,19 @@ import static java.util.Objects.nonNull;
 
 public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
 
-    private final DataSource dataSource;
-    private final String tableName;
-    private final String primaryKeyName;
+    private final DataSource targetDataSource;
+    private final String targetTableName;
+    private final String sourcePKName;
+    private final String targetPKName;
 
-    public ExtractPageProcessor(final String tableName, final String primaryKeyName, final DataSource dataSource) {
-        this.dataSource = dataSource;
-        this.tableName = tableName;
-        this.primaryKeyName = primaryKeyName;
+    public ExtractPageProcessor(final DataSource targetDataSource,
+        final String targetTableName,
+        final String targetPKName,
+        final String sourcePKName) {
+        this.targetDataSource = targetDataSource;
+        this.targetTableName = targetTableName;
+        this.targetPKName = targetPKName;
+        this.sourcePKName = sourcePKName;
     }
 
     @Override
@@ -37,14 +42,15 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
             parameters.addValue("ids", page.stream()
                 .map(row -> row.getRow().entrySet()
                     .stream()
-                    .filter(field -> field.getKey().primaryKey() && primaryKeyName.equals(field.getKey().name()))
+                    .filter(field -> field.getKey().primaryKey() && sourcePKName.equals(field.getKey().name()))
                     .findFirst()
                     .map(Map.Entry::getValue)
                     .orElse(null))
                 .toList());
 
-            var jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-            List<String> ids = jdbcTemplate.query(generateSelectIdsQuery(tableName, primaryKeyName), parameters, new RowExtractor());
+            final var jdbcTemplate = new NamedParameterJdbcTemplate(targetDataSource);
+            final var query = generateSelectIdsQuery(targetPKName, targetTableName);
+            List<String> ids = jdbcTemplate.query(query, parameters, new RowExtractor());
 
             if (nonNull(ids) && !ids.isEmpty()) {
                 page.forEach(row -> row.getRow()
@@ -71,7 +77,7 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
         @Override
         public List<String> extractData(final ResultSet rs) throws SQLException, DataAccessException {
             while (rs.next()) {
-                ids.add(rs.getString(primaryKeyName));
+                ids.add(rs.getString(sourcePKName));
             }
             return List.copyOf(ids);
         }

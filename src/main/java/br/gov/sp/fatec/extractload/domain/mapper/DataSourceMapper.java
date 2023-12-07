@@ -23,17 +23,20 @@ public interface DataSourceMapper {
     DataSourceDto entityToDto(ExtractLoadDataSourceConfiguration entity);
 
     @Mapping(target = "databaseId", source = "uid")
+    @Mapping(target = "schemaName", source = "databaseSchema")
     @Mapping(target = "productName", source = "databaseDriver")
     DataSourcePropertiesResponse dtoToResponse(DataSourceDto dto);
 
     @Mapping(target = "uid", ignore = true)
     @Mapping(target = "createDateTime", ignore = true)
     @Mapping(target = "updateDateTime", ignore = true)
+    @Mapping(target = "databaseSchema", source = "schemaName")
     @Mapping(target = "databaseDriver", source = "productName")
     DataSourceDto requestToDto(DataSourcePropertiesRequest request);
 
     @Mapping(target = "createDateTime", ignore = true)
     @Mapping(target = "updateDateTime", ignore = true)
+    @Mapping(target = "databaseSchema", source = "request.schemaName")
     @Mapping(target = "databaseDriver", source = "request.productName")
     DataSourceDto requestToDto(Long uid, DataSourcePropertiesRequest request);
 

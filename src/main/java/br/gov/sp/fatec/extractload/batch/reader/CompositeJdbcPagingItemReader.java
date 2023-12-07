@@ -2,7 +2,6 @@ package br.gov.sp.fatec.extractload.batch.reader;
 
 import lombok.NoArgsConstructor;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
-import org.springframework.util.Assert;
 
 @NoArgsConstructor
 public class CompositeJdbcPagingItemReader<T> extends JdbcPagingItemReader<T> {
@@ -16,7 +15,6 @@ public class CompositeJdbcPagingItemReader<T> extends JdbcPagingItemReader<T> {
     @Override
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
-        Assert.notNull(pageProcessor, "Page processor may not be null");
     }
 
     @Override

@@ -13,7 +13,8 @@ public enum DatabaseDriverEnum {
 
     ORACLE("Oracle", "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@%s:%s:%s"),
     MYSQL("MySQL", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://%s:%s/%s"),
-    SQLSERVER("Microsoft SQL Server", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://%s:%s;databaseName=%s"),
+    SQLSERVER("Microsoft SQL Server", "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+        "jdbc:sqlserver://%s:%s;databaseName=%s;integratedSecurity=false;encrypt=false;trustServerCertificate=true;"),
     POSTGRESQL("PostgreSQL", "org.postgresql.Driver", "jdbc:postgresql://%s:%s/%s"),
     DB2("DB2", "com.ibm.db2.jcc.DB2Driver", "jdbc:db2://%s:%s/%s");
 
