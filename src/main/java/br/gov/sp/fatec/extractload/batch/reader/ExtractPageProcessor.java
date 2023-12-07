@@ -42,7 +42,7 @@ public class ExtractPageProcessor implements PageProcessor<RowMappedDto> {
             parameters.addValue("ids", page.stream()
                 .map(row -> row.getRow().entrySet()
                     .stream()
-                    .filter(field -> field.getKey().primaryKey() && sourcePKName.equals(field.getKey().name()))
+                    .filter(field -> field.getKey().primaryKey() && sourcePKName.equalsIgnoreCase(field.getKey().name()))
                     .findFirst()
                     .map(Map.Entry::getValue)
                     .orElse(null))

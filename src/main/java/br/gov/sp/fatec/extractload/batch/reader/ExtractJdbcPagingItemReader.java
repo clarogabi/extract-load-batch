@@ -56,9 +56,10 @@ public class ExtractJdbcPagingItemReader extends CompositeJdbcPagingItemReader<R
         final var sourceJdbcUtils = new JdbcUtils(sourceDataSource);
         final var sourceTableName = getTableName(table.sourceAppTableName());
         this.sourcePKs = sourceJdbcUtils.getPrimaryKeys(sourceTableName);
+        final var fullSourceTableName = sourceJdbcUtils.getFullTableName(sourceTableName);
 
         log.info("Preparing paging reader of table [{}] with fetch size [{}] and page size [{}]", sourceTableName, fetchSize, pageSize);
-        final var queryProvider = buildQueryProvider(sourceDataSource, sourceTableName, table.extractCustomQuery());
+        final var queryProvider = buildQueryProvider(sourceDataSource, fullSourceTableName, table.extractCustomQuery());
         super.setName(ITEM_READER_NAME.concat(sourceTableName));
         super.setDataSource(sourceDataSource);
         super.setQueryProvider(queryProvider);
